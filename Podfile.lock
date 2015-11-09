@@ -1,0 +1,108 @@
+PODS:
+  - Alamofire (3.1.2)
+  - Bolts (1.4.0):
+    - Bolts/AppLinks (= 1.4.0)
+    - Bolts/Tasks (= 1.4.0)
+  - Bolts/AppLinks (1.4.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.4.0)
+  - Fabric (1.6.0):
+    - Fabric/Base (= 1.6.0)
+  - Fabric/Base (1.6.0)
+  - FBSDKCoreKit (4.7.1):
+    - Bolts (~> 1.1)
+    - FBSDKCoreKit/arc (= 4.7.1)
+    - FBSDKCoreKit/no-arc (= 4.7.1)
+  - FBSDKCoreKit/arc (4.7.1):
+    - Bolts (~> 1.1)
+  - FBSDKCoreKit/no-arc (4.7.1):
+    - Bolts (~> 1.1)
+    - FBSDKCoreKit/arc
+  - FBSDKLoginKit (4.7.1):
+    - FBSDKCoreKit
+  - FBSDKShareKit (4.7.1):
+    - FBSDKCoreKit
+  - FlatUIKit (1.6.2)
+  - FontAwesomeKit/Core (2.1.8)
+  - FontAwesomeKit/FontAwesome (2.1.8):
+    - FontAwesomeKit/Core
+  - LTMorphingLabel (0.0.8)
+  - Parse (1.9.1):
+    - Bolts/Tasks (>= 1.4.0)
+  - ParseFacebookUtilsV4 (1.9.0):
+    - Bolts/Tasks (>= 1.3.0)
+    - FBSDKCoreKit (~> 4.7)
+    - FBSDKLoginKit (~> 4.7)
+    - Parse (~> 1.9)
+  - ParseTwitterUtils (1.9.0):
+    - Bolts/Tasks (>= 1.3.0)
+    - Parse (~> 1.9)
+  - ParseUI (1.1.6):
+    - Bolts/Tasks (~> 1.2)
+    - Parse (~> 1.8)
+  - pop (1.0.8)
+  - PureLayout (3.0.1)
+  - SDWebImage (3.7.3):
+    - SDWebImage/Core (= 3.7.3)
+  - SDWebImage/Core (3.7.3)
+  - TLYShyNavBar (0.10.1)
+  - TTGSnackbar (0.2.2)
+  - TwitterCore (1.12.1):
+    - Fabric
+  - TwitterKit (1.12.1):
+    - TwitterCore (= 1.12.1)
+  - UIColor_Hex_Swift (1.5)
+  - VBFPopFlatButton (0.0.6):
+    - pop
+  - XCDYouTubeKit (2.3.2)
+
+DEPENDENCIES:
+  - Alamofire
+  - Bolts
+  - Fabric
+  - FBSDKCoreKit
+  - FBSDKLoginKit
+  - FBSDKShareKit
+  - FlatUIKit
+  - FontAwesomeKit/FontAwesome (~> 2.1.0)
+  - LTMorphingLabel (~> 0.0.8)
+  - Parse
+  - ParseFacebookUtilsV4
+  - ParseTwitterUtils
+  - ParseUI
+  - PureLayout
+  - SDWebImage (~> 3.7)
+  - TLYShyNavBar
+  - TTGSnackbar
+  - TwitterCore
+  - TwitterKit
+  - UIColor_Hex_Swift (~> 1.2)
+  - VBFPopFlatButton
+  - XCDYouTubeKit (~> 2.3.2)
+
+SPEC CHECKSUMS:
+  Alamofire: 7c16ca65f3c7e681fd925fd7f2dec7747ff96855
+  Bolts: 0e9bce58b9b9f5e8a7a4d47b16d2fabec289072b
+  Fabric: d737eda3a26ac940a5430230eedb35f16b226131
+  FBSDKCoreKit: 9141b70960a37930850370495fe565f4a27ac141
+  FBSDKLoginKit: c11ed3c2833472db3bb4a4aecf27af4a6f69b173
+  FBSDKShareKit: 213adf63e073f41a346b0e7a689805880dc5150e
+  FlatUIKit: 1b41f0d4952ce8d970d8479ce79df54a960242c4
+  FontAwesomeKit: 64759fb28b5d2e74a1bd81553d7c11ca10e32179
+  LTMorphingLabel: 0d2c981d47bb3b57dd03b37c5c13d8d71fc1e97e
+  Parse: 54a965c8c19a6dde90284ab654dbcc77ef8c001b
+  ParseFacebookUtilsV4: aadebfaaaf4a45bf0a0992863bf48c8fc49189e3
+  ParseTwitterUtils: 0155d1a4e388690aa5d80405a586474e66606968
+  ParseUI: 8a22e448c03f825203d8c379c80523517f68baa3
+  pop: bb773ae2c791ca2629de13b347e7a8b450fa6a57
+  PureLayout: f35f5384c9c4e4479df041dbe33ad7577b71ddfb
+  SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
+  TLYShyNavBar: abeab693235fc21b5bd9c8de6e971da62fc3d1d9
+  TTGSnackbar: 6013f3c7aa556fdac91fef64ccf3f5c136903027
+  TwitterCore: 2b1bdd58dfba3f21b416d2a0d1ca74173e3b0eea
+  TwitterKit: 7f55ebb8d2a1476f7ef2d6fedd40090d4b349b40
+  UIColor_Hex_Swift: 09997d02e9ba2833569fd048663fddbe90cf2c52
+  VBFPopFlatButton: 782344da63f104c279a857d806e065117a7e1196
+  XCDYouTubeKit: 6aff378bcbbf06d058f2c2d2df655c376970ee03
+
+COCOAPODS: 0.39.0
