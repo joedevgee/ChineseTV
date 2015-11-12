@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Parse
+import Bolts
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,8 +18,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // Configure the look of navBar
+        let navBar = UINavigationBar.appearance()
+        navBar.barTintColor = themeColor
+        navBar.tintColor = UIColor.whiteColor()
+        navBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+        // End of configuring navBar
+        
+        // Configure parse related items
+        Parse.enableLocalDatastore()
+        
+        // Initialize Parse.
+        Parse.setApplicationId("IhDPuqiPOkNK0rHuHn2q2XNxgG3o5J0uTf2JoCbD",
+            clientKey: "C6mZr78yxdgJFrRROfpbntpqItBQKwnKhedFehVz")
+        
+        // Set the status bar style
+        UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent
+        
+        
         return true
     }
+    
+ 
 
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

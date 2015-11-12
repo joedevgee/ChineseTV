@@ -7,21 +7,77 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D10A4EF1BF146C5006C83FA /* MainTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D10A4EE1BF146C5006C83FA /* MainTableViewController.swift */; };
+		0D10A4FE1BF14E63006C83FA /* GlobalConfigs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D10A4FD1BF14E63006C83FA /* GlobalConfigs.swift */; };
+		0D10A5001BF1537D006C83FA /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D10A4FF1BF1537D006C83FA /* ToggleButton.swift */; };
+		0D10A5021BF15CFB006C83FA /* MainTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D10A5011BF15CFB006C83FA /* MainTableViewCell.swift */; };
 		0D58A5F21BF144E700BD1C7E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D58A5F11BF144E700BD1C7E /* AppDelegate.swift */; };
-		0D58A5F41BF144E700BD1C7E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D58A5F31BF144E700BD1C7E /* ViewController.swift */; };
 		0D58A5F71BF144E700BD1C7E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D58A5F51BF144E700BD1C7E /* Main.storyboard */; };
 		0D58A5F91BF144E700BD1C7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D58A5F81BF144E700BD1C7E /* Assets.xcassets */; };
 		0D58A5FC1BF144E700BD1C7E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D58A5FA1BF144E700BD1C7E /* LaunchScreen.storyboard */; };
+		0D5E688F1BF3E4E60081CEDB /* SingleCategoryCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D5E688E1BF3E4E60081CEDB /* SingleCategoryCollectionViewController.swift */; };
+		0D5E68911BF3EA630081CEDB /* SingleCategoryCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D5E68901BF3EA630081CEDB /* SingleCategoryCollectionCell.swift */; };
+		0D6A66EB1BF408AA008ABB5E /* PlayListDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6A66EA1BF408AA008ABB5E /* PlayListDetailViewController.swift */; };
+		0D7284651BF26A8C006BB77A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D7284641BF26A8C006BB77A /* AudioToolbox.framework */; };
+		0D7284671BF26A97006BB77A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D7284661BF26A97006BB77A /* CFNetwork.framework */; };
+		0D7284691BF26AA3006BB77A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D7284681BF26AA3006BB77A /* CoreGraphics.framework */; };
+		0D72846B1BF26AAD006BB77A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D72846A1BF26AAD006BB77A /* CoreLocation.framework */; };
+		0D72846D1BF26AB7006BB77A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D72846C1BF26AB7006BB77A /* QuartzCore.framework */; };
+		0D72846F1BF26AC0006BB77A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D72846E1BF26AC0006BB77A /* Security.framework */; };
+		0D7284711BF26ACA006BB77A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D7284701BF26ACA006BB77A /* StoreKit.framework */; };
+		0D7284731BF26AD3006BB77A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D7284721BF26AD3006BB77A /* SystemConfiguration.framework */; };
+		0D7284751BF26ADD006BB77A /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D7284741BF26ADD006BB77A /* libz.tbd */; };
+		0D7284771BF26AEC006BB77A /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D7284761BF26AEC006BB77A /* libsqlite3.tbd */; };
+		0D7284791BF26AF6006BB77A /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D7284781BF26AF6006BB77A /* Accounts.framework */; };
+		0D72847B1BF26AFD006BB77A /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D72847A1BF26AFD006BB77A /* Social.framework */; };
+		0D7284841BF2A769006BB77A /* RECommonFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D72847F1BF2A769006BB77A /* RECommonFunctions.m */; };
+		0D7284851BF2A769006BB77A /* RESideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D7284811BF2A769006BB77A /* RESideMenu.m */; };
+		0D7284861BF2A769006BB77A /* UIViewController+RESideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D7284831BF2A769006BB77A /* UIViewController+RESideMenu.m */; };
+		0D7284881BF2A7E6006BB77A /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7284871BF2A7E6006BB77A /* RootViewController.swift */; };
+		0D72848A1BF2A848006BB77A /* LeftMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7284891BF2A848006BB77A /* LeftMenuViewController.swift */; };
+		0DC61B481BF183FF009DD17F /* AddPlayListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */; };
+		6E42DB45D3E2A1B4FC7620DC /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30AFB0F3D2930987AD43A4EA /* Pods.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0D10A4EE1BF146C5006C83FA /* MainTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTableViewController.swift; sourceTree = "<group>"; };
+		0D10A4FA1BF14E0D006C83FA /* ChineseTV-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ChineseTV-Bridging-Header.h"; sourceTree = "<group>"; };
+		0D10A4FD1BF14E63006C83FA /* GlobalConfigs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalConfigs.swift; sourceTree = "<group>"; };
+		0D10A4FF1BF1537D006C83FA /* ToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleButton.swift; sourceTree = "<group>"; };
+		0D10A5011BF15CFB006C83FA /* MainTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTableViewCell.swift; sourceTree = "<group>"; };
 		0D58A5EE1BF144E700BD1C7E /* ChineseTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChineseTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D58A5F11BF144E700BD1C7E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0D58A5F31BF144E700BD1C7E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		0D58A5F61BF144E700BD1C7E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0D58A5F81BF144E700BD1C7E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0D58A5FB1BF144E700BD1C7E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0D58A5FD1BF144E700BD1C7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0D5E688E1BF3E4E60081CEDB /* SingleCategoryCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleCategoryCollectionViewController.swift; sourceTree = "<group>"; };
+		0D5E68901BF3EA630081CEDB /* SingleCategoryCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleCategoryCollectionCell.swift; sourceTree = "<group>"; };
+		0D6A66EA1BF408AA008ABB5E /* PlayListDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayListDetailViewController.swift; sourceTree = "<group>"; };
+		0D7284641BF26A8C006BB77A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		0D7284661BF26A97006BB77A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		0D7284681BF26AA3006BB77A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		0D72846A1BF26AAD006BB77A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		0D72846C1BF26AB7006BB77A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		0D72846E1BF26AC0006BB77A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		0D7284701BF26ACA006BB77A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		0D7284721BF26AD3006BB77A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		0D7284741BF26ADD006BB77A /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		0D7284761BF26AEC006BB77A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		0D7284781BF26AF6006BB77A /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		0D72847A1BF26AFD006BB77A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		0D72847E1BF2A769006BB77A /* RECommonFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RECommonFunctions.h; sourceTree = "<group>"; };
+		0D72847F1BF2A769006BB77A /* RECommonFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RECommonFunctions.m; sourceTree = "<group>"; };
+		0D7284801BF2A769006BB77A /* RESideMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RESideMenu.h; sourceTree = "<group>"; };
+		0D7284811BF2A769006BB77A /* RESideMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RESideMenu.m; sourceTree = "<group>"; };
+		0D7284821BF2A769006BB77A /* UIViewController+RESideMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+RESideMenu.h"; sourceTree = "<group>"; };
+		0D7284831BF2A769006BB77A /* UIViewController+RESideMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+RESideMenu.m"; sourceTree = "<group>"; };
+		0D7284871BF2A7E6006BB77A /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		0D7284891BF2A848006BB77A /* LeftMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftMenuViewController.swift; sourceTree = "<group>"; };
+		0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddPlayListViewController.swift; sourceTree = "<group>"; };
+		30AFB0F3D2930987AD43A4EA /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B79A4D41E39DD9D8012284F6 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		B86FE6B46A78351A1352DB17 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +85,96 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0D72847B1BF26AFD006BB77A /* Social.framework in Frameworks */,
+				0D7284791BF26AF6006BB77A /* Accounts.framework in Frameworks */,
+				0D7284771BF26AEC006BB77A /* libsqlite3.tbd in Frameworks */,
+				0D7284751BF26ADD006BB77A /* libz.tbd in Frameworks */,
+				0D7284731BF26AD3006BB77A /* SystemConfiguration.framework in Frameworks */,
+				0D7284711BF26ACA006BB77A /* StoreKit.framework in Frameworks */,
+				0D72846F1BF26AC0006BB77A /* Security.framework in Frameworks */,
+				0D72846D1BF26AB7006BB77A /* QuartzCore.framework in Frameworks */,
+				0D72846B1BF26AAD006BB77A /* CoreLocation.framework in Frameworks */,
+				0D7284691BF26AA3006BB77A /* CoreGraphics.framework in Frameworks */,
+				0D7284671BF26A97006BB77A /* CFNetwork.framework in Frameworks */,
+				0D7284651BF26A8C006BB77A /* AudioToolbox.framework in Frameworks */,
+				6E42DB45D3E2A1B4FC7620DC /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0588024A2C882BA8B55A8F32 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B79A4D41E39DD9D8012284F6 /* Pods.debug.xcconfig */,
+				B86FE6B46A78351A1352DB17 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		0D10A4EA1BF14669006C83FA /* Storyboard */ = {
+			isa = PBXGroup;
+			children = (
+				0D58A5F51BF144E700BD1C7E /* Main.storyboard */,
+				0D58A5FA1BF144E700BD1C7E /* LaunchScreen.storyboard */,
+			);
+			name = Storyboard;
+			sourceTree = "<group>";
+		};
+		0D10A4EC1BF14681006C83FA /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				0D6A66E91BF4088E008ABB5E /* DetailViewController */,
+				0D5E688D1BF3E4C80081CEDB /* CategoryCollectionView */,
+				0DC61B461BF183DD009DD17F /* AddItemView */,
+				0D10A4F51BF1493F006C83FA /* MainTableView */,
+				0D10A4F01BF148BD006C83FA /* ENSideMenu */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		0D10A4ED1BF14695006C83FA /* GlobalConfiguration */ = {
+			isa = PBXGroup;
+			children = (
+				0D58A5F11BF144E700BD1C7E /* AppDelegate.swift */,
+				0D10A4FD1BF14E63006C83FA /* GlobalConfigs.swift */,
+			);
+			name = GlobalConfiguration;
+			sourceTree = "<group>";
+		};
+		0D10A4F01BF148BD006C83FA /* ENSideMenu */ = {
+			isa = PBXGroup;
+			children = (
+				0D72847E1BF2A769006BB77A /* RECommonFunctions.h */,
+				0D72847F1BF2A769006BB77A /* RECommonFunctions.m */,
+				0D7284801BF2A769006BB77A /* RESideMenu.h */,
+				0D7284811BF2A769006BB77A /* RESideMenu.m */,
+				0D7284821BF2A769006BB77A /* UIViewController+RESideMenu.h */,
+				0D7284831BF2A769006BB77A /* UIViewController+RESideMenu.m */,
+				0D10A4FF1BF1537D006C83FA /* ToggleButton.swift */,
+				0D7284871BF2A7E6006BB77A /* RootViewController.swift */,
+				0D7284891BF2A848006BB77A /* LeftMenuViewController.swift */,
+			);
+			name = ENSideMenu;
+			sourceTree = "<group>";
+		};
+		0D10A4F51BF1493F006C83FA /* MainTableView */ = {
+			isa = PBXGroup;
+			children = (
+				0D10A4EE1BF146C5006C83FA /* MainTableViewController.swift */,
+				0D10A5011BF15CFB006C83FA /* MainTableViewCell.swift */,
+			);
+			name = MainTableView;
+			sourceTree = "<group>";
+		};
 		0D58A5E51BF144E700BD1C7E = {
 			isa = PBXGroup;
 			children = (
 				0D58A5F01BF144E700BD1C7E /* ChineseTV */,
 				0D58A5EF1BF144E700BD1C7E /* Products */,
+				0588024A2C882BA8B55A8F32 /* Pods */,
+				88D131F6C64B18D7AB4E7F5A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,14 +189,59 @@
 		0D58A5F01BF144E700BD1C7E /* ChineseTV */ = {
 			isa = PBXGroup;
 			children = (
-				0D58A5F11BF144E700BD1C7E /* AppDelegate.swift */,
-				0D58A5F31BF144E700BD1C7E /* ViewController.swift */,
-				0D58A5F51BF144E700BD1C7E /* Main.storyboard */,
+				0D10A4ED1BF14695006C83FA /* GlobalConfiguration */,
+				0D10A4EC1BF14681006C83FA /* ViewControllers */,
+				0D10A4EA1BF14669006C83FA /* Storyboard */,
 				0D58A5F81BF144E700BD1C7E /* Assets.xcassets */,
-				0D58A5FA1BF144E700BD1C7E /* LaunchScreen.storyboard */,
 				0D58A5FD1BF144E700BD1C7E /* Info.plist */,
+				0D10A4FA1BF14E0D006C83FA /* ChineseTV-Bridging-Header.h */,
 			);
 			path = ChineseTV;
+			sourceTree = "<group>";
+		};
+		0D5E688D1BF3E4C80081CEDB /* CategoryCollectionView */ = {
+			isa = PBXGroup;
+			children = (
+				0D5E688E1BF3E4E60081CEDB /* SingleCategoryCollectionViewController.swift */,
+				0D5E68901BF3EA630081CEDB /* SingleCategoryCollectionCell.swift */,
+			);
+			name = CategoryCollectionView;
+			sourceTree = "<group>";
+		};
+		0D6A66E91BF4088E008ABB5E /* DetailViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0D6A66EA1BF408AA008ABB5E /* PlayListDetailViewController.swift */,
+			);
+			name = DetailViewController;
+			sourceTree = "<group>";
+		};
+		0DC61B461BF183DD009DD17F /* AddItemView */ = {
+			isa = PBXGroup;
+			children = (
+				0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */,
+			);
+			name = AddItemView;
+			sourceTree = "<group>";
+		};
+		88D131F6C64B18D7AB4E7F5A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0D72847A1BF26AFD006BB77A /* Social.framework */,
+				0D7284781BF26AF6006BB77A /* Accounts.framework */,
+				0D7284761BF26AEC006BB77A /* libsqlite3.tbd */,
+				0D7284741BF26ADD006BB77A /* libz.tbd */,
+				0D7284721BF26AD3006BB77A /* SystemConfiguration.framework */,
+				0D7284701BF26ACA006BB77A /* StoreKit.framework */,
+				0D72846E1BF26AC0006BB77A /* Security.framework */,
+				0D72846C1BF26AB7006BB77A /* QuartzCore.framework */,
+				0D72846A1BF26AAD006BB77A /* CoreLocation.framework */,
+				0D7284681BF26AA3006BB77A /* CoreGraphics.framework */,
+				0D7284661BF26A97006BB77A /* CFNetwork.framework */,
+				0D7284641BF26A8C006BB77A /* AudioToolbox.framework */,
+				30AFB0F3D2930987AD43A4EA /* Pods.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +251,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0D58A6001BF144E700BD1C7E /* Build configuration list for PBXNativeTarget "ChineseTV" */;
 			buildPhases = (
+				A80829A67A6831022DC8DCE8 /* Check Pods Manifest.lock */,
 				0D58A5EA1BF144E700BD1C7E /* Sources */,
 				0D58A5EB1BF144E700BD1C7E /* Frameworks */,
 				0D58A5EC1BF144E700BD1C7E /* Resources */,
+				5263CBD3DB7F8E110F1B36D5 /* Embed Pods Frameworks */,
+				5EEF3D49B565F6309A2E2057 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -130,13 +313,73 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		5263CBD3DB7F8E110F1B36D5 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5EEF3D49B565F6309A2E2057 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A80829A67A6831022DC8DCE8 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		0D58A5EA1BF144E700BD1C7E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0D58A5F41BF144E700BD1C7E /* ViewController.swift in Sources */,
+				0D7284881BF2A7E6006BB77A /* RootViewController.swift in Sources */,
+				0D6A66EB1BF408AA008ABB5E /* PlayListDetailViewController.swift in Sources */,
+				0D10A5021BF15CFB006C83FA /* MainTableViewCell.swift in Sources */,
+				0D5E688F1BF3E4E60081CEDB /* SingleCategoryCollectionViewController.swift in Sources */,
+				0D7284851BF2A769006BB77A /* RESideMenu.m in Sources */,
+				0DC61B481BF183FF009DD17F /* AddPlayListViewController.swift in Sources */,
+				0D10A5001BF1537D006C83FA /* ToggleButton.swift in Sources */,
+				0D10A4FE1BF14E63006C83FA /* GlobalConfigs.swift in Sources */,
+				0D10A4EF1BF146C5006C83FA /* MainTableViewController.swift in Sources */,
+				0D72848A1BF2A848006BB77A /* LeftMenuViewController.swift in Sources */,
 				0D58A5F21BF144E700BD1C7E /* AppDelegate.swift in Sources */,
+				0D5E68911BF3EA630081CEDB /* SingleCategoryCollectionCell.swift in Sources */,
+				0D7284841BF2A769006BB77A /* RECommonFunctions.m in Sources */,
+				0D7284861BF2A769006BB77A /* UIViewController+RESideMenu.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,7 +441,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -236,7 +479,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -245,23 +488,30 @@
 		};
 		0D58A6011BF144E700BD1C7E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B79A4D41E39DD9D8012284F6 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = ChineseTV/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.8pon.ChineseTV;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ChineseTV/ChineseTV-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		0D58A6021BF144E700BD1C7E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B86FE6B46A78351A1352DB17 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = ChineseTV/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.8pon.ChineseTV;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "ChineseTV/ChineseTV-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -284,6 +534,7 @@
 				0D58A6021BF144E700BD1C7E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

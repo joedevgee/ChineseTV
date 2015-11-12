@@ -1,0 +1,13 @@
+platform :ios, '8.0'
+use_frameworks!
+pod 'Parse'
+pod 'ParseUI'
+pod 'Bolts'
+pod 'PureLayout'
+pod 'XCDYouTubeKit', '~> 2.3.2'
+pod 'SDWebImage', '~>3.7'
+pod 'Alamofire'
+pod 'TTGSnackbar'
+pod 'TLYShyNavBar'
+pod 'FontAwesomeKit/FontAwesome', '~> 2.1.0'
+pod 'XCDYouTubeKit', '~> 2.3.2'

@@ -1,0 +1,49 @@
+PODS:
+  - Alamofire (3.1.2)
+  - Bolts (1.4.0):
+    - Bolts/AppLinks (= 1.4.0)
+    - Bolts/Tasks (= 1.4.0)
+  - Bolts/AppLinks (1.4.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.4.0)
+  - FontAwesomeKit/Core (2.1.8)
+  - FontAwesomeKit/FontAwesome (2.1.8):
+    - FontAwesomeKit/Core
+  - Parse (1.9.1):
+    - Bolts/Tasks (>= 1.4.0)
+  - ParseUI (1.1.6):
+    - Bolts/Tasks (~> 1.2)
+    - Parse (~> 1.8)
+  - PureLayout (3.0.1)
+  - SDWebImage (3.7.3):
+    - SDWebImage/Core (= 3.7.3)
+  - SDWebImage/Core (3.7.3)
+  - TLYShyNavBar (0.10.1)
+  - TTGSnackbar (0.2.2)
+  - XCDYouTubeKit (2.3.2)
+
+DEPENDENCIES:
+  - Alamofire
+  - Bolts
+  - FontAwesomeKit/FontAwesome (~> 2.1.0)
+  - Parse
+  - ParseUI
+  - PureLayout
+  - SDWebImage (~> 3.7)
+  - TLYShyNavBar
+  - TTGSnackbar
+  - XCDYouTubeKit (~> 2.3.2)
+
+SPEC CHECKSUMS:
+  Alamofire: 7c16ca65f3c7e681fd925fd7f2dec7747ff96855
+  Bolts: 0e9bce58b9b9f5e8a7a4d47b16d2fabec289072b
+  FontAwesomeKit: 64759fb28b5d2e74a1bd81553d7c11ca10e32179
+  Parse: 54a965c8c19a6dde90284ab654dbcc77ef8c001b
+  ParseUI: 8a22e448c03f825203d8c379c80523517f68baa3
+  PureLayout: f35f5384c9c4e4479df041dbe33ad7577b71ddfb
+  SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
+  TLYShyNavBar: abeab693235fc21b5bd9c8de6e971da62fc3d1d9
+  TTGSnackbar: 6013f3c7aa556fdac91fef64ccf3f5c136903027
+  XCDYouTubeKit: 6aff378bcbbf06d058f2c2d2df655c376970ee03
+
+COCOAPODS: 0.39.0
