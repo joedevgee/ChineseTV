@@ -35,6 +35,8 @@
 		0D7284861BF2A769006BB77A /* UIViewController+RESideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D7284831BF2A769006BB77A /* UIViewController+RESideMenu.m */; };
 		0D7284881BF2A7E6006BB77A /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7284871BF2A7E6006BB77A /* RootViewController.swift */; };
 		0D72848A1BF2A848006BB77A /* LeftMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7284891BF2A848006BB77A /* LeftMenuViewController.swift */; };
+		0D8E9E2A1BF983EE00C80A66 /* VideoListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8E9E291BF983EE00C80A66 /* VideoListTableViewCell.swift */; };
+		0D8E9E2C1BF9840300C80A66 /* CommentListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8E9E2B1BF9840300C80A66 /* CommentListTableViewCell.swift */; };
 		0DC61B481BF183FF009DD17F /* AddPlayListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */; };
 		6E42DB45D3E2A1B4FC7620DC /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30AFB0F3D2930987AD43A4EA /* Pods.framework */; };
 /* End PBXBuildFile section */
@@ -74,6 +76,8 @@
 		0D7284831BF2A769006BB77A /* UIViewController+RESideMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+RESideMenu.m"; sourceTree = "<group>"; };
 		0D7284871BF2A7E6006BB77A /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		0D7284891BF2A848006BB77A /* LeftMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftMenuViewController.swift; sourceTree = "<group>"; };
+		0D8E9E291BF983EE00C80A66 /* VideoListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoListTableViewCell.swift; sourceTree = "<group>"; };
+		0D8E9E2B1BF9840300C80A66 /* CommentListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentListTableViewCell.swift; sourceTree = "<group>"; };
 		0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddPlayListViewController.swift; sourceTree = "<group>"; };
 		30AFB0F3D2930987AD43A4EA /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B79A4D41E39DD9D8012284F6 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -211,6 +215,8 @@
 		0D6A66E91BF4088E008ABB5E /* DetailViewController */ = {
 			isa = PBXGroup;
 			children = (
+				0D8E9E2B1BF9840300C80A66 /* CommentListTableViewCell.swift */,
+				0D8E9E291BF983EE00C80A66 /* VideoListTableViewCell.swift */,
 				0D6A66EA1BF408AA008ABB5E /* PlayListDetailViewController.swift */,
 			);
 			name = DetailViewController;
@@ -370,12 +376,14 @@
 				0D6A66EB1BF408AA008ABB5E /* PlayListDetailViewController.swift in Sources */,
 				0D10A5021BF15CFB006C83FA /* MainTableViewCell.swift in Sources */,
 				0D5E688F1BF3E4E60081CEDB /* SingleCategoryCollectionViewController.swift in Sources */,
+				0D8E9E2A1BF983EE00C80A66 /* VideoListTableViewCell.swift in Sources */,
 				0D7284851BF2A769006BB77A /* RESideMenu.m in Sources */,
 				0DC61B481BF183FF009DD17F /* AddPlayListViewController.swift in Sources */,
 				0D10A5001BF1537D006C83FA /* ToggleButton.swift in Sources */,
 				0D10A4FE1BF14E63006C83FA /* GlobalConfigs.swift in Sources */,
 				0D10A4EF1BF146C5006C83FA /* MainTableViewController.swift in Sources */,
 				0D72848A1BF2A848006BB77A /* LeftMenuViewController.swift in Sources */,
+				0D8E9E2C1BF9840300C80A66 /* CommentListTableViewCell.swift in Sources */,
 				0D58A5F21BF144E700BD1C7E /* AppDelegate.swift in Sources */,
 				0D5E68911BF3EA630081CEDB /* SingleCategoryCollectionCell.swift in Sources */,
 				0D7284841BF2A769006BB77A /* RECommonFunctions.m in Sources */,

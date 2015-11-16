@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (3.1.2)
+  - AsyncSwift (1.6.4)
   - Bolts (1.4.0):
     - Bolts/AppLinks (= 1.4.0)
     - Bolts/Tasks (= 1.4.0)
@@ -24,6 +25,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - AsyncSwift
   - Bolts
   - FontAwesomeKit/FontAwesome (~> 2.1.0)
   - Parse
@@ -36,6 +38,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   Alamofire: 7c16ca65f3c7e681fd925fd7f2dec7747ff96855
+  AsyncSwift: 3c90beed237324f1b57e1f1c414dc5501985d208
   Bolts: 0e9bce58b9b9f5e8a7a4d47b16d2fabec289072b
   FontAwesomeKit: 64759fb28b5d2e74a1bd81553d7c11ca10e32179
   Parse: 54a965c8c19a6dde90284ab654dbcc77ef8c001b

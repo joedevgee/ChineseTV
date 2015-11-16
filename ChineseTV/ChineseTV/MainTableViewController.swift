@@ -11,7 +11,7 @@ import Parse
 import ParseUI
 import SDWebImage
 import Alamofire
-import youtube_ios_player_helper
+import Async
 
 class MainTableViewController: PFQueryTableViewController {
     
@@ -124,19 +124,21 @@ class MainTableViewController: PFQueryTableViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "addPlayList" {
-            print("Let's add a new playlist item")
+            
         } else if segue.identifier == "playVideo" {
-            print("Play the video in the playlist")
             UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
             self.navigationItem.title = "主页"
             let destVC = segue.destinationViewController as! PlayListDetailViewController
-            if let listId:String = objectAtIndexPath(sender as? NSIndexPath)!["listId"] as? String {
-                destVC.playListId = listId
+            if let listId:String = objectAtIndexPath(sender as? NSIndexPath)!["listID"] as? String {
                 Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=\(1)&playlistId=\(listId)&key=\(googleApiKey)")
                     .responseJSON { response in
                         if let videoId:String = response.result.value!["items"]!![0]["snippet"]!!["resourceId"]!!["videoId"] as? String {
-                            destVC.playVideoId = videoId
-//                            destVC.playerView.loadWithVideoId("OUqhRYaALZU")
+                            Async.main {
+                                destVC.playVideo(videoId)
+                                print(videoId)
+                            }.background {
+                                destVC.requestPlayList(listId)
+                            }
                         }
                 }
             }
