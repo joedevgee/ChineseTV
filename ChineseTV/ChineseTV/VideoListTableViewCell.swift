@@ -40,11 +40,11 @@ class VideoListTableViewCell: UITableViewCell {
         videoTitle.lineBreakMode = .ByTruncatingTail
         videoTitle.numberOfLines = 2
         videoTitle.textAlignment = .Left
-        videoTitle.textColor = UIColor.blackColor()
+        videoTitle.textColor = UIColor.whiteColor()
         videoTitle.font = UIFont.boldSystemFontOfSize(12)
         videoTitle.sizeToFit()
         
-        contentView.backgroundColor = UIColor.whiteColor()
+        contentView.backgroundColor = videoSubColor
         
         contentView.addSubview(thumbnailImageView)
         contentView.addSubview(videoTitle)

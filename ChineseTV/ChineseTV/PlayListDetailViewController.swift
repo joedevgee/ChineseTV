@@ -51,53 +51,60 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         topContainer.autoPinToTopLayoutGuideOfViewController(self, withInset: 0)
         topContainer.autoPinEdgeToSuperviewEdge(.Left)
         topContainer.autoPinEdgeToSuperviewEdge(.Right)
-        topContainer.autoSetDimension(.Height, toSize: UIScreen.mainScreen().bounds.width*0.8)
+        topContainer.autoSetDimension(.Height, toSize: UIScreen.mainScreen().bounds.width*0.70)
         
         videoContainer.backgroundColor = UIColor.blackColor()
         self.topContainer.addSubview(videoContainer)
-        videoContainer.autoSetDimension(.Height, toSize: UIScreen.mainScreen().bounds.width*0.75)
+        videoContainer.autoSetDimension(.Height, toSize: UIScreen.mainScreen().bounds.width*0.60)
         videoContainer.autoPinEdgeToSuperviewEdge(.Left)
         videoContainer.autoPinEdgeToSuperviewEdge(.Right)
-        videoContainer.autoPinEdgeToSuperviewEdge(.Top, withInset: -35)
+        videoContainer.autoPinEdgeToSuperviewEdge(.Top)
         
-        videoSubContainer.backgroundColor = UIColor.whiteColor()
+        videoSubContainer.backgroundColor = videoTopColor
         self.topContainer.addSubview(videoSubContainer)
         videoSubContainer.autoPinEdgeToSuperviewEdge(.Left)
         videoSubContainer.autoPinEdgeToSuperviewEdge(.Right)
         videoSubContainer.autoPinEdgeToSuperviewEdge(.Bottom)
         videoSubContainer.autoPinEdge(.Top, toEdge: .Bottom, ofView: videoContainer)
         
-        videoListButton.setTitle("Show Video", forState: .Normal)
-        videoListButton.backgroundColor = UIColor.yellowColor()
+        videoListButton.backgroundColor = UIColor.clearColor()
+        videoListButton.setTitle("视频列表", forState: .Normal)
+        videoListButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        videoListButton.titleLabel?.textAlignment = .Center
         videoListButton.addTarget(self, action: "showVideoList", forControlEvents: .TouchUpInside)
         
-        commentListButton.setTitle("Show Comment", forState: .Normal)
-        commentListButton.backgroundColor = UIColor.blueColor()
+        commentListButton.backgroundColor = UIColor.clearColor()
+        commentListButton.setTitle("剧透聊天", forState: .Normal)
+        commentListButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        commentListButton.titleLabel?.textAlignment = .Center
         commentListButton.addTarget(self, action: "showCommentList", forControlEvents: .TouchUpInside)
         
         videoSubContainer.addSubview(videoListButton)
         videoSubContainer.addSubview(commentListButton)
         
-        videoListButton.autoSetDimensionsToSize(CGSize(width: 20, height: 20))
-        videoListButton.autoAlignAxisToSuperviewAxis(.Horizontal)
         videoListButton.autoPinEdgeToSuperviewEdge(.Left)
+        videoListButton.autoPinEdgeToSuperviewEdge(.Top)
+        videoListButton.autoPinEdgeToSuperviewEdge(.Bottom)
+        videoListButton.autoMatchDimension(.Width, toDimension: .Width, ofView: videoSubContainer, withMultiplier: 0.5)
         
-        commentListButton.autoSetDimensionsToSize(CGSize(width: 20, height: 20))
-        commentListButton.autoAlignAxisToSuperviewAxis(.Horizontal)
+        commentListButton.autoPinEdgeToSuperviewEdge(.Top)
         commentListButton.autoPinEdgeToSuperviewEdge(.Right)
-        
+        commentListButton.autoPinEdgeToSuperviewEdge(.Bottom)
+        commentListButton.autoPinEdge(.Left, toEdge: .Right, ofView: videoListButton)
     }
     
     func setupVideoPlayer() {
         // Use below notifications to detect when user entered or exited full-screen mode
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "willEnterFullScreen", name: MPMoviePlayerWillEnterFullscreenNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "willExitFullScreen", name: MPMoviePlayerWillExitFullscreenNotification, object: nil)
-
         // Remove this notification so player doesn't dismiss automatically at the end of video
         NSNotificationCenter.defaultCenter().removeObserver(youtubePlayer, name: MPMoviePlayerPlaybackDidFinishNotification, object: youtubePlayer.moviePlayer)
-
+        // Add observer to handle changing video
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "changeVideo", name: XCDYouTubeVideoPlayerViewControllerDidReceiveVideoNotification, object: nil)
+        
         youtubePlayer.moviePlayer.cancelAllThumbnailImageRequests()
         youtubePlayer.moviePlayer.shouldAutoplay = true
+        youtubePlayer.moviePlayer.scalingMode = .AspectFill
 
         let closeButton = UIButton()
         closeButton.addTarget(self, action: Selector("exitViewController"), forControlEvents: .TouchUpInside)
@@ -107,11 +114,16 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         closeButton.setImage(closeImage, forState: .Normal)
         youtubePlayer.moviePlayer.view.addSubview(closeButton)
 
-        closeButton.autoPinEdgeToSuperviewEdge(.Top, withInset: 35)
+        closeButton.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
         closeButton.autoPinEdgeToSuperviewEdge(.Left)
     }
     
     // Register as an observer of the movieplayer contentURL to automatically start playing the next video
+    func changeVideo() {
+        Async.main {
+            self.youtubePlayer.moviePlayer.prepareToPlay()
+        }
+    }
     
     func playVideo(videoId: String) {
         youtubePlayer.videoIdentifier = videoId
@@ -136,11 +148,14 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.videoListTableView.delegate = self
         self.videoListTableView.dataSource = self
         self.videoListTableView.registerClass(VideoListTableViewCell.self, forCellReuseIdentifier: "Cell")
+        self.videoListTableView.separatorStyle = .None
+        self.videoListTableView.backgroundColor = videoSubColor
         
         let videoListHeader:UIView = UIView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.width,120))
-        videoListHeader.backgroundColor = UIColor.whiteColor()
+        videoListHeader.backgroundColor = videoTopColor
         
         videoListHeaderTitle.text = ""
+        videoListHeaderTitle.textColor = UIColor.whiteColor()
         videoListHeaderTitle.lineBreakMode = .ByTruncatingTail
         videoListHeaderTitle.font = UIFont.boldSystemFontOfSize(15)
         videoListHeaderTitle.textAlignment = .Left
@@ -149,7 +164,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         
         videoListHeader.addSubview(videoListHeaderTitle)
         
-        videoListHeaderTitle.autoPinEdgeToSuperviewEdge(.Top)
+        videoListHeaderTitle.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
         videoListHeaderTitle.autoSetDimension(.Width, toSize: UIScreen.mainScreen().bounds.width*0.9, relation: .LessThanOrEqual)
         videoListHeaderTitle.autoAlignAxisToSuperviewMarginAxis(.Vertical)
         
@@ -318,9 +333,15 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         
     }
     
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if tableView == self.videoListTableView {
             print(indexPath.row)
+            if let selectedVideo:Video = self.videoList[indexPath.row] as Video {
+                self.youtubePlayer.moviePlayer.stop()
+                self.youtubePlayer.videoIdentifier = selectedVideo.id
+                self.playingVideoId = selectedVideo.id
+                self.videoListHeaderTitle.text = "正在播放： \(selectedVideo.name)"
+            }
         }
     }
     

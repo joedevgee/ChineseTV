@@ -127,7 +127,6 @@ class MainTableViewController: PFQueryTableViewController {
             
         } else if segue.identifier == "playVideo" {
             UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
-            self.navigationItem.title = "主页"
             let destVC = segue.destinationViewController as! PlayListDetailViewController
             if let listId:String = objectAtIndexPath(sender as? NSIndexPath)!["listID"] as? String {
                 Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=\(1)&playlistId=\(listId)&key=\(googleApiKey)")
@@ -135,7 +134,6 @@ class MainTableViewController: PFQueryTableViewController {
                         if let videoId:String = response.result.value!["items"]!![0]["snippet"]!!["resourceId"]!!["videoId"] as? String {
                             Async.main {
                                 destVC.playVideo(videoId)
-                                print(videoId)
                             }.background {
                                 destVC.requestPlayList(listId)
                             }
