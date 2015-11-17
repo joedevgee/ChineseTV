@@ -12,9 +12,9 @@ import XCDYouTubeKit
 import Alamofire
 import Async
 
-class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, GIDSignInUIDelegate {
     
-    var playingVideoId:String?
+    var currentListId:String?
     
     var videoList: [Video] = []
     var commentList: [Comment] = []
@@ -25,7 +25,9 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     var videoSubContainer:UIView = UIView.newAutoLayoutView()
     
     var videoListButton:UIButton = UIButton.newAutoLayoutView()
+    var videoButtonUnderline:UIView = UIView.newAutoLayoutView()
     var commentListButton:UIButton = UIButton.newAutoLayoutView()
+    var commentButtonUnderline:UIView = UIView.newAutoLayoutView()
     
     var videoListTableView:UITableView = UITableView.newAutoLayoutView()
     var videoListHeaderTitle:UILabel = UILabel.newAutoLayoutView()
@@ -38,6 +40,10 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.setupVideoList()
         self.setupCommentList()
         
+        // To enable google sign in
+        GIDSignIn.sharedInstance().uiDelegate = self
+        GIDSignIn.sharedInstance().signInSilently()
+        
         // add gesture to swipe back
         let swipeRecognizer: UISwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "exitViewController")
         swipeRecognizer.direction = .Right
@@ -46,7 +52,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     
     func setupTopContainer() {
         
-        topContainer.backgroundColor = UIColor.whiteColor()
+        topContainer.backgroundColor = UIColor.clearColor()
         self.view.addSubview(topContainer)
         topContainer.autoPinToTopLayoutGuideOfViewController(self, withInset: 0)
         topContainer.autoPinEdgeToSuperviewEdge(.Left)
@@ -73,11 +79,17 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         videoListButton.titleLabel?.textAlignment = .Center
         videoListButton.addTarget(self, action: "showVideoList", forControlEvents: .TouchUpInside)
         
+        videoButtonUnderline.backgroundColor = UIColor.whiteColor()
+        videoButtonUnderline.hidden = false
+        
         commentListButton.backgroundColor = UIColor.clearColor()
         commentListButton.setTitle("剧透聊天", forState: .Normal)
         commentListButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         commentListButton.titleLabel?.textAlignment = .Center
         commentListButton.addTarget(self, action: "showCommentList", forControlEvents: .TouchUpInside)
+        
+        commentButtonUnderline.backgroundColor = UIColor.whiteColor()
+        commentButtonUnderline.hidden = true
         
         videoSubContainer.addSubview(videoListButton)
         videoSubContainer.addSubview(commentListButton)
@@ -91,6 +103,19 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         commentListButton.autoPinEdgeToSuperviewEdge(.Right)
         commentListButton.autoPinEdgeToSuperviewEdge(.Bottom)
         commentListButton.autoPinEdge(.Left, toEdge: .Right, ofView: videoListButton)
+        
+        videoListButton.addSubview(videoButtonUnderline)
+        commentListButton.addSubview(commentButtonUnderline)
+        
+        videoButtonUnderline.autoSetDimension(.Height, toSize: 2)
+        videoButtonUnderline.autoPinEdgeToSuperviewEdge(.Bottom)
+        videoButtonUnderline.autoPinEdgeToSuperviewEdge(.Leading)
+        videoButtonUnderline.autoPinEdgeToSuperviewEdge(.Trailing)
+        
+        commentButtonUnderline.autoSetDimension(.Height, toSize: 2)
+        commentButtonUnderline.autoPinEdgeToSuperviewEdge(.Leading)
+        commentButtonUnderline.autoPinEdgeToSuperviewEdge(.Trailing)
+        commentButtonUnderline.autoPinEdgeToSuperviewEdge(.Bottom)
     }
     
     func setupVideoPlayer() {
@@ -100,8 +125,9 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         // Remove this notification so player doesn't dismiss automatically at the end of video
         NSNotificationCenter.defaultCenter().removeObserver(youtubePlayer, name: MPMoviePlayerPlaybackDidFinishNotification, object: youtubePlayer.moviePlayer)
         // Add observer to handle changing video
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "changeVideo", name: XCDYouTubeVideoPlayerViewControllerDidReceiveVideoNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("changeVideo:"), name: XCDYouTubeVideoPlayerViewControllerDidReceiveVideoNotification, object: nil)
         
+        youtubePlayer.presentInView(self.videoContainer)
         youtubePlayer.moviePlayer.cancelAllThumbnailImageRequests()
         youtubePlayer.moviePlayer.shouldAutoplay = true
         youtubePlayer.moviePlayer.scalingMode = .AspectFill
@@ -119,16 +145,23 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     // Register as an observer of the movieplayer contentURL to automatically start playing the next video
-    func changeVideo() {
+    func changeVideo(notification: NSNotification) {
         Async.main {
             self.youtubePlayer.moviePlayer.prepareToPlay()
+            self.youtubePlayer.moviePlayer.play()
+            }.background {
+                if self.currentListId != nil && self.videoList.count == 0 {
+                    self.requestPlayList(self.currentListId!)
+                }
+            }.main {
+                if let currentID:String = self.youtubePlayer.videoIdentifier {
+                    for video in self.videoList {
+                        if video.id == currentID {
+                            self.videoListHeaderTitle.text = "正在播放: \(video.name)"
+                        }
+                    }
+                }
         }
-    }
-    
-    func playVideo(videoId: String) {
-        youtubePlayer.videoIdentifier = videoId
-        youtubePlayer.presentInView(videoContainer)
-        self.playingVideoId = videoId
     }
     
     func willEnterFullScreen() {
@@ -149,7 +182,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.videoListTableView.dataSource = self
         self.videoListTableView.registerClass(VideoListTableViewCell.self, forCellReuseIdentifier: "Cell")
         self.videoListTableView.separatorStyle = .None
-        self.videoListTableView.backgroundColor = videoSubColor
+        self.videoListTableView.backgroundColor = videoTopColor
         
         let videoListHeader:UIView = UIView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.width,120))
         videoListHeader.backgroundColor = videoTopColor
@@ -180,6 +213,8 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     
     func showVideoList() {
         self.videoListTableView.hidden = false
+        self.videoButtonUnderline.hidden = false
+        self.commentButtonUnderline.hidden = true
         self.commentListTableView.hidden = true
     }
     
@@ -187,9 +222,24 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.commentListTableView.delegate = self
         self.commentListTableView.dataSource = self
         self.commentListTableView.registerClass(VideoDetailCommentCell.self, forCellReuseIdentifier: "Cell")
+        self.commentListTableView.separatorStyle = .None
+        self.commentListTableView.backgroundColor = videoTopColor
         
+        let commentListHeader:UIView = UIView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.width,120))
+        commentListHeader.backgroundColor = videoTopColor
+        
+        commentListTableView.tableHeaderView = commentListHeader
         self.view.addSubview(commentListTableView)
         commentListTableView.hidden = true
+        
+        // Check if user signedin through google and display accordingly
+        if let googleUser = GIDSignIn.sharedInstance().currentUser {
+            // User signed in successfully though Google
+            // Layout a comment text view to let user comment on the view
+        } else {
+            // The user need to sign in through google to enable comment
+            // Layout a sign in button to let user sign through google
+        }
         
         commentListTableView.estimatedRowHeight = 50
         commentListTableView.autoPinEdge(.Top, toEdge: .Bottom, ofView: topContainer)
@@ -200,7 +250,9 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func showCommentList() {
-        self.getVideoCommentsData(self.playingVideoId!)
+        self.getVideoCommentsData(self.youtubePlayer.videoIdentifier!)
+        self.commentButtonUnderline.hidden = false
+        self.videoButtonUnderline.hidden = true
         self.videoListTableView.hidden = true
         self.commentListTableView.hidden = false
     }
@@ -233,8 +285,10 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                                 if let videoTitle: String = snippetDict["title"] as? String {
                                     if let imageUrl: String = thumbnailsDict["default"]!["url"] as? String {
                                         let video = Video(id: videoId, name: videoTitle, thumbnailUrl: imageUrl)
-                                        if video.id == self.playingVideoId {
-                                            self.videoListHeaderTitle.text = "正在播放： \(video.name)"
+                                        if let currentID:String = self.youtubePlayer.videoIdentifier {
+                                            if currentID == video.id {
+                                                self.videoListHeaderTitle.text = "正在播放: \(video.name)"
+                                            }
                                         }
                                         self.videoList.append(video)
                                     }
@@ -251,7 +305,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     // Use this functions to retrieve comment about the playing video
     // Use this function to get comment about video
     func getVideoCommentsData(videoId: String) {
-        Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/commentThreads?key=\(googleApiKey)&textFormat=plainText&part=snippet&videoId=\(videoId)&maxResults=20")
+        Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/commentThreads?key=\(googleApiKey)&textFormat=plainText&part=snippet&videoId=\(videoId)")
             .responseJSON { response in
                 if let JSON = response.result.value {
                     if let items: AnyObject = JSON["items"] as? Array<AnyObject> {
@@ -266,6 +320,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     }
     // process the comments data from JSON
     func getCommentsInfo(items: Array<AnyObject>) {
+        self.commentList.removeAll(keepCapacity: true)
         for item in items {
             if let itemDict: Dictionary<NSObject, AnyObject> = item as? Dictionary<NSObject, AnyObject> {
                 if let topSnippet: Dictionary<NSObject, AnyObject> = itemDict["snippet"] as? Dictionary<NSObject, AnyObject> {
@@ -339,8 +394,6 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
             if let selectedVideo:Video = self.videoList[indexPath.row] as Video {
                 self.youtubePlayer.moviePlayer.stop()
                 self.youtubePlayer.videoIdentifier = selectedVideo.id
-                self.playingVideoId = selectedVideo.id
-                self.videoListHeaderTitle.text = "正在播放： \(selectedVideo.name)"
             }
         }
     }

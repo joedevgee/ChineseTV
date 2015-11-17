@@ -4,3 +4,4 @@
 
 #import "RESideMenu.h"
 #import <TLYShyNavBar/TLYShyNavBarManager.h>
+#import <Google/SignIn.h>

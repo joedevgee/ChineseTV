@@ -129,14 +129,11 @@ class MainTableViewController: PFQueryTableViewController {
             UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
             let destVC = segue.destinationViewController as! PlayListDetailViewController
             if let listId:String = objectAtIndexPath(sender as? NSIndexPath)!["listID"] as? String {
+                destVC.currentListId = listId
                 Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=\(1)&playlistId=\(listId)&key=\(googleApiKey)")
                     .responseJSON { response in
                         if let videoId:String = response.result.value!["items"]!![0]["snippet"]!!["resourceId"]!!["videoId"] as? String {
-                            Async.main {
-                                destVC.playVideo(videoId)
-                            }.background {
-                                destVC.requestPlayList(listId)
-                            }
+                                destVC.youtubePlayer.videoIdentifier = videoId
                         }
                 }
             }

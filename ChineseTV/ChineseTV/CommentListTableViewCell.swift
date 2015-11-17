@@ -28,6 +28,8 @@ class VideoDetailCommentCell: UITableViewCell {
     
     func setupViews() {
         
+        contentView.backgroundColor = videoSubColor
+        
         avatarView.autoSetDimensionsToSize(CGSize(width: 25, height: 25))
         avatarView.layer.borderWidth = 0.1
         avatarView.layer.masksToBounds = true
@@ -37,12 +39,13 @@ class VideoDetailCommentCell: UITableViewCell {
         
         userNameLabel.text = "user"
         userNameLabel.lineBreakMode = .ByTruncatingTail
+        userNameLabel.textColor = UIColor.whiteColor()
         userNameLabel.font = UIFont.boldSystemFontOfSize(13)
         userNameLabel.textAlignment = .Left
         userNameLabel.numberOfLines = 1
         
         commentLabel.text = "Hi, I am a test comment label, am i getting to the second line"
-        commentLabel.textColor = UIColor.blackColor()
+        commentLabel.textColor = UIColor.whiteColor()
         commentLabel.font = UIFont.systemFontOfSize(12)
         commentLabel.textAlignment = .Left
         commentLabel.numberOfLines = 0

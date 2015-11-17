@@ -38,6 +38,7 @@
 		0D8E9E2A1BF983EE00C80A66 /* VideoListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8E9E291BF983EE00C80A66 /* VideoListTableViewCell.swift */; };
 		0D8E9E2C1BF9840300C80A66 /* CommentListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8E9E2B1BF9840300C80A66 /* CommentListTableViewCell.swift */; };
 		0DC61B481BF183FF009DD17F /* AddPlayListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */; };
+		0DEB093A1BFAE7B6000D3E89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DEB09391BFAE7B6000D3E89 /* GoogleService-Info.plist */; };
 		6E42DB45D3E2A1B4FC7620DC /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30AFB0F3D2930987AD43A4EA /* Pods.framework */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +80,7 @@
 		0D8E9E291BF983EE00C80A66 /* VideoListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoListTableViewCell.swift; sourceTree = "<group>"; };
 		0D8E9E2B1BF9840300C80A66 /* CommentListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentListTableViewCell.swift; sourceTree = "<group>"; };
 		0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddPlayListViewController.swift; sourceTree = "<group>"; };
+		0DEB09391BFAE7B6000D3E89 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		30AFB0F3D2930987AD43A4EA /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B79A4D41E39DD9D8012284F6 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		B86FE6B46A78351A1352DB17 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				0D10A4EC1BF14681006C83FA /* ViewControllers */,
 				0D10A4EA1BF14669006C83FA /* Storyboard */,
 				0D58A5F81BF144E700BD1C7E /* Assets.xcassets */,
+				0DEB09391BFAE7B6000D3E89 /* GoogleService-Info.plist */,
 				0D58A5FD1BF144E700BD1C7E /* Info.plist */,
 				0D10A4FA1BF14E0D006C83FA /* ChineseTV-Bridging-Header.h */,
 			);
@@ -312,6 +315,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D58A5FC1BF144E700BD1C7E /* LaunchScreen.storyboard in Resources */,
+				0DEB093A1BFAE7B6000D3E89 /* GoogleService-Info.plist in Resources */,
 				0D58A5F91BF144E700BD1C7E /* Assets.xcassets in Resources */,
 				0D58A5F71BF144E700BD1C7E /* Main.storyboard in Resources */,
 			);
@@ -500,6 +504,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ChineseTV/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.8pon.ChineseTV;
@@ -515,6 +520,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ChineseTV/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.8pon.ChineseTV;
