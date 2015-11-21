@@ -57,7 +57,6 @@ class MainTableViewCell: PFTableViewCell {
         mainContainer.backgroundColor = UIColor.whiteColor()
         mainContainer.layer.cornerRadius = 5
         contentView.backgroundColor = dividerColor
-        contentView.layer.borderColor = dividerColor.CGColor
         
         contentView.addSubview(mainContainer)
         mainContainer.addSubview(topView)

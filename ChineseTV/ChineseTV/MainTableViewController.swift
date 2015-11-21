@@ -47,11 +47,14 @@ class MainTableViewController: PFQueryTableViewController {
         super.viewDidLoad()
         
         self.setupNavBar()
-        self.view.backgroundColor = dividerColor
         tableView.backgroundColor = dividerColor
         tableView.separatorStyle = .None
-        tableView.separatorColor = dividerColor
         tableView.allowsSelection = true
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.hidden = false
     }
     
     // Tableviewcontroller delegate
@@ -130,6 +133,8 @@ class MainTableViewController: PFQueryTableViewController {
                 let destVC = segue.destinationViewController as! PlayListTableViewController
                 destVC.requestPlayList(listId)
                 destVC.currentListId = listId
+                // hide tabbar
+                tabBarController?.tabBar.hidden = true
             }
         }
     }

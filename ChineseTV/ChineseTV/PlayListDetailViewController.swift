@@ -473,6 +473,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
             }
         }
         let formSheetController = MZFormSheetPresentationViewController(contentViewController: viewController)
+        MZFormSheetPresentationController.appearance().shouldApplyBackgroundBlurEffect = true
         formSheetController.allowDismissByPanningPresentedView = true
         formSheetController.presentationController?.contentViewSize = socialViewSize
         self.presentViewController(formSheetController, animated: true, completion: nil)

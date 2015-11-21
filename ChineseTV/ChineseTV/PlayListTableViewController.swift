@@ -22,9 +22,11 @@ class PlayListTableViewController: UITableViewController {
 
         // Uncomment the following line to preserve selection between presentations
          self.clearsSelectionOnViewWillAppear = true
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        // Add a navi right button to let people add playlist
+        let addImage = UIImage(named: "ic_playlist_add")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        let addButton = UIBarButtonItem(image: addImage, style: .Plain, target: self, action: "addPlaylist")
+        navigationItem.rightBarButtonItem = addButton
         
         tableView.separatorStyle = .None
     }

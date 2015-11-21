@@ -31,6 +31,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         // End of configuring navBar
         
+        // Configure the look of tabbar
+        let tabBar = UITabBar.appearance()
+        tabBar.tintColor = themeColor
+        tabBar.barTintColor = UIColor.whiteColor()
+        // End of tabbar configure
+        
         // Configure parse related items
         Parse.enableLocalDatastore()
         
