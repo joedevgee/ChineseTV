@@ -9,12 +9,17 @@
 import UIKit
 import Parse
 import Bolts
+import FBSDKCoreKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
+    struct ShareIdentity {
+        static let WeChatAppId: String = "wxaa9dddb0cb66f8b5"
+        static let QQAppId: String = "1104904597"
+    }
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -36,39 +41,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         // Set the status bar style
         UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent
         
+        // facebook app events
+        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
-        // To enable Google signin
-        // Initialize sign-in
-        var configureError: NSError?
-        GGLContext.sharedInstance().configureWithError(&configureError)
-        assert(configureError == nil, "Error configuring Google services: \(configureError)")
-        
-        GIDSignIn.sharedInstance().delegate = self
+        // Register for Chinese social media share
+        swizzle()
+        RSWeChat.register(ShareIdentity.WeChatAppId)
+        RSWeChat.register(ShareIdentity.QQAppId)
         
         return true
     }
     
-    // For google sign in delegate
-    func signIn(signIn: GIDSignIn!, didSignInForUser user: GIDGoogleUser!, withError error: NSError!) {
-        if error != nil {
-            print("Looks like we got a sign-in error: \(error)")
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+        if let share = ShareManager.getShare(scheme: url.scheme) {
+            return share.handleOpenURL(url)
         } else {
-            print("wow! our user signed in! \(user)")
+            return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
         }
-    }
-    func signIn(signIn: GIDSignIn!, didDisconnectWithUser user: GIDGoogleUser!, withError error: NSError!) {
-        if error != nil {
-            print("Looks like we got a sign-in error: \(error)")
-        } else {
-            print("wow! our user signed in! \(user)")
-        }
-    }
-    
-    func application(application: UIApplication,
-        openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-            return GIDSignIn.sharedInstance().handleURL(url,
-                sourceApplication: sourceApplication,
-                annotation: annotation)
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -87,12 +76,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        FBSDKAppEvents.activateApp()
     }
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    func swizzle() {
+        struct Static {
+            static var token: dispatch_once_t = 0
+        }
+        
+        dispatch_once(&Static.token) {
+            let originalSelector = Selector("openURL:")
+            let swizzledSelector = Selector("hook_openURL:")
+            
+            let originalMethod: IMP = UIApplication.instanceMethodForSelector(originalSelector)
+            let swizzledMethod = UIApplication.instanceMethodForSelector(swizzledSelector)
+            
+            class_replaceMethod(UIApplication.self, originalSelector, swizzledMethod, nil)
+            class_replaceMethod(UIApplication.self, swizzledSelector, originalMethod, nil)
+            
+        }
+    }
 
+}
+
+extension UIApplication {
+    func hook_openURL(url: NSURL) -> Bool {
+        print("hooking open url: \(url)")
+        return self.hook_openURL(url)
+    }
 }
 

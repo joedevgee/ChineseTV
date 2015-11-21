@@ -7,12 +7,16 @@
 //
 
 import UIKit
+import SDWebImage
 import PureLayout
 import XCDYouTubeKit
 import Alamofire
 import Async
+import FontAwesomeKit
+import FBSDKCoreKit
+import FBSDKLoginKit
 
-class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, GIDSignInUIDelegate {
+class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FBSDKLoginButtonDelegate, UITextViewDelegate {
     
     var currentListId:String?
     
@@ -32,6 +36,11 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     var videoListTableView:UITableView = UITableView.newAutoLayoutView()
     var videoListHeaderTitle:UILabel = UILabel.newAutoLayoutView()
     var commentListTableView:UITableView = UITableView.newAutoLayoutView()
+    var fbLoginButton:FBSDKLoginButton = FBSDKLoginButton.newAutoLayoutView()
+    var loginInfoLabel:UILabel = UILabel.newAutoLayoutView()
+    var fbProfileView:FBSDKProfilePictureView = FBSDKProfilePictureView.newAutoLayoutView()
+    var commentTextView:UITextView = UITextView.newAutoLayoutView()
+    var sendCommentButton:UIButton = UIButton.newAutoLayoutView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,16 +49,36 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.setupVideoList()
         self.setupCommentList()
         
-        // To enable google sign in
-        GIDSignIn.sharedInstance().uiDelegate = self
-        GIDSignIn.sharedInstance().signInSilently()
+        // show comment list first
+        self.showCommentList()
         
         // add gesture to swipe back
         let swipeRecognizer: UISwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "exitViewController")
         swipeRecognizer.direction = .Right
         view.addGestureRecognizer(swipeRecognizer)
+        
+        // Check if user logged in through facebook
+        FBSDKProfile.enableUpdatesOnAccessTokenChange(true)
+        if FBSDKAccessToken.currentAccessToken() != nil {
+            // Already signed in through facebook
+            self.fbProfileView.hidden = false
+            self.fbLoginButton.hidden = true
+            self.loginInfoLabel.hidden = true
+            self.commentTextView.hidden = false
+            self.sendCommentButton.hidden = false
+        } else {
+            self.fbProfileView.hidden = true
+            self.commentTextView.hidden = true
+            self.sendCommentButton.hidden = true
+            self.fbLoginButton.hidden = false
+            self.loginInfoLabel.hidden = false
+        }
+        // Observe for profile change
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "changeProfile", name: FBSDKProfileDidChangeNotification, object: nil)
+        
     }
     
+    // MARK: Setup the UI
     func setupTopContainer() {
         
         topContainer.backgroundColor = UIColor.clearColor()
@@ -80,7 +109,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         videoListButton.addTarget(self, action: "showVideoList", forControlEvents: .TouchUpInside)
         
         videoButtonUnderline.backgroundColor = UIColor.whiteColor()
-        videoButtonUnderline.hidden = false
+        videoButtonUnderline.hidden = true
         
         commentListButton.backgroundColor = UIColor.clearColor()
         commentListButton.setTitle("剧透聊天", forState: .Normal)
@@ -94,15 +123,15 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         videoSubContainer.addSubview(videoListButton)
         videoSubContainer.addSubview(commentListButton)
         
-        videoListButton.autoPinEdgeToSuperviewEdge(.Left)
-        videoListButton.autoPinEdgeToSuperviewEdge(.Top)
-        videoListButton.autoPinEdgeToSuperviewEdge(.Bottom)
-        videoListButton.autoMatchDimension(.Width, toDimension: .Width, ofView: videoSubContainer, withMultiplier: 0.5)
-        
+        commentListButton.autoPinEdgeToSuperviewEdge(.Left)
         commentListButton.autoPinEdgeToSuperviewEdge(.Top)
-        commentListButton.autoPinEdgeToSuperviewEdge(.Right)
         commentListButton.autoPinEdgeToSuperviewEdge(.Bottom)
-        commentListButton.autoPinEdge(.Left, toEdge: .Right, ofView: videoListButton)
+        commentListButton.autoMatchDimension(.Width, toDimension: .Width, ofView: videoSubContainer, withMultiplier: 0.5)
+        
+        videoListButton.autoPinEdgeToSuperviewEdge(.Top)
+        videoListButton.autoPinEdgeToSuperviewEdge(.Right)
+        videoListButton.autoPinEdgeToSuperviewEdge(.Bottom)
+        videoListButton.autoPinEdge(.Left, toEdge: .Right, ofView: commentListButton)
         
         videoListButton.addSubview(videoButtonUnderline)
         commentListButton.addSubview(commentButtonUnderline)
@@ -131,7 +160,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         youtubePlayer.moviePlayer.cancelAllThumbnailImageRequests()
         youtubePlayer.moviePlayer.shouldAutoplay = true
         youtubePlayer.moviePlayer.scalingMode = .AspectFill
-
+        
         let closeButton = UIButton()
         closeButton.addTarget(self, action: Selector("exitViewController"), forControlEvents: .TouchUpInside)
         let closeImage = UIImage(named:"ic_clear")?.imageWithRenderingMode(
@@ -139,28 +168,182 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         closeButton.tintColor = UIColor.whiteColor()
         closeButton.setImage(closeImage, forState: .Normal)
         youtubePlayer.moviePlayer.view.addSubview(closeButton)
-
+        
         closeButton.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
         closeButton.autoPinEdgeToSuperviewEdge(.Left)
     }
     
+    func setupVideoList() {
+        self.videoListTableView.delegate = self
+        self.videoListTableView.dataSource = self
+        self.videoListTableView.registerClass(VideoListTableViewCell.self, forCellReuseIdentifier: "Cell")
+        self.videoListTableView.separatorStyle = .None
+        self.videoListTableView.backgroundColor = videoSubColor
+        
+        let videoListHeader:UIView = UIView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.width,120))
+        videoListHeader.backgroundColor = videoTopColor
+        
+        videoListHeaderTitle.text = ""
+        videoListHeaderTitle.textColor = UIColor.whiteColor()
+        videoListHeaderTitle.lineBreakMode = .ByTruncatingTail
+        videoListHeaderTitle.font = UIFont.boldSystemFontOfSize(15)
+        videoListHeaderTitle.textAlignment = .Left
+        videoListHeaderTitle.numberOfLines = 3
+        videoListHeaderTitle.sizeToFit()
+        
+        let shareButton:UIButton = UIButton.newAutoLayoutView()
+        shareButton.setTitle("分享", forState: .Normal)
+        shareButton.backgroundColor = UIColor.clearColor()
+        shareButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        shareButton.addTarget(self, action: "showSocialPopup", forControlEvents: .TouchUpInside)
+        
+        videoListHeader.addSubview(videoListHeaderTitle)
+        videoListHeader.addSubview(shareButton)
+        
+        videoListHeaderTitle.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
+        videoListHeaderTitle.autoSetDimension(.Width, toSize: UIScreen.mainScreen().bounds.width*0.9, relation: .LessThanOrEqual)
+        videoListHeaderTitle.autoAlignAxisToSuperviewMarginAxis(.Vertical)
+        
+        shareButton.autoPinEdgeToSuperviewEdge(.Right, withInset: 10, relation: .LessThanOrEqual)
+        shareButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5, relation: .LessThanOrEqual)
+        
+        videoListTableView.tableHeaderView = videoListHeader
+        self.view.addSubview(self.videoListTableView)
+        videoListTableView.hidden = true
+        
+        videoListTableView.autoPinEdge(.Top, toEdge: .Bottom, ofView: topContainer)
+        videoListTableView.autoPinEdgeToSuperviewEdge(.Left)
+        videoListTableView.autoPinEdgeToSuperviewEdge(.Right)
+        videoListTableView.autoPinEdgeToSuperviewEdge(.Bottom)
+    }
+    
+    func showVideoList() {
+        self.videoListTableView.hidden = false
+        self.videoButtonUnderline.hidden = false
+        self.commentButtonUnderline.hidden = true
+        self.commentListTableView.hidden = true
+        for video in self.videoList {
+            if video.id == self.youtubePlayer.videoIdentifier {
+                self.videoListHeaderTitle.text = "正在播放： " + video.name
+            }
+        }
+    }
+    
+    func setupCommentList() {
+        self.commentListTableView.delegate = self
+        self.commentListTableView.dataSource = self
+        self.commentListTableView.registerClass(VideoDetailCommentCell.self, forCellReuseIdentifier: "Cell")
+        self.commentListTableView.separatorStyle = .None
+        self.commentListTableView.backgroundColor = videoTopColor
+        
+        // add gesture to dismiss keyboard
+        let tapDismiss:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        commentListTableView.addGestureRecognizer(tapDismiss)
+        
+        let commentListHeader:UIView = UIView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.width,120))
+        commentListHeader.backgroundColor = videoTopColor
+        
+        commentListTableView.tableHeaderView = commentListHeader
+        self.view.addSubview(commentListTableView)
+        commentListTableView.hidden = false
+        
+        commentTextView.delegate = self
+        commentTextView.backgroundColor = UIColor.whiteColor()
+        commentTextView.layer.cornerRadius = 5
+        fbProfileView.layer.borderWidth = 0.1
+        fbProfileView.layer.masksToBounds = true
+        fbProfileView.layer.cornerRadius = 15
+        fbProfileView.clipsToBounds = true
+        
+        sendCommentButton.setTitle("发送", forState: .Normal)
+        sendCommentButton.setTitleColor(videoTopColor, forState: .Disabled)
+        sendCommentButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        sendCommentButton.sizeToFit()
+        
+        let shareButton:UIButton = UIButton.newAutoLayoutView()
+        shareButton.setTitle("分享", forState: .Normal)
+        shareButton.backgroundColor = UIColor.clearColor()
+        shareButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        shareButton.addTarget(self, action: "showSocialPopup", forControlEvents: .TouchUpInside)
+        
+        fbLoginButton.delegate = self
+        fbLoginButton.readPermissions = ["public_profile"]
+        loginInfoLabel.text = "登录后评论"
+        loginInfoLabel.textColor = UIColor.whiteColor()
+        loginInfoLabel.textAlignment = .Center
+        loginInfoLabel.font = UIFont.boldSystemFontOfSize(15)
+        
+        commentListHeader.addSubview(fbProfileView)
+        commentListHeader.addSubview(fbLoginButton)
+        commentListHeader.addSubview(loginInfoLabel)
+        commentListHeader.addSubview(commentTextView)
+        commentListHeader.addSubview(sendCommentButton)
+        commentListHeader.addSubview(shareButton)
+        
+        fbProfileView.autoSetDimensionsToSize(CGSize(width: 30, height: 30))
+        fbProfileView.autoPinEdgeToSuperviewEdge(.Top, withInset: 8, relation: .LessThanOrEqual)
+        fbProfileView.autoPinEdgeToSuperviewEdge(.Leading, withInset: 5, relation: .LessThanOrEqual)
+        
+        shareButton.autoPinEdgeToSuperviewEdge(.Right, withInset: 10, relation: .LessThanOrEqual)
+        shareButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5, relation: .LessThanOrEqual)
+        
+        sendCommentButton.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
+        sendCommentButton.autoAlignAxis(.Vertical, toSameAxisOfView: shareButton)
+        
+        loginInfoLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 20, relation: .GreaterThanOrEqual)
+        loginInfoLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 20, relation: .GreaterThanOrEqual)
+        
+        fbLoginButton.autoAlignAxis(.Horizontal, toSameAxisOfView: loginInfoLabel)
+        fbLoginButton.autoPinEdge(.Left, toEdge: .Right, ofView: loginInfoLabel, withOffset: 10, relation: .GreaterThanOrEqual)
+        
+        commentTextView.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
+        commentTextView.autoPinEdge(.Left, toEdge: .Right, ofView: fbProfileView, withOffset: 5)
+        commentTextView.autoPinEdge(.Right, toEdge: .Left, ofView: sendCommentButton, withOffset: -5)
+        commentTextView.autoPinEdge(.Bottom, toEdge: .Top, ofView: shareButton, withOffset: -2)
+        
+        commentListTableView.estimatedRowHeight = 50
+        commentListTableView.autoPinEdge(.Top, toEdge: .Bottom, ofView: topContainer)
+        commentListTableView.autoPinEdgeToSuperviewEdge(.Left)
+        commentListTableView.autoPinEdgeToSuperviewEdge(.Right)
+        commentListTableView.autoPinEdgeToSuperviewEdge(.Bottom)
+        
+    }
+    
+    //MARK: facebook login button delegate methods
+    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
+        if result.grantedPermissions.contains("public_profile") {
+            print("User granted permission to app")
+            self.fbProfileView.hidden = false
+            self.commentTextView.hidden = false
+            self.sendCommentButton.hidden = false
+            self.loginInfoLabel.hidden = true
+            self.fbLoginButton.hidden = true
+        }
+    }
+    func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
+        print("User logged out of facebook")
+    }
+    
+    // Update profile picture
+    func changeProfile() {
+        self.fbProfileView.profileID = FBSDKAccessToken.currentAccessToken().userID
+    }
+    
+    func showCommentList() {
+        self.commentButtonUnderline.hidden = false
+        self.videoButtonUnderline.hidden = true
+        self.videoListTableView.hidden = true
+        self.commentListTableView.hidden = false
+    }
+    
+    // MARK: XCDYouTubeKit delegate methods
     // Register as an observer of the movieplayer contentURL to automatically start playing the next video
     func changeVideo(notification: NSNotification) {
         Async.main {
             self.youtubePlayer.moviePlayer.prepareToPlay()
             self.youtubePlayer.moviePlayer.play()
             }.background {
-                if self.currentListId != nil && self.videoList.count == 0 {
-                    self.requestPlayList(self.currentListId!)
-                }
-            }.main {
-                if let currentID:String = self.youtubePlayer.videoIdentifier {
-                    for video in self.videoList {
-                        if video.id == currentID {
-                            self.videoListHeaderTitle.text = "正在播放: \(video.name)"
-                        }
-                    }
-                }
+                self.getVideoCommentsData(self.youtubePlayer.videoIdentifier!)
         }
     }
     
@@ -177,131 +360,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: .Slide)
     }
     
-    func setupVideoList() {
-        self.videoListTableView.delegate = self
-        self.videoListTableView.dataSource = self
-        self.videoListTableView.registerClass(VideoListTableViewCell.self, forCellReuseIdentifier: "Cell")
-        self.videoListTableView.separatorStyle = .None
-        self.videoListTableView.backgroundColor = videoTopColor
-        
-        let videoListHeader:UIView = UIView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.width,120))
-        videoListHeader.backgroundColor = videoTopColor
-        
-        videoListHeaderTitle.text = ""
-        videoListHeaderTitle.textColor = UIColor.whiteColor()
-        videoListHeaderTitle.lineBreakMode = .ByTruncatingTail
-        videoListHeaderTitle.font = UIFont.boldSystemFontOfSize(15)
-        videoListHeaderTitle.textAlignment = .Left
-        videoListHeaderTitle.numberOfLines = 3
-        videoListHeaderTitle.sizeToFit()
-        
-        videoListHeader.addSubview(videoListHeaderTitle)
-        
-        videoListHeaderTitle.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
-        videoListHeaderTitle.autoSetDimension(.Width, toSize: UIScreen.mainScreen().bounds.width*0.9, relation: .LessThanOrEqual)
-        videoListHeaderTitle.autoAlignAxisToSuperviewMarginAxis(.Vertical)
-        
-        videoListTableView.tableHeaderView = videoListHeader
-        self.view.addSubview(self.videoListTableView)
-        
-        videoListTableView.autoPinEdge(.Top, toEdge: .Bottom, ofView: topContainer)
-        videoListTableView.autoPinEdgeToSuperviewEdge(.Left)
-        videoListTableView.autoPinEdgeToSuperviewEdge(.Right)
-        videoListTableView.autoPinEdgeToSuperviewEdge(.Bottom)
-        
-    }
-    
-    func showVideoList() {
-        self.videoListTableView.hidden = false
-        self.videoButtonUnderline.hidden = false
-        self.commentButtonUnderline.hidden = true
-        self.commentListTableView.hidden = true
-    }
-    
-    func setupCommentList() {
-        self.commentListTableView.delegate = self
-        self.commentListTableView.dataSource = self
-        self.commentListTableView.registerClass(VideoDetailCommentCell.self, forCellReuseIdentifier: "Cell")
-        self.commentListTableView.separatorStyle = .None
-        self.commentListTableView.backgroundColor = videoTopColor
-        
-        let commentListHeader:UIView = UIView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.width,120))
-        commentListHeader.backgroundColor = videoTopColor
-        
-        commentListTableView.tableHeaderView = commentListHeader
-        self.view.addSubview(commentListTableView)
-        commentListTableView.hidden = true
-        
-        // Check if user signedin through google and display accordingly
-        if let googleUser = GIDSignIn.sharedInstance().currentUser {
-            // User signed in successfully though Google
-            // Layout a comment text view to let user comment on the view
-        } else {
-            // The user need to sign in through google to enable comment
-            // Layout a sign in button to let user sign through google
-        }
-        
-        commentListTableView.estimatedRowHeight = 50
-        commentListTableView.autoPinEdge(.Top, toEdge: .Bottom, ofView: topContainer)
-        commentListTableView.autoPinEdgeToSuperviewEdge(.Left)
-        commentListTableView.autoPinEdgeToSuperviewEdge(.Right)
-        commentListTableView.autoPinEdgeToSuperviewEdge(.Bottom)
-        
-    }
-    
-    func showCommentList() {
-        self.getVideoCommentsData(self.youtubePlayer.videoIdentifier!)
-        self.commentButtonUnderline.hidden = false
-        self.videoButtonUnderline.hidden = true
-        self.videoListTableView.hidden = true
-        self.commentListTableView.hidden = false
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    // Use this function to retrieve videos in playlist
-    func requestPlayList(listId: String) {
-        let resultNumber:Int = 50
-        Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=\(resultNumber)&playlistId=\(listId)&key=\(googleApiKey)")
-            .responseJSON { response in
-                if let JSON = response.result.value {
-                    if let items = JSON["items"] as? Array<AnyObject> {
-                        self.processVideoList(items)
-                    }
-                }
-        }
-    }
-    
-    func processVideoList(items: Array<AnyObject>) {
-        for video in items {
-            if let videoDict:Dictionary<NSObject, AnyObject> = video as? Dictionary<NSObject, AnyObject> {
-                if let snippetDict:Dictionary<NSObject, AnyObject> = videoDict["snippet"] as? Dictionary<NSObject, AnyObject> {
-                    if let resourceDict:Dictionary<NSObject, AnyObject> = snippetDict["resourceId"] as? Dictionary<NSObject, AnyObject> {
-                        if let thumbnailsDict:Dictionary<NSObject, AnyObject> = snippetDict["thumbnails"] as? Dictionary<NSObject, AnyObject> {
-                            if let videoId:String = resourceDict["videoId"] as? String {
-                                if let videoTitle: String = snippetDict["title"] as? String {
-                                    if let imageUrl: String = thumbnailsDict["default"]!["url"] as? String {
-                                        let video = Video(id: videoId, name: videoTitle, thumbnailUrl: imageUrl)
-                                        if let currentID:String = self.youtubePlayer.videoIdentifier {
-                                            if currentID == video.id {
-                                                self.videoListHeaderTitle.text = "正在播放: \(video.name)"
-                                            }
-                                        }
-                                        self.videoList.append(video)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        self.videoListTableView.reloadData()
-    }
-    
+    // MARK: Network request methods
     // Use this functions to retrieve comment about the playing video
     // Use this function to get comment about video
     func getVideoCommentsData(videoId: String) {
@@ -338,7 +397,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     // End of processing comment JSON data
     // End of getting video comments
     
-    // Tableview data source
+    // MARK: Tableview data source
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView == self.videoListTableView {
@@ -399,8 +458,31 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func exitViewController() {
-        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: .Slide)
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Slide)
         dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    // MARK: Social share methods and like tv shows
+    
+    func showSocialPopup() {
+        let viewController = self.storyboard!.instantiateViewControllerWithIdentifier("SharePopup") as! SocialShareViewController
+        for video in self.videoList {
+            if video.id == self.youtubePlayer.videoIdentifier {
+                viewController.loadVideoInfo(video)
+                viewController.shareVideo = video
+            }
+        }
+        let formSheetController = MZFormSheetPresentationViewController(contentViewController: viewController)
+        formSheetController.allowDismissByPanningPresentedView = true
+        formSheetController.presentationController?.contentViewSize = socialViewSize
+        self.presentViewController(formSheetController, animated: true, completion: nil)
+    }
+    
+
+    
+    // Function to dismiss keyboard
+    func dismissKeyboard() {
+        view.endEditing(true)
     }
     
 }

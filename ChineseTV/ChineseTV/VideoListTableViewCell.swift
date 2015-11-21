@@ -32,7 +32,7 @@ class VideoListTableViewCell: UITableViewCell {
     
     func setupViews() {
         
-        thumbnailImageView.backgroundColor = UIColor.lightGrayColor()
+        thumbnailImageView.backgroundColor = UIColor.clearColor()
         thumbnailImageView.layer.cornerRadius = 5
         thumbnailImageView.contentMode = .ScaleAspectFill
         thumbnailImageView.clipsToBounds = true
@@ -74,10 +74,12 @@ class Video {
     var id: String
     var name: String
     var thumbnailUrl: String
+    var shareImageUrl: String
     
-    init(id: String, name: String, thumbnailUrl: String) {
+    init(id: String, name: String, thumbnailUrl: String, shareImageUrl: String) {
         self.id = id
         self.name = name
         self.thumbnailUrl = thumbnailUrl
+        self.shareImageUrl = shareImageUrl
     }
 }

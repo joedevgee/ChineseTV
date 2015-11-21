@@ -24,6 +24,9 @@
                                     <animations/>
                                 </tableViewCellContentView>
                                 <animations/>
+                                <connections>
+                                    <segue destination="7Lv-GJ-uWM" kind="show" identifier="showPlayList" id="hcP-Aw-fWD"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -34,7 +37,6 @@
                     <navigationItem key="navigationItem" id="j8c-zy-ASE"/>
                     <connections>
                         <segue destination="RZh-vp-jMb" kind="show" identifier="addPlayList" id="vnf-3H-IPj"/>
-                        <segue destination="i4s-wL-prA" kind="presentation" identifier="playVideo" id="chT-n2-z7B"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qGy-E7-Dr4" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -74,9 +76,6 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" id="ofZ-XA-6LZ"/>
-                    <connections>
-                        <segue destination="i4s-wL-prA" kind="show" identifier="playVideo" id="v4i-4y-sdZ"/>
-                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nhz-Pn-5Eg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -96,10 +95,11 @@
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" id="0UO-RV-mGn"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xX8-Hf-zf0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4232" y="2054"/>
+            <point key="canvasLocation" x="-3796" y="2726"/>
         </scene>
         <!--Table View Controller-->
         <scene sceneID="nmU-NV-hhw">
@@ -164,6 +164,61 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fec-86-ygb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2676" y="1153"/>
+        </scene>
+        <!--Play List Table View Controller-->
+        <scene sceneID="LLp-9m-Ohl">
+            <objects>
+                <tableViewController id="7Lv-GJ-uWM" customClass="PlayListTableViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="h4P-7Q-ZP8">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="0y3-fM-LD0" customClass="VideoListTableViewCell" customModule="ChineseTV" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0y3-fM-LD0" id="SIp-NV-3wc">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <animations/>
+                                </tableViewCellContentView>
+                                <animations/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="7Lv-GJ-uWM" id="YoF-WN-gaJ"/>
+                            <outlet property="delegate" destination="7Lv-GJ-uWM" id="Wed-mN-ryb"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="Bk8-Pv-5lP"/>
+                    <connections>
+                        <segue destination="i4s-wL-prA" kind="presentation" identifier="showVideo" id="GIZ-iR-8to"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="L2G-tN-3Ue" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4824" y="1894"/>
+        </scene>
+        <!--Social Share View Controller-->
+        <scene sceneID="HPx-7w-cjl">
+            <objects>
+                <viewController storyboardIdentifier="SharePopup" id="bSK-Oh-bVN" customClass="SocialShareViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="vBt-4C-E0t"/>
+                        <viewControllerLayoutGuide type="bottom" id="vZ6-Bt-IDd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="eNr-nA-2Pj">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Rp6-mM-hSW"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="z7U-pJ-77n" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3000" y="2726"/>
         </scene>
         <!--Add Play List View Controller-->
         <scene sceneID="qQy-gT-xPF">
@@ -362,7 +417,4 @@
         <image name="ic_mic" width="24" height="24"/>
         <image name="ic_theaters" width="24" height="24"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="chT-n2-z7B"/>
-    </inferredMetricsTieBreakers>
 </document>

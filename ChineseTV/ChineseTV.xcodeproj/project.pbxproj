@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D0ED6A11BFD46E300357A0A /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0D0ED6A01BFD46E300357A0A /* FontAwesome.otf */; };
+		0D0ED6A71BFD51F900357A0A /* RawShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ED6A31BFD51F900357A0A /* RawShare.swift */; };
+		0D0ED6A81BFD51F900357A0A /* RSQQ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ED6A41BFD51F900357A0A /* RSQQ.swift */; };
+		0D0ED6A91BFD51F900357A0A /* RSWeChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ED6A51BFD51F900357A0A /* RSWeChat.swift */; };
+		0D0ED6AA1BFD51F900357A0A /* RSWeibo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ED6A61BFD51F900357A0A /* RSWeibo.swift */; };
+		0D0ED6AC1BFD521200357A0A /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ED6AB1BFD521200357A0A /* Utils.swift */; };
 		0D10A4EF1BF146C5006C83FA /* MainTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D10A4EE1BF146C5006C83FA /* MainTableViewController.swift */; };
 		0D10A4FE1BF14E63006C83FA /* GlobalConfigs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D10A4FD1BF14E63006C83FA /* GlobalConfigs.swift */; };
 		0D10A5001BF1537D006C83FA /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D10A4FF1BF1537D006C83FA /* ToggleButton.swift */; };
@@ -35,14 +41,33 @@
 		0D7284861BF2A769006BB77A /* UIViewController+RESideMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D7284831BF2A769006BB77A /* UIViewController+RESideMenu.m */; };
 		0D7284881BF2A7E6006BB77A /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7284871BF2A7E6006BB77A /* RootViewController.swift */; };
 		0D72848A1BF2A848006BB77A /* LeftMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7284891BF2A848006BB77A /* LeftMenuViewController.swift */; };
+		0D786EBD1BFD96E100E0D5B1 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D786EBC1BFD96E100E0D5B1 /* Default-568h@2x.png */; };
 		0D8E9E2A1BF983EE00C80A66 /* VideoListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8E9E291BF983EE00C80A66 /* VideoListTableViewCell.swift */; };
 		0D8E9E2C1BF9840300C80A66 /* CommentListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8E9E2B1BF9840300C80A66 /* CommentListTableViewCell.swift */; };
+		0DA3F9F71C001BA500FA1960 /* PlayListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA3F9F61C001BA500FA1960 /* PlayListTableViewController.swift */; };
+		0DAC63BA1BFE9B08001AC3E9 /* SocialShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63B91BFE9B08001AC3E9 /* SocialShareViewController.swift */; };
+		0DAC63D61BFE9B3D001AC3E9 /* MZBlurEffectAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63BD1BFE9B3D001AC3E9 /* MZBlurEffectAdapter.m */; };
+		0DAC63D71BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63BF1BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationController.m */; };
+		0DAC63D81BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationControllerAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63C11BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationControllerAnimator.m */; };
+		0DAC63D91BFE9B3D001AC3E9 /* MZFormSheetPresentationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63C51BFE9B3D001AC3E9 /* MZFormSheetPresentationController.m */; };
+		0DAC63DA1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63C71BFE9B3D001AC3E9 /* MZFormSheetPresentationViewController.m */; };
+		0DAC63DB1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63CA1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerAnimator.m */; };
+		0DAC63DC1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerInteractiveAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63CC1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerInteractiveAnimator.m */; };
+		0DAC63DD1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63CF1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerSegue.m */; };
+		0DAC63DE1BFE9B3D001AC3E9 /* MZMethodSwizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63D11BFE9B3D001AC3E9 /* MZMethodSwizzler.m */; };
+		0DAC63DF1BFE9B3D001AC3E9 /* MZTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63D31BFE9B3D001AC3E9 /* MZTransition.m */; };
+		0DAC63E01BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63D51BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m */; };
 		0DC61B481BF183FF009DD17F /* AddPlayListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */; };
-		0DEB093A1BFAE7B6000D3E89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DEB09391BFAE7B6000D3E89 /* GoogleService-Info.plist */; };
 		6E42DB45D3E2A1B4FC7620DC /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30AFB0F3D2930987AD43A4EA /* Pods.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0D0ED6A01BFD46E300357A0A /* FontAwesome.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.otf; path = Pods/FontAwesomeKit/FontAwesomeKit/FontAwesome.otf; sourceTree = "<group>"; };
+		0D0ED6A31BFD51F900357A0A /* RawShare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RawShare.swift; sourceTree = "<group>"; };
+		0D0ED6A41BFD51F900357A0A /* RSQQ.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSQQ.swift; sourceTree = "<group>"; };
+		0D0ED6A51BFD51F900357A0A /* RSWeChat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSWeChat.swift; sourceTree = "<group>"; };
+		0D0ED6A61BFD51F900357A0A /* RSWeibo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSWeibo.swift; sourceTree = "<group>"; };
+		0D0ED6AB1BFD521200357A0A /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		0D10A4EE1BF146C5006C83FA /* MainTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTableViewController.swift; sourceTree = "<group>"; };
 		0D10A4FA1BF14E0D006C83FA /* ChineseTV-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ChineseTV-Bridging-Header.h"; sourceTree = "<group>"; };
 		0D10A4FD1BF14E63006C83FA /* GlobalConfigs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalConfigs.swift; sourceTree = "<group>"; };
@@ -77,10 +102,38 @@
 		0D7284831BF2A769006BB77A /* UIViewController+RESideMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+RESideMenu.m"; sourceTree = "<group>"; };
 		0D7284871BF2A7E6006BB77A /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		0D7284891BF2A848006BB77A /* LeftMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftMenuViewController.swift; sourceTree = "<group>"; };
+		0D786EBC1BFD96E100E0D5B1 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		0D8E9E291BF983EE00C80A66 /* VideoListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoListTableViewCell.swift; sourceTree = "<group>"; };
 		0D8E9E2B1BF9840300C80A66 /* CommentListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentListTableViewCell.swift; sourceTree = "<group>"; };
+		0DA3F9F61C001BA500FA1960 /* PlayListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayListTableViewController.swift; sourceTree = "<group>"; };
+		0DAC63B91BFE9B08001AC3E9 /* SocialShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocialShareViewController.swift; sourceTree = "<group>"; };
+		0DAC63BC1BFE9B3D001AC3E9 /* MZBlurEffectAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZBlurEffectAdapter.h; sourceTree = "<group>"; };
+		0DAC63BD1BFE9B3D001AC3E9 /* MZBlurEffectAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MZBlurEffectAdapter.m; sourceTree = "<group>"; };
+		0DAC63BE1BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZFormSheetContentSizingNavigationController.h; sourceTree = "<group>"; };
+		0DAC63BF1BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MZFormSheetContentSizingNavigationController.m; sourceTree = "<group>"; };
+		0DAC63C01BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationControllerAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZFormSheetContentSizingNavigationControllerAnimator.h; sourceTree = "<group>"; };
+		0DAC63C11BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationControllerAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MZFormSheetContentSizingNavigationControllerAnimator.m; sourceTree = "<group>"; };
+		0DAC63C21BFE9B3D001AC3E9 /* MZFormSheetPresentationContentSizing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZFormSheetPresentationContentSizing.h; sourceTree = "<group>"; };
+		0DAC63C31BFE9B3D001AC3E9 /* MZFormSheetPresentationController Swift Example-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MZFormSheetPresentationController Swift Example-Bridging-Header.h"; sourceTree = "<group>"; };
+		0DAC63C41BFE9B3D001AC3E9 /* MZFormSheetPresentationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZFormSheetPresentationController.h; sourceTree = "<group>"; };
+		0DAC63C51BFE9B3D001AC3E9 /* MZFormSheetPresentationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MZFormSheetPresentationController.m; sourceTree = "<group>"; };
+		0DAC63C61BFE9B3D001AC3E9 /* MZFormSheetPresentationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZFormSheetPresentationViewController.h; sourceTree = "<group>"; };
+		0DAC63C71BFE9B3D001AC3E9 /* MZFormSheetPresentationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MZFormSheetPresentationViewController.m; sourceTree = "<group>"; };
+		0DAC63C81BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerAnimatedTransitioning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZFormSheetPresentationViewControllerAnimatedTransitioning.h; sourceTree = "<group>"; };
+		0DAC63C91BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZFormSheetPresentationViewControllerAnimator.h; sourceTree = "<group>"; };
+		0DAC63CA1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MZFormSheetPresentationViewControllerAnimator.m; sourceTree = "<group>"; };
+		0DAC63CB1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerInteractiveAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZFormSheetPresentationViewControllerInteractiveAnimator.h; sourceTree = "<group>"; };
+		0DAC63CC1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerInteractiveAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MZFormSheetPresentationViewControllerInteractiveAnimator.m; sourceTree = "<group>"; };
+		0DAC63CD1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerInteractiveTransitioning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZFormSheetPresentationViewControllerInteractiveTransitioning.h; sourceTree = "<group>"; };
+		0DAC63CE1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZFormSheetPresentationViewControllerSegue.h; sourceTree = "<group>"; };
+		0DAC63CF1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MZFormSheetPresentationViewControllerSegue.m; sourceTree = "<group>"; };
+		0DAC63D01BFE9B3D001AC3E9 /* MZMethodSwizzler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZMethodSwizzler.h; sourceTree = "<group>"; };
+		0DAC63D11BFE9B3D001AC3E9 /* MZMethodSwizzler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MZMethodSwizzler.m; sourceTree = "<group>"; };
+		0DAC63D21BFE9B3D001AC3E9 /* MZTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZTransition.h; sourceTree = "<group>"; };
+		0DAC63D31BFE9B3D001AC3E9 /* MZTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MZTransition.m; sourceTree = "<group>"; };
+		0DAC63D41BFE9B3D001AC3E9 /* UIViewController+TargetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+TargetViewController.h"; sourceTree = "<group>"; };
+		0DAC63D51BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+TargetViewController.m"; sourceTree = "<group>"; };
 		0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddPlayListViewController.swift; sourceTree = "<group>"; };
-		0DEB09391BFAE7B6000D3E89 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		30AFB0F3D2930987AD43A4EA /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B79A4D41E39DD9D8012284F6 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		B86FE6B46A78351A1352DB17 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -119,6 +172,18 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		0D0ED6A21BFD51DB00357A0A /* ShareManager */ = {
+			isa = PBXGroup;
+			children = (
+				0D0ED6A31BFD51F900357A0A /* RawShare.swift */,
+				0D0ED6A41BFD51F900357A0A /* RSQQ.swift */,
+				0D0ED6A51BFD51F900357A0A /* RSWeChat.swift */,
+				0D0ED6A61BFD51F900357A0A /* RSWeibo.swift */,
+				0D0ED6AB1BFD521200357A0A /* Utils.swift */,
+			);
+			name = ShareManager;
+			sourceTree = "<group>";
+		};
 		0D10A4EA1BF14669006C83FA /* Storyboard */ = {
 			isa = PBXGroup;
 			children = (
@@ -131,6 +196,8 @@
 		0D10A4EC1BF14681006C83FA /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				0DA3F9F51C001B8B00FA1960 /* PlayListViewController */,
+				0DAC63B81BFE9A8B001AC3E9 /* PopupViewController */,
 				0D6A66E91BF4088E008ABB5E /* DetailViewController */,
 				0D5E688D1BF3E4C80081CEDB /* CategoryCollectionView */,
 				0DC61B461BF183DD009DD17F /* AddItemView */,
@@ -177,6 +244,8 @@
 		0D58A5E51BF144E700BD1C7E = {
 			isa = PBXGroup;
 			children = (
+				0D786EBC1BFD96E100E0D5B1 /* Default-568h@2x.png */,
+				0D0ED6A01BFD46E300357A0A /* FontAwesome.otf */,
 				0D58A5F01BF144E700BD1C7E /* ChineseTV */,
 				0D58A5EF1BF144E700BD1C7E /* Products */,
 				0588024A2C882BA8B55A8F32 /* Pods */,
@@ -195,11 +264,11 @@
 		0D58A5F01BF144E700BD1C7E /* ChineseTV */ = {
 			isa = PBXGroup;
 			children = (
+				0D0ED6A21BFD51DB00357A0A /* ShareManager */,
 				0D10A4ED1BF14695006C83FA /* GlobalConfiguration */,
 				0D10A4EC1BF14681006C83FA /* ViewControllers */,
 				0D10A4EA1BF14669006C83FA /* Storyboard */,
 				0D58A5F81BF144E700BD1C7E /* Assets.xcassets */,
-				0DEB09391BFAE7B6000D3E89 /* GoogleService-Info.plist */,
 				0D58A5FD1BF144E700BD1C7E /* Info.plist */,
 				0D10A4FA1BF14E0D006C83FA /* ChineseTV-Bridging-Header.h */,
 			);
@@ -223,6 +292,56 @@
 				0D6A66EA1BF408AA008ABB5E /* PlayListDetailViewController.swift */,
 			);
 			name = DetailViewController;
+			sourceTree = "<group>";
+		};
+		0DA3F9F51C001B8B00FA1960 /* PlayListViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0DA3F9F61C001BA500FA1960 /* PlayListTableViewController.swift */,
+			);
+			name = PlayListViewController;
+			sourceTree = "<group>";
+		};
+		0DAC63B81BFE9A8B001AC3E9 /* PopupViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0DAC63BB1BFE9B3D001AC3E9 /* MZFormSheetPresentationController */,
+				0DAC63B91BFE9B08001AC3E9 /* SocialShareViewController.swift */,
+			);
+			name = PopupViewController;
+			sourceTree = "<group>";
+		};
+		0DAC63BB1BFE9B3D001AC3E9 /* MZFormSheetPresentationController */ = {
+			isa = PBXGroup;
+			children = (
+				0DAC63BC1BFE9B3D001AC3E9 /* MZBlurEffectAdapter.h */,
+				0DAC63BD1BFE9B3D001AC3E9 /* MZBlurEffectAdapter.m */,
+				0DAC63BE1BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationController.h */,
+				0DAC63BF1BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationController.m */,
+				0DAC63C01BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationControllerAnimator.h */,
+				0DAC63C11BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationControllerAnimator.m */,
+				0DAC63C21BFE9B3D001AC3E9 /* MZFormSheetPresentationContentSizing.h */,
+				0DAC63C31BFE9B3D001AC3E9 /* MZFormSheetPresentationController Swift Example-Bridging-Header.h */,
+				0DAC63C41BFE9B3D001AC3E9 /* MZFormSheetPresentationController.h */,
+				0DAC63C51BFE9B3D001AC3E9 /* MZFormSheetPresentationController.m */,
+				0DAC63C61BFE9B3D001AC3E9 /* MZFormSheetPresentationViewController.h */,
+				0DAC63C71BFE9B3D001AC3E9 /* MZFormSheetPresentationViewController.m */,
+				0DAC63C81BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerAnimatedTransitioning.h */,
+				0DAC63C91BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerAnimator.h */,
+				0DAC63CA1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerAnimator.m */,
+				0DAC63CB1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerInteractiveAnimator.h */,
+				0DAC63CC1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerInteractiveAnimator.m */,
+				0DAC63CD1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerInteractiveTransitioning.h */,
+				0DAC63CE1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerSegue.h */,
+				0DAC63CF1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerSegue.m */,
+				0DAC63D01BFE9B3D001AC3E9 /* MZMethodSwizzler.h */,
+				0DAC63D11BFE9B3D001AC3E9 /* MZMethodSwizzler.m */,
+				0DAC63D21BFE9B3D001AC3E9 /* MZTransition.h */,
+				0DAC63D31BFE9B3D001AC3E9 /* MZTransition.m */,
+				0DAC63D41BFE9B3D001AC3E9 /* UIViewController+TargetViewController.h */,
+				0DAC63D51BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m */,
+			);
+			path = MZFormSheetPresentationController;
 			sourceTree = "<group>";
 		};
 		0DC61B461BF183DD009DD17F /* AddItemView */ = {
@@ -314,9 +433,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0D0ED6A11BFD46E300357A0A /* FontAwesome.otf in Resources */,
 				0D58A5FC1BF144E700BD1C7E /* LaunchScreen.storyboard in Resources */,
-				0DEB093A1BFAE7B6000D3E89 /* GoogleService-Info.plist in Resources */,
 				0D58A5F91BF144E700BD1C7E /* Assets.xcassets in Resources */,
+				0D786EBD1BFD96E100E0D5B1 /* Default-568h@2x.png in Resources */,
 				0D58A5F71BF144E700BD1C7E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -376,22 +496,40 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DAC63DB1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerAnimator.m in Sources */,
+				0DAC63DC1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerInteractiveAnimator.m in Sources */,
 				0D7284881BF2A7E6006BB77A /* RootViewController.swift in Sources */,
 				0D6A66EB1BF408AA008ABB5E /* PlayListDetailViewController.swift in Sources */,
 				0D10A5021BF15CFB006C83FA /* MainTableViewCell.swift in Sources */,
 				0D5E688F1BF3E4E60081CEDB /* SingleCategoryCollectionViewController.swift in Sources */,
+				0D0ED6A71BFD51F900357A0A /* RawShare.swift in Sources */,
 				0D8E9E2A1BF983EE00C80A66 /* VideoListTableViewCell.swift in Sources */,
+				0DAC63D61BFE9B3D001AC3E9 /* MZBlurEffectAdapter.m in Sources */,
 				0D7284851BF2A769006BB77A /* RESideMenu.m in Sources */,
+				0DAC63DE1BFE9B3D001AC3E9 /* MZMethodSwizzler.m in Sources */,
+				0DAC63D71BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationController.m in Sources */,
 				0DC61B481BF183FF009DD17F /* AddPlayListViewController.swift in Sources */,
 				0D10A5001BF1537D006C83FA /* ToggleButton.swift in Sources */,
+				0DAC63BA1BFE9B08001AC3E9 /* SocialShareViewController.swift in Sources */,
 				0D10A4FE1BF14E63006C83FA /* GlobalConfigs.swift in Sources */,
+				0DAC63D81BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationControllerAnimator.m in Sources */,
 				0D10A4EF1BF146C5006C83FA /* MainTableViewController.swift in Sources */,
 				0D72848A1BF2A848006BB77A /* LeftMenuViewController.swift in Sources */,
+				0DAC63E01BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m in Sources */,
+				0D0ED6A81BFD51F900357A0A /* RSQQ.swift in Sources */,
+				0DA3F9F71C001BA500FA1960 /* PlayListTableViewController.swift in Sources */,
 				0D8E9E2C1BF9840300C80A66 /* CommentListTableViewCell.swift in Sources */,
+				0DAC63D91BFE9B3D001AC3E9 /* MZFormSheetPresentationController.m in Sources */,
+				0DAC63DA1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewController.m in Sources */,
 				0D58A5F21BF144E700BD1C7E /* AppDelegate.swift in Sources */,
+				0D0ED6A91BFD51F900357A0A /* RSWeChat.swift in Sources */,
 				0D5E68911BF3EA630081CEDB /* SingleCategoryCollectionCell.swift in Sources */,
+				0D0ED6AC1BFD521200357A0A /* Utils.swift in Sources */,
+				0DAC63DF1BFE9B3D001AC3E9 /* MZTransition.m in Sources */,
 				0D7284841BF2A769006BB77A /* RECommonFunctions.m in Sources */,
 				0D7284861BF2A769006BB77A /* UIViewController+RESideMenu.m in Sources */,
+				0D0ED6AA1BFD51F900357A0A /* RSWeibo.swift in Sources */,
+				0DAC63DD1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerSegue.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

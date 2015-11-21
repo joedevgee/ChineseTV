@@ -42,7 +42,6 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.shyNavBarManager.scrollView = self.collectionView
         let menuImage = UIImage(named: "ic_menu")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         let menuButton = UIBarButtonItem(image: menuImage, style: .Plain, target: self, action: "toggle")
         navigationItem.leftBarButtonItem = menuButton

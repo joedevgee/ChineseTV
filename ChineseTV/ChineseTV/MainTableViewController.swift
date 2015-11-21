@@ -80,7 +80,7 @@ class MainTableViewController: PFQueryTableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.performSegueWithIdentifier("playVideo", sender: indexPath)
+        self.performSegueWithIdentifier("showPlayList", sender: indexPath)
     }
     
     // To connect to the player view controller
@@ -89,7 +89,6 @@ class MainTableViewController: PFQueryTableViewController {
     // MARK: - ENSideMenu Delegate
     
     func setupNavBar() {
-        self.shyNavBarManager.scrollView = self.tableView
         let menuImage = UIImage(named: "ic_menu")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         let menuButton = UIBarButtonItem(image: menuImage, style: .Plain, target: self, action: "toggle")
         navigationItem.leftBarButtonItem = menuButton
@@ -123,19 +122,14 @@ class MainTableViewController: PFQueryTableViewController {
     // Prepare for segue
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        self.navigationItem.title = "主页"
         if segue.identifier == "addPlayList" {
             
-        } else if segue.identifier == "playVideo" {
-            UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
-            let destVC = segue.destinationViewController as! PlayListDetailViewController
+        } else if segue.identifier == "showPlayList" {
             if let listId:String = objectAtIndexPath(sender as? NSIndexPath)!["listID"] as? String {
+                let destVC = segue.destinationViewController as! PlayListTableViewController
+                destVC.requestPlayList(listId)
                 destVC.currentListId = listId
-                Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=\(1)&playlistId=\(listId)&key=\(googleApiKey)")
-                    .responseJSON { response in
-                        if let videoId:String = response.result.value!["items"]!![0]["snippet"]!!["resourceId"]!!["videoId"] as? String {
-                                destVC.youtubePlayer.videoIdentifier = videoId
-                        }
-                }
             }
         }
     }
