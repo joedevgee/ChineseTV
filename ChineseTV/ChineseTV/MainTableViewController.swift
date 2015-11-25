@@ -122,6 +122,7 @@ class MainTableViewController: PFQueryTableViewController {
         if segue.identifier == "addPlayList" {
             
         } else if segue.identifier == "showPlayList" {
+            tabBarController!.tabBar.hidden = true
             let destVC = segue.destinationViewController as! PlayListTableViewController
             if let indexPath:NSIndexPath = sender as? NSIndexPath {
                 if let listId:String = objectAtIndexPath(indexPath)!["listID"] as? String {
@@ -130,8 +131,6 @@ class MainTableViewController: PFQueryTableViewController {
                     if let listName:String = objectAtIndexPath(sender as? NSIndexPath)!["listName"] as? String {
                         destVC.currentListName = listName
                     }
-                    // hide tabbar
-                    tabBarController?.tabBar.hidden = true
                 }
             } else if let data:Dictionary<String, String> = sender as? Dictionary<String, String> {
                 Async.main {

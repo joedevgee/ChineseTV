@@ -52,14 +52,16 @@ class PlayListTableViewController: UITableViewController {
         navigationItem.rightBarButtonItem = addButton
     }
     func navCancelButton() {
-        
+        // Add a navi right button to let people delete added playlist
+        let savedImage = UIImage(named: "ic_playlist_add_check")?.imageWithRenderingMode(.AlwaysTemplate)
+        let savedButton = UIBarButtonItem(image: savedImage, style: .Plain, target: self, action: "deleteList")
+        navigationItem.rightBarButtonItem = savedButton
     }
     
-    // MARK: Let user add current playlist to their personal list
+    // MARK: Let user add or delete current playlist to their personal list
     func addPlaylist() {
         // Create a playlist item based on current playlist id
         if let tempArray = NSUserDefaults.standardUserDefaults().arrayForKey("savedPlaylist") as? [String] {
-            print("Got list array from userdefault")
             self.savedPlaylist = tempArray
         }
         if self.savedPlaylist.contains(self.currentListId!) {
@@ -95,8 +97,59 @@ class PlayListTableViewController: UITableViewController {
             }
             self.listName[self.currentListId!] = self.currentListName!
             NSUserDefaults.standardUserDefaults().setObject(self.listName, forKey: "playlistName")
+            self.navCancelButton()
             let successBar = TTGSnackbar.init(message: "您已成功收藏该节目", duration: TTGSnackbarDuration.Middle)
             successBar.show()
+        }
+    }
+    
+    // let user delete current list
+    func deleteList() {
+        if let tempArray = NSUserDefaults.standardUserDefaults().arrayForKey("savedPlaylist") as? [String] {
+            self.savedPlaylist = tempArray
+        }
+        if self.savedPlaylist.contains(self.currentListId!) {
+            // alert user if wants to delete list from saved list
+            let snackbar = TTGSnackbar.init(message: "从收藏列表删除该节目？", duration: TTGSnackbarDuration.Middle, actionText: "确定")
+                { (snackbar) -> Void in
+                    // Officially delete currentlist from nsuserdefaults
+                    if let deletingIndex = self.savedPlaylist.indexOf(self.currentListId!) {
+                        // remove list id from saved playlist arrays
+                        self.savedPlaylist.removeAtIndex(deletingIndex)
+                        NSUserDefaults.standardUserDefaults().setObject(self.savedPlaylist, forKey: "savedPlaylist")
+                        // remove list name from saved playlist name dictionary
+                        if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistName") as? [String: String] {
+                            self.listName = tempDict
+                            self.listName.removeValueForKey(self.currentListId!)
+                            NSUserDefaults.standardUserDefaults().setObject(self.listName, forKey: "playlistName")
+                        }
+                        // remove playlist progress name
+                        if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressName") as? [String: String] {
+                            self.listProgressName = tempDict
+                            self.listProgressName.removeValueForKey(self.currentListId!)
+                            NSUserDefaults.standardUserDefaults().setObject(self.listProgressName, forKey: "playlistProgressName")
+                        }
+                        // remove playlist progress image url
+                        if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressImageUrl") as? [String: String] {
+                            self.listProgressImageUrl = tempDict
+                            self.listProgressImageUrl.removeValueForKey(self.currentListId!)
+                            NSUserDefaults.standardUserDefaults().setObject(self.listProgressImageUrl, forKey: "playlistProgressImageUrl")
+                        }
+                        // remove playlist progress video id
+                        if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressId") as? [String: String] {
+                            self.listProgressId = tempDict
+                            self.listProgressId.removeValueForKey(self.currentListId!)
+                            NSUserDefaults.standardUserDefaults().setObject(self.listProgressId, forKey: "playlistProgressId")
+                        }
+                        
+                        self.navAddButton()
+                    }
+            }      
+            snackbar.show()
+        } else {
+            // current list is not saved
+            // change to nav right button to let user add current list
+            self.navAddButton()
         }
     }
 
