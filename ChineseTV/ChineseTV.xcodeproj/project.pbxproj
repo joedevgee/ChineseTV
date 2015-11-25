@@ -58,6 +58,7 @@
 		0DAC63DF1BFE9B3D001AC3E9 /* MZTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63D31BFE9B3D001AC3E9 /* MZTransition.m */; };
 		0DAC63E01BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63D51BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m */; };
 		0DC61B481BF183FF009DD17F /* AddPlayListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */; };
+		0DFE00471C02BA84001C448A /* LeftMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE00461C02BA84001C448A /* LeftMenuTableViewCell.swift */; };
 		6E42DB45D3E2A1B4FC7620DC /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30AFB0F3D2930987AD43A4EA /* Pods.framework */; };
 /* End PBXBuildFile section */
 
@@ -134,6 +135,7 @@
 		0DAC63D41BFE9B3D001AC3E9 /* UIViewController+TargetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+TargetViewController.h"; sourceTree = "<group>"; };
 		0DAC63D51BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+TargetViewController.m"; sourceTree = "<group>"; };
 		0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddPlayListViewController.swift; sourceTree = "<group>"; };
+		0DFE00461C02BA84001C448A /* LeftMenuTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftMenuTableViewCell.swift; sourceTree = "<group>"; };
 		30AFB0F3D2930987AD43A4EA /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B79A4D41E39DD9D8012284F6 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		B86FE6B46A78351A1352DB17 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 				0D10A4FF1BF1537D006C83FA /* ToggleButton.swift */,
 				0D7284871BF2A7E6006BB77A /* RootViewController.swift */,
 				0D7284891BF2A848006BB77A /* LeftMenuViewController.swift */,
+				0DFE00461C02BA84001C448A /* LeftMenuTableViewCell.swift */,
 			);
 			name = ENSideMenu;
 			sourceTree = "<group>";
@@ -498,6 +501,7 @@
 			files = (
 				0DAC63DB1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerAnimator.m in Sources */,
 				0DAC63DC1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerInteractiveAnimator.m in Sources */,
+				0DFE00471C02BA84001C448A /* LeftMenuTableViewCell.swift in Sources */,
 				0D7284881BF2A7E6006BB77A /* RootViewController.swift in Sources */,
 				0D6A66EB1BF408AA008ABB5E /* PlayListDetailViewController.swift in Sources */,
 				0D10A5021BF15CFB006C83FA /* MainTableViewCell.swift in Sources */,

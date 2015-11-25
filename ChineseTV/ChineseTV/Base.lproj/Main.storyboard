@@ -8,7 +8,7 @@
         <!--Main Table View Controller-->
         <scene sceneID="PpL-HJ-xiI">
             <objects>
-                <tableViewController storyboardIdentifier="homeViewController" hidesBottomBarWhenPushed="YES" id="uf4-ON-udZ" customClass="MainTableViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="homeViewController" id="uf4-ON-udZ" customClass="MainTableViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="e1q-rO-npD">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -88,7 +88,7 @@
         <!--Play List Detail View Controller-->
         <scene sceneID="o3U-iy-vNp">
             <objects>
-                <viewController id="i4s-wL-prA" customClass="PlayListDetailViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="videoDetail" id="i4s-wL-prA" customClass="PlayListDetailViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="lf3-4H-ts1"/>
                         <viewControllerLayoutGuide type="bottom" id="H9Y-rh-dXM"/>
@@ -172,7 +172,7 @@
         <!--Play List Table View Controller-->
         <scene sceneID="LLp-9m-Ohl">
             <objects>
-                <tableViewController id="7Lv-GJ-uWM" customClass="PlayListTableViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="playlistViewController" id="7Lv-GJ-uWM" customClass="PlayListTableViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="h4P-7Q-ZP8">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -273,7 +273,7 @@
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="EBi-83-hu9">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="EBi-83-hu9" customClass="LeftMenuTableViewCell" customModule="ChineseTV" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="EBi-83-hu9" id="Ti6-Ib-20Z">

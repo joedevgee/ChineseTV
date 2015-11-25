@@ -16,6 +16,7 @@ import TTGSnackbar
 class AddPlayListViewController: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
     
     var listNameTextField:UITextField = UITextField.newAutoLayoutView()
+    var descNameTextField:UITextField = UITextField.newAutoLayoutView()
     var subTitleTextField:UITextField = UITextField.newAutoLayoutView()
     var thumbnailImageView:UIImageView = UIImageView.newAutoLayoutView()
     var prevButton:UIButton = UIButton.newAutoLayoutView()
@@ -28,8 +29,7 @@ class AddPlayListViewController: UIViewController, UITextFieldDelegate, UIPicker
     var displayCategoryLabel:UILabel = UILabel.newAutoLayoutView()
     
     var categoryPicker:UIPickerView = UIPickerView.newAutoLayoutView()
-    let categoryData = ["影视", "选秀", "真人", "访谈", "八卦", "其他"]
-    let saveCategory = ["drama", "competition", "mainland", "taiwan", "korea", "education"]
+    let saveCategory = ["drama","reality","talkshow"]
     
     var thumbnailsArray = [String]()
     var imagePosition:Int?
@@ -37,6 +37,7 @@ class AddPlayListViewController: UIViewController, UITextFieldDelegate, UIPicker
     var saveListID:String = ""
     var saveImageUrl:String = ""
     var saveListName:String = ""
+    var saveListDescName:String = ""
     var saveListSubtitle:String = ""
     var saveListCategory:String = ""
 
@@ -127,12 +128,23 @@ class AddPlayListViewController: UIViewController, UITextFieldDelegate, UIPicker
         listNameTextField.layer.borderWidth = 0.5
         listNameTextField.layer.borderColor = themeColor.CGColor
         listNameTextField.font = UIFont.systemFontOfSize(18)
-        listNameTextField.placeholder = "Enter the list name for display"
+        listNameTextField.placeholder = "Enter the list name for display(short)"
         listNameTextField.sizeToFit()
         self.view.addSubview(listNameTextField)
-        listNameTextField.autoPinToTopLayoutGuideOfViewController(self, withInset: 20)
+        listNameTextField.autoPinToTopLayoutGuideOfViewController(self, withInset: 10)
         listNameTextField.autoPinEdgeToSuperviewEdge(.Leading, withInset: 10)
         listNameTextField.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 10)
+        
+        descNameTextField.delegate = self
+        descNameTextField.layer.borderWidth = 0.5
+        descNameTextField.layer.borderColor = themeColor.CGColor
+        descNameTextField.font = UIFont.systemFontOfSize(18)
+        descNameTextField.placeholder = "Enter a description of the list"
+        descNameTextField.sizeToFit()
+        self.view.addSubview(descNameTextField)
+        descNameTextField.autoPinEdge(.Top, toEdge: .Bottom, ofView: listNameTextField, withOffset: 5)
+        descNameTextField.autoPinEdgeToSuperviewEdge(.Leading, withInset: 10)
+        descNameTextField.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 10)
         
         subTitleTextField.delegate = self
         subTitleTextField.layer.borderWidth = 0.5
@@ -141,9 +153,9 @@ class AddPlayListViewController: UIViewController, UITextFieldDelegate, UIPicker
         subTitleTextField.placeholder = "This will appear on top of thumbnail"
         subTitleTextField.sizeToFit()
         self.view.addSubview(subTitleTextField)
-        subTitleTextField.autoPinEdge(.Top, toEdge: .Bottom, ofView: listNameTextField, withOffset: 10)
-        subTitleTextField.autoPinEdgeToSuperviewEdge(.Leading, withInset: 20)
-        subTitleTextField.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 20)
+        subTitleTextField.autoPinEdge(.Top, toEdge: .Bottom, ofView: descNameTextField, withOffset: 10)
+        subTitleTextField.autoPinEdgeToSuperviewEdge(.Leading, withInset: 10)
+        subTitleTextField.autoPinEdgeToSuperviewEdge(.Trailing, withInset: 10)
         
         thumbnailImageView.backgroundColor = UIColor.lightGrayColor()
         thumbnailImageView.contentMode = .ScaleAspectFill
@@ -231,18 +243,20 @@ class AddPlayListViewController: UIViewController, UITextFieldDelegate, UIPicker
     }
     
     func categoryDone() {
-        if self.saveListCategory.characters.count > 2 && self.listNameTextField.text?.characters.count > 2 && self.subTitleTextField.text?.characters.count > 2 {
+        if self.saveListCategory.characters.count > 1 && self.listNameTextField.text?.characters.count > 1 && self.subTitleTextField.text?.characters.count > 1 {
             categoryPicker.hidden = true
             categoryDoneButton.hidden = true
             listNameTextField.hidden = true
+            descNameTextField.hidden = true
             subTitleTextField.hidden = true
             self.saveListName = listNameTextField.text!
+            self.saveListDescName = descNameTextField.text!
             self.saveListSubtitle = subTitleTextField.text!
             self.displaySubtitleLabel.hidden = false
             self.displayNameLabel.hidden = false
             self.displayCategoryLabel.hidden = false
             self.thumbnailImageView.hidden = false
-            self.displayNameLabel.text = saveListName
+            self.displayNameLabel.text = "\(saveListName): \(saveListDescName)"
             self.displaySubtitleLabel.text = saveListSubtitle
             self.displayCategoryLabel.text = saveListCategory
             navigationItem.rightBarButtonItem?.enabled = true
@@ -252,6 +266,7 @@ class AddPlayListViewController: UIViewController, UITextFieldDelegate, UIPicker
     func savePlayList() {
         let savingPlayList = PFObject(className: "ChinesePlayList")
         savingPlayList["listName"] = self.saveListName
+        savingPlayList["listDesc"] = self.saveListDescName
         savingPlayList["listSubtitle"] = self.saveListSubtitle
         savingPlayList["listID"] = self.saveListID
         savingPlayList["category"] = self.saveListCategory
@@ -282,11 +297,11 @@ class AddPlayListViewController: UIViewController, UITextFieldDelegate, UIPicker
         return 1
     }
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return categoryData.count
+        return saveCategory.count
     }
     //MARK: Delegates
     func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return categoryData[row]
+        return saveCategory[row]
     }
     
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
@@ -295,7 +310,7 @@ class AddPlayListViewController: UIViewController, UITextFieldDelegate, UIPicker
     }
     
     func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-        let titleData = categoryData[row]
+        let titleData = saveCategory[row]
         let myTitle = NSAttributedString(string: titleData, attributes: [NSFontAttributeName:UIFont(name: "Georgia", size: 26.0)!,NSForegroundColorAttributeName:UIColor.blueColor()])
         return myTitle
     }

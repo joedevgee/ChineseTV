@@ -53,6 +53,7 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
         // self.clearsSelectionOnViewWillAppear = false
 
         // Do any additional setup after loading the view.
+        print("Second view did load")
     }
     
     func toggle() {

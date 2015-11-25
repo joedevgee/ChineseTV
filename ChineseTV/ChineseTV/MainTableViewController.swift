@@ -50,11 +50,19 @@ class MainTableViewController: PFQueryTableViewController {
         tableView.backgroundColor = dividerColor
         tableView.separatorStyle = .None
         tableView.allowsSelection = true
+        // Add observe listen to user choosing side menu saved list
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedNotification:", name: passListNotificationKey, object: nil)
+    }
+    
+    func receivedNotification(sender: NSNotification) {
+        if let data:Dictionary<String, String> = sender.userInfo as? Dictionary<String, String> {
+            self.performSegueWithIdentifier("showPlayList", sender: data)
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        tabBarController?.tabBar.hidden = false
+        super.viewWillAppear(true)
+        tabBarController!.tabBar.hidden = false
     }
     
     // Tableviewcontroller delegate
@@ -62,13 +70,17 @@ class MainTableViewController: PFQueryTableViewController {
         return self.rowHeight
     }
     
+    
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, object: PFObject?) -> PFTableViewCell? {
         var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as? MainTableViewCell
         if cell == nil {
             cell = MainTableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
         }
         if let title:String = object!["listName"] as? String {
-            cell?.listTitle.text = title
+            if let descName:String = object!["listDesc"] as? String {
+                cell?.listTitle.text = "\(title): \(descName)"
+            }
         }
         if let subtitle:String = object!["listSubtitle"] as? String {
             cell?.listSubtitle.text = subtitle
@@ -88,9 +100,6 @@ class MainTableViewController: PFQueryTableViewController {
     
     // To connect to the player view controller
     
-
-    // MARK: - ENSideMenu Delegate
-    
     func setupNavBar() {
         let menuImage = UIImage(named: "ic_menu")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         let menuButton = UIBarButtonItem(image: menuImage, style: .Plain, target: self, action: "toggle")
@@ -106,22 +115,6 @@ class MainTableViewController: PFQueryTableViewController {
         performSegueWithIdentifier("addPlayList", sender: sender)
     }
     
-    func sideMenuWillOpen() {
-    }
-    
-    func sideMenuWillClose() {
-    }
-    
-    func sideMenuShouldOpenSideMenu() -> Bool {
-        return true
-    }
-    
-    func sideMenuDidClose() {
-    }
-    
-    func sideMenuDidOpen() {
-    }
-    
     // Prepare for segue
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -129,12 +122,26 @@ class MainTableViewController: PFQueryTableViewController {
         if segue.identifier == "addPlayList" {
             
         } else if segue.identifier == "showPlayList" {
-            if let listId:String = objectAtIndexPath(sender as? NSIndexPath)!["listID"] as? String {
-                let destVC = segue.destinationViewController as! PlayListTableViewController
-                destVC.requestPlayList(listId)
-                destVC.currentListId = listId
-                // hide tabbar
-                tabBarController?.tabBar.hidden = true
+            let destVC = segue.destinationViewController as! PlayListTableViewController
+            if let indexPath:NSIndexPath = sender as? NSIndexPath {
+                if let listId:String = objectAtIndexPath(indexPath)!["listID"] as? String {
+                    destVC.requestPlayList(listId)
+                    destVC.currentListId = listId
+                    if let listName:String = objectAtIndexPath(sender as? NSIndexPath)!["listName"] as? String {
+                        destVC.currentListName = listName
+                    }
+                    // hide tabbar
+                    tabBarController?.tabBar.hidden = true
+                }
+            } else if let data:Dictionary<String, String> = sender as? Dictionary<String, String> {
+                Async.main {
+                        destVC.requestPlayList(data["listId"]!)
+                        destVC.currentListId = data["listId"]!
+                        destVC.currentListName = data["listName"]!
+                    }.main {
+                        destVC.performSegueWithIdentifier("showVideo", sender: data)
+                }
+                
             }
         }
     }

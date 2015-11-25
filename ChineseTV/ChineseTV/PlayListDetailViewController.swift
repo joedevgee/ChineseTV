@@ -334,6 +334,9 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.videoButtonUnderline.hidden = true
         self.videoListTableView.hidden = true
         self.commentListTableView.hidden = false
+        if self.commentList.count == 0 {
+            self.getVideoCommentsData(self.youtubePlayer.videoIdentifier!)
+        }
     }
     
     // MARK: XCDYouTubeKit delegate methods
@@ -344,7 +347,39 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
             self.youtubePlayer.moviePlayer.play()
             }.background {
                 self.getVideoCommentsData(self.youtubePlayer.videoIdentifier!)
-        }
+                // Check if the current video is in a saved playlist
+                if let userList = NSUserDefaults.standardUserDefaults().arrayForKey("savedPlaylist") as? [String] where userList.contains(self.currentListId!) {
+                    // User has saved this list
+                    // Update the saved playlist with current progress-- current video
+                    for video in self.videoList {
+                        if video.id == self.youtubePlayer.videoIdentifier {
+                            // update the progress name
+                            if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressName") as? [String:String] {
+                                var newDict = tempDict
+                                newDict[self.currentListId!] = video.name
+                                NSUserDefaults.standardUserDefaults().setObject(newDict, forKey: "playlistProgressName")
+                                print("Successfully updating the saved playlist progress")
+                            }
+                            // update the progress image url
+                            if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressImageUrl") as? [String:String] {
+                                var newDict = tempDict
+                                newDict[self.currentListId!] = video.thumbnailUrl
+                                NSUserDefaults.standardUserDefaults().setObject(newDict, forKey: "playlistProgressImageUrl")
+                            }
+                            // update the progress id
+                            if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressId") as? [String:String] {
+                                var newDict = tempDict
+                                newDict[self.currentListId!] = video.id
+                                NSUserDefaults.standardUserDefaults().setObject(newDict, forKey: "playlistProgressId")
+                            }
+                        }
+                    }
+                    // End of updateing playlist info
+                } else {
+                    // The video is not in a saved playlist by the user
+                    // Do nothing
+                }
+            }
     }
     
     func willEnterFullScreen() {
@@ -361,6 +396,53 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     // MARK: Network request methods
+    // Use this function to retrieve videos in playlist
+    func requestPlayList(listId: String) {
+        let resultNumber:Int = 50
+        Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=\(resultNumber)&playlistId=\(listId)&key=\(googleApiKey)")
+            .responseJSON { response in
+                if let JSON = response.result.value {
+                    if let items = JSON["items"] as? Array<AnyObject> {
+                        self.processVideoList(items)
+                    }
+                }
+        }
+    }
+    
+    func processVideoList(items: Array<AnyObject>) {
+        for video in items {
+            if let videoDict:Dictionary<NSObject, AnyObject> = video as? Dictionary<NSObject, AnyObject> {
+                if let snippetDict:Dictionary<NSObject, AnyObject> = videoDict["snippet"] as? Dictionary<NSObject, AnyObject> {
+                    if let resourceDict:Dictionary<NSObject, AnyObject> = snippetDict["resourceId"] as? Dictionary<NSObject, AnyObject> {
+                        if let thumbnailsDict:Dictionary<NSObject, AnyObject> = snippetDict["thumbnails"] as? Dictionary<NSObject, AnyObject> {
+                            if let videoId:String = resourceDict["videoId"] as? String {
+                                if let videoTitle: String = snippetDict["title"] as? String {
+                                    if let imageUrl: String = thumbnailsDict["default"]!["url"] as? String {
+                                        var shareImageUrl:String?
+                                        if let maxUrl = thumbnailsDict["maxres"]?["url"] as? String {
+                                            shareImageUrl = maxUrl
+                                        } else if let stdUrl = thumbnailsDict["standard"] as? String {
+                                            shareImageUrl = stdUrl
+                                        } else if let highUrl = thumbnailsDict["high"] as? String {
+                                            shareImageUrl = highUrl
+                                        } else if let mediumUrl = thumbnailsDict["medium"] as? String {
+                                            shareImageUrl = mediumUrl
+                                        } else {
+                                            shareImageUrl = imageUrl
+                                        }
+                                        let video = Video(id: videoId, name: videoTitle, thumbnailUrl: imageUrl, shareImageUrl: shareImageUrl!)
+                                        self.videoList.append(video)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        self.videoListTableView.reloadData()
+    }
+
     // Use this functions to retrieve comment about the playing video
     // Use this function to get comment about video
     func getVideoCommentsData(videoId: String) {

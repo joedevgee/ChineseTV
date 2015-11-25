@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'F74D1851F65AE8D9229FA9E6'
+               BlueprintIdentifier = 'F90ABDAE493142904C47F0C7'
                BlueprintName = 'JGMethodSwizzler'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'JGMethodSwizzler.framework'>

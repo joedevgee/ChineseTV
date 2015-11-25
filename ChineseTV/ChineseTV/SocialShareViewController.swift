@@ -10,9 +10,7 @@ import UIKit
 import PureLayout
 import SDWebImage
 import FBSDKCoreKit
-import FBSDKLoginKit
 import FBSDKShareKit
-import FBSDKMessengerShareKit
 import FontAwesomeKit
 
 let socialViewSize:CGSize = CGSize(width: UIScreen.mainScreen().bounds.width*0.8, height: UIScreen.mainScreen().bounds.height*0.6)
@@ -219,7 +217,15 @@ class SocialShareViewController: UIViewController {
     }
     
     func shareToFacebook() {
-        
+        let msg = FBSDKShareLinkContent()
+        msg.contentURL = NSURL(string: "https://www.google.com")
+        msg.contentTitle = self.shareVideo?.name
+        msg.imageURL = NSURL(string: (self.shareVideo?.shareImageUrl)!)
+        let dialog = FBSDKShareDialog()
+        dialog.fromViewController = self
+        dialog.shareContent = msg
+        dialog.mode = FBSDKShareDialogMode.ShareSheet
+        dialog.show()
     }
     
     // Share to wechat friends
@@ -248,16 +254,18 @@ class SocialShareViewController: UIViewController {
         }
     }
     
+    
+    //TODO: get through with qq share process
     func shareToQq() {
         let msg:Message = Message()
         msg.title = self.shareVideo?.name
         if let shareImage:UIImage = self.defaultImageView.image {
             msg.image = UIImageJPEGRepresentation(shareImage, 1)
             msg.thumbnail = msg.image
+            msg.desc = "这里写的是msg.description"
         }
         msg.link = "https://www.google.com"
         if let share = ShareManager.getShare(domain: RSQQ.domain) as? RSQQ {
-            
             share.shareToQQFriends(msg,
                 success: { message in print("success")},
                 fail: { message, error in
