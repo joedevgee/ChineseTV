@@ -22,27 +22,21 @@ class PlayListTableViewController: UITableViewController {
     var listProgressImageUrl = [String: String]()
     var listProgressId = [String: String]()
     var listName = [String: String]()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Uncomment the following line to preserve selection between presentations
-         self.clearsSelectionOnViewWillAppear = true
+        self.clearsSelectionOnViewWillAppear = true
         tableView.separatorStyle = .None
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        if let favList = NSUserDefaults.standardUserDefaults().arrayForKey("savedPlaylist") as? [String] where self.currentListId != nil {
-            if favList.contains(self.currentListId!) {
-                // Current list is already saved by the user
-                // Add an option for the user to delete this list from saved list
-                self.navCancelButton()
-            } else {
-                // Current list has not been saved by user
-                // Add an option for the user to save this list
-                self.navAddButton()
-            }
+        if let favList = NSUserDefaults.standardUserDefaults().arrayForKey("savedPlaylist") as? [String] where favList.contains(self.currentListId!) {
+            navCancelButton()
+        } else {
+            navAddButton()
         }
     }
     func navAddButton() {
@@ -144,7 +138,7 @@ class PlayListTableViewController: UITableViewController {
                         
                         self.navAddButton()
                     }
-            }      
+            }
             snackbar.show()
         } else {
             // current list is not saved
@@ -152,18 +146,18 @@ class PlayListTableViewController: UITableViewController {
             self.navAddButton()
         }
     }
-
+    
     // MARK: - Table view data source
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return (UIScreen.mainScreen().bounds.width / 3.5) * 0.7
     }
-
+    
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
-
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return self.videoList.count
@@ -195,49 +189,21 @@ class PlayListTableViewController: UITableViewController {
     func requestPlayList(listId: String) {
         let resultNumber:Int = 50
         Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=\(resultNumber)&playlistId=\(listId)&key=\(googleApiKey)")
-            .responseJSON { response in
-                if let JSON = response.result.value {
-                    if let items = JSON["items"] as? Array<AnyObject> {
-                        self.processVideoList(items)
-                    }
-                }
+            .responseJSON { response in if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> { self.processVideoList(items) }
         }
     }
     
-    func processVideoList(items: Array<AnyObject>) {
+    func processVideoList(items: Array<Dictionary<NSObject, AnyObject>>) {
         for video in items {
-            if let videoDict:Dictionary<NSObject, AnyObject> = video as? Dictionary<NSObject, AnyObject> {
-                if let snippetDict:Dictionary<NSObject, AnyObject> = videoDict["snippet"] as? Dictionary<NSObject, AnyObject> {
-                    if let resourceDict:Dictionary<NSObject, AnyObject> = snippetDict["resourceId"] as? Dictionary<NSObject, AnyObject> {
-                        if let thumbnailsDict:Dictionary<NSObject, AnyObject> = snippetDict["thumbnails"] as? Dictionary<NSObject, AnyObject> {
-                            if let videoId:String = resourceDict["videoId"] as? String {
-                                if let videoTitle: String = snippetDict["title"] as? String {
-                                    if let imageUrl: String = thumbnailsDict["default"]!["url"] as? String {
-                                        var shareImageUrl:String?
-                                        if let maxUrl = thumbnailsDict["maxres"]?["url"] as? String {
-                                            shareImageUrl = maxUrl
-                                        } else if let stdUrl = thumbnailsDict["standard"] as? String {
-                                            shareImageUrl = stdUrl
-                                        } else if let highUrl = thumbnailsDict["high"] as? String {
-                                            shareImageUrl = highUrl
-                                        } else if let mediumUrl = thumbnailsDict["medium"] as? String {
-                                            shareImageUrl = mediumUrl
-                                        } else {
-                                            shareImageUrl = imageUrl
-                                        }
-                                        let video = Video(id: videoId, name: videoTitle, thumbnailUrl: imageUrl, shareImageUrl: shareImageUrl!)
-                                        self.videoList.append(video)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            guard let videoId = video["snippet"]!["resourceId"]!!["videoId"] as? String else { print("getting video id failed");break }
+            guard let videoTitle = video["snippet"]!["title"] as? String else { print("getting video title failed");break }
+            guard let videoThumbnail = video["snippet"]!["thumbnails"]!!["default"]!!["url"] as? String else { print("getting video thumbnail failed");break }
+            guard let videoShareImage = video["snippet"]!["thumbnails"]!!["high"]!!["url"] as? String else { print("getting video image for share failed");break }
+            self.videoList.append(Video(id: videoId, name: videoTitle, thumbnailUrl: videoThumbnail, shareImageUrl: videoShareImage))
         }
         tableView.reloadData()
     }
-
+    
     //MARK: Prepare for segue
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showVideo" {
@@ -262,5 +228,5 @@ class PlayListTableViewController: UITableViewController {
             }
         }
     }
-
+    
 }

@@ -15,6 +15,8 @@ import Async
 import FontAwesomeKit
 import FBSDKCoreKit
 import FBSDKLoginKit
+import Parse
+import TTGSnackbar
 
 class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FBSDKLoginButtonDelegate, UITextViewDelegate {
     
@@ -36,6 +38,8 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     var videoListTableView:UITableView = UITableView.newAutoLayoutView()
     var videoListHeaderTitle:UILabel = UILabel.newAutoLayoutView()
     var commentListTableView:UITableView = UITableView.newAutoLayoutView()
+    let commentShareButton:UIButton = UIButton.newAutoLayoutView()
+    let videoShareButton:UIButton = UIButton.newAutoLayoutView()
     var fbLoginButton:FBSDKLoginButton = FBSDKLoginButton.newAutoLayoutView()
     var loginInfoLabel:UILabel = UILabel.newAutoLayoutView()
     var fbProfileView:FBSDKProfilePictureView = FBSDKProfilePictureView.newAutoLayoutView()
@@ -65,7 +69,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
             self.fbLoginButton.hidden = true
             self.loginInfoLabel.hidden = true
             self.commentTextView.hidden = false
-            self.sendCommentButton.hidden = false
+            self.sendCommentButton.hidden = true
         } else {
             self.fbProfileView.hidden = true
             self.commentTextView.hidden = true
@@ -191,21 +195,20 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         videoListHeaderTitle.numberOfLines = 3
         videoListHeaderTitle.sizeToFit()
         
-        let shareButton:UIButton = UIButton.newAutoLayoutView()
-        shareButton.setTitle("分享", forState: .Normal)
-        shareButton.backgroundColor = UIColor.clearColor()
-        shareButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        shareButton.addTarget(self, action: "showSocialPopup", forControlEvents: .TouchUpInside)
+        videoShareButton.setTitle("分享", forState: .Normal)
+        videoShareButton.backgroundColor = UIColor.clearColor()
+        videoShareButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        videoShareButton.addTarget(self, action: "showSocialPopup", forControlEvents: .TouchUpInside)
         
         videoListHeader.addSubview(videoListHeaderTitle)
-        videoListHeader.addSubview(shareButton)
+        videoListHeader.addSubview(videoShareButton)
         
         videoListHeaderTitle.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
         videoListHeaderTitle.autoSetDimension(.Width, toSize: UIScreen.mainScreen().bounds.width*0.9, relation: .LessThanOrEqual)
         videoListHeaderTitle.autoAlignAxisToSuperviewMarginAxis(.Vertical)
         
-        shareButton.autoPinEdgeToSuperviewEdge(.Right, withInset: 10, relation: .LessThanOrEqual)
-        shareButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5, relation: .LessThanOrEqual)
+        videoShareButton.autoPinEdgeToSuperviewEdge(.Right, withInset: 10, relation: .LessThanOrEqual)
+        videoShareButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5, relation: .LessThanOrEqual)
         
         videoListTableView.tableHeaderView = videoListHeader
         self.view.addSubview(self.videoListTableView)
@@ -248,7 +251,9 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         commentListTableView.hidden = false
         
         commentTextView.delegate = self
-        commentTextView.backgroundColor = UIColor.whiteColor()
+        commentTextView.text = "请在此输入您的回复。。。"
+        commentTextView.textColor = UIColor.lightTextColor()
+        commentTextView.backgroundColor = lighterThemeColor
         commentTextView.layer.cornerRadius = 5
         fbProfileView.layer.borderWidth = 0.1
         fbProfileView.layer.masksToBounds = true
@@ -259,12 +264,13 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         sendCommentButton.setTitleColor(videoTopColor, forState: .Disabled)
         sendCommentButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         sendCommentButton.sizeToFit()
+        sendCommentButton.hidden = true
+        sendCommentButton.addTarget(self, action: "sendComment", forControlEvents: .TouchUpInside)
         
-        let shareButton:UIButton = UIButton.newAutoLayoutView()
-        shareButton.setTitle("分享", forState: .Normal)
-        shareButton.backgroundColor = UIColor.clearColor()
-        shareButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        shareButton.addTarget(self, action: "showSocialPopup", forControlEvents: .TouchUpInside)
+        commentShareButton.setTitle("分享", forState: .Normal)
+        commentShareButton.backgroundColor = UIColor.clearColor()
+        commentShareButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        commentShareButton.addTarget(self, action: "showSocialPopup", forControlEvents: .TouchUpInside)
         
         fbLoginButton.delegate = self
         fbLoginButton.readPermissions = ["public_profile"]
@@ -278,17 +284,17 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         commentListHeader.addSubview(loginInfoLabel)
         commentListHeader.addSubview(commentTextView)
         commentListHeader.addSubview(sendCommentButton)
-        commentListHeader.addSubview(shareButton)
+        commentListHeader.addSubview(commentShareButton)
         
         fbProfileView.autoSetDimensionsToSize(CGSize(width: 30, height: 30))
         fbProfileView.autoPinEdgeToSuperviewEdge(.Top, withInset: 8, relation: .LessThanOrEqual)
         fbProfileView.autoPinEdgeToSuperviewEdge(.Leading, withInset: 5, relation: .LessThanOrEqual)
         
-        shareButton.autoPinEdgeToSuperviewEdge(.Right, withInset: 10, relation: .LessThanOrEqual)
-        shareButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5, relation: .LessThanOrEqual)
+        commentShareButton.autoPinEdgeToSuperviewEdge(.Right, withInset: 10, relation: .LessThanOrEqual)
+        commentShareButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5, relation: .LessThanOrEqual)
         
         sendCommentButton.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
-        sendCommentButton.autoAlignAxis(.Vertical, toSameAxisOfView: shareButton)
+        sendCommentButton.autoAlignAxis(.Vertical, toSameAxisOfView: commentShareButton)
         
         loginInfoLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 20, relation: .GreaterThanOrEqual)
         loginInfoLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 20, relation: .GreaterThanOrEqual)
@@ -299,7 +305,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         commentTextView.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
         commentTextView.autoPinEdge(.Left, toEdge: .Right, ofView: fbProfileView, withOffset: 5)
         commentTextView.autoPinEdge(.Right, toEdge: .Left, ofView: sendCommentButton, withOffset: -5)
-        commentTextView.autoPinEdge(.Bottom, toEdge: .Top, ofView: shareButton, withOffset: -2)
+        commentTextView.autoPinEdge(.Bottom, toEdge: .Top, ofView: commentShareButton, withOffset: -2)
         
         commentListTableView.estimatedRowHeight = 50
         commentListTableView.autoPinEdge(.Top, toEdge: .Bottom, ofView: topContainer)
@@ -309,13 +315,80 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         
     }
     
+    // MARK: textview delegate methods
+    func textViewDidBeginEditing(textView: UITextView) {
+        commentShareButton.hidden = true
+        if textView.text == "请在此输入您的回复。。。" {
+            textView.text = ""
+            textView.backgroundColor = UIColor.whiteColor()
+            textView.textColor = UIColor.blackColor()
+        }
+    }
+    
+    func textViewDidChange(textView: UITextView) {
+        sendCommentButton.hidden = false
+    }
+    
+    func textViewDidEndEditing(textView: UITextView) {
+        sendCommentButton.hidden = true
+        commentShareButton.hidden = false
+        if textView.text.isEmpty {
+            textView.text = "请在此输入您的回复。。。"
+            textView.backgroundColor = lighterThemeColor
+            textView.textColor = UIColor.lightTextColor()
+        }
+    }
+    
+    func sendComment() {
+        if let sendingComment:String = self.commentTextView.text where !sendingComment.isEmpty {
+            print(sendingComment)
+            self.commentTextView.text = ""
+            self.view.endEditing(true)
+            var commenterName:String = ""
+            var commenterImageUrl:String = ""
+            // Retrieve info from facebook
+            if FBSDKAccessToken.currentAccessToken() != nil {
+                FBSDKGraphRequest(graphPath: "me", parameters: ["fields": "name,id,picture"]).startWithCompletionHandler({ (connection, result, error) -> Void in
+                    if error != nil {
+                        print("Graph request failed with error: \(error)")
+                    } else {
+                        if let name:NSString =  result.valueForKey("name") as? NSString {
+                            commenterName = name as String
+                        }
+                        if let imageUrl:NSString = result.valueForKey("picture")!.valueForKey("data")?.valueForKey("url") as? NSString {
+                            commenterImageUrl = imageUrl as String
+                        }
+                        // Save new comment to Parse
+                        let savingComment = PFObject(className: "Comment")
+                        savingComment["text"] = sendingComment
+                        savingComment["name"] = commenterName
+                        savingComment["imageUrl"] = commenterImageUrl
+                        savingComment["videoId"] = self.youtubePlayer.videoIdentifier
+                        // Create a placeholder Comment item to display when user successfully posted new comment
+                        let newComment = Comment(name: commenterName, avatarUrl: commenterImageUrl, commentText: sendingComment)
+                        savingComment.saveInBackgroundWithBlock {
+                            (success:Bool, error:NSError?) -> Void in
+                            if success {
+                                let successBar = TTGSnackbar.init(message: "您的回复已成功发送", duration: .Middle)
+                                successBar.show()
+                                self.commentList.insert(newComment, atIndex: 0)
+                                self.commentListTableView.reloadData()
+                            }
+                        }
+                    }
+                })
+            }
+            // End of retrieving info from facebook graph
+        }
+    }
+    
     //MARK: facebook login button delegate methods
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
         if result.grantedPermissions.contains("public_profile") {
             print("User granted permission to app")
             self.fbProfileView.hidden = false
             self.commentTextView.hidden = false
-            self.sendCommentButton.hidden = false
+            self.sendCommentButton.hidden = true
             self.loginInfoLabel.hidden = true
             self.fbLoginButton.hidden = true
         }
@@ -358,7 +431,6 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                                 var newDict = tempDict
                                 newDict[self.currentListId!] = video.name
                                 NSUserDefaults.standardUserDefaults().setObject(newDict, forKey: "playlistProgressName")
-                                print("Successfully updating the saved playlist progress")
                             }
                             // update the progress image url
                             if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressImageUrl") as? [String:String] {
@@ -379,7 +451,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                     // The video is not in a saved playlist by the user
                     // Do nothing
                 }
-            }
+        }
     }
     
     func willEnterFullScreen() {
@@ -400,79 +472,53 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     func requestPlayList(listId: String) {
         let resultNumber:Int = 50
         Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=\(resultNumber)&playlistId=\(listId)&key=\(googleApiKey)")
-            .responseJSON { response in
-                if let JSON = response.result.value {
-                    if let items = JSON["items"] as? Array<AnyObject> {
-                        self.processVideoList(items)
-                    }
-                }
+            .responseJSON { response in if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> { self.processVideoList(items) }
         }
     }
     
-    func processVideoList(items: Array<AnyObject>) {
+    func processVideoList(items: Array<Dictionary<NSObject, AnyObject>>) {
         for video in items {
-            if let videoDict:Dictionary<NSObject, AnyObject> = video as? Dictionary<NSObject, AnyObject> {
-                if let snippetDict:Dictionary<NSObject, AnyObject> = videoDict["snippet"] as? Dictionary<NSObject, AnyObject> {
-                    if let resourceDict:Dictionary<NSObject, AnyObject> = snippetDict["resourceId"] as? Dictionary<NSObject, AnyObject> {
-                        if let thumbnailsDict:Dictionary<NSObject, AnyObject> = snippetDict["thumbnails"] as? Dictionary<NSObject, AnyObject> {
-                            if let videoId:String = resourceDict["videoId"] as? String {
-                                if let videoTitle: String = snippetDict["title"] as? String {
-                                    if let imageUrl: String = thumbnailsDict["default"]!["url"] as? String {
-                                        var shareImageUrl:String?
-                                        if let maxUrl = thumbnailsDict["maxres"]?["url"] as? String {
-                                            shareImageUrl = maxUrl
-                                        } else if let stdUrl = thumbnailsDict["standard"] as? String {
-                                            shareImageUrl = stdUrl
-                                        } else if let highUrl = thumbnailsDict["high"] as? String {
-                                            shareImageUrl = highUrl
-                                        } else if let mediumUrl = thumbnailsDict["medium"] as? String {
-                                            shareImageUrl = mediumUrl
-                                        } else {
-                                            shareImageUrl = imageUrl
-                                        }
-                                        let video = Video(id: videoId, name: videoTitle, thumbnailUrl: imageUrl, shareImageUrl: shareImageUrl!)
-                                        self.videoList.append(video)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            guard let videoId = video["snippet"]!["resourceId"]!!["videoId"] as? String else { print("getting video id failed");break }
+            guard let videoTitle = video["snippet"]!["title"] as? String else { print("getting video title failed");break }
+            guard let videoThumbnail = video["snippet"]!["thumbnails"]!!["default"]!!["url"] as? String else { print("getting video thumbnail failed");break }
+            guard let videoShareImage = video["snippet"]!["thumbnails"]!!["high"]!!["url"] as? String else { print("getting video image for share failed");break }
+            self.videoList.append(Video(id: videoId, name: videoTitle, thumbnailUrl: videoThumbnail, shareImageUrl: videoShareImage))
         }
         self.videoListTableView.reloadData()
     }
-
+    
     // Use this functions to retrieve comment about the playing video
     // Use this function to get comment about video
     func getVideoCommentsData(videoId: String) {
-        Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/commentThreads?key=\(googleApiKey)&textFormat=plainText&part=snippet&videoId=\(videoId)")
-            .responseJSON { response in
-                if let JSON = response.result.value {
-                    if let items: AnyObject = JSON["items"] as? Array<AnyObject> {
-                        if items.count > 0 {
-                            self.getCommentsInfo(items as! Array<AnyObject>)
-                        } else {
-                            print("No comments returned")
-                        }
+        self.commentList.removeAll(keepCapacity: true)
+        // First get the comments from self parse backend
+        let commentQuery = PFQuery(className: "Comment")
+        commentQuery.whereKey("videoId", equalTo: videoId)
+        commentQuery.findObjectsInBackgroundWithBlock {
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            if error == nil {
+                if let comments = objects {
+                    for comment in comments {
+                        let newComment = Comment(name: String(comment["name"]), avatarUrl: String(comment["imageUrl"]), commentText: String(comment["text"]))
+                        self.commentList.append(newComment)
                     }
                 }
+            } else {
+                print(error)
+            }
+            // Second: get comments from youtube original video
+            Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/commentThreads?key=\(googleApiKey)&textFormat=plainText&part=snippet&videoId=\(videoId)")
+                .responseJSON { response in if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> where items.count > 0 { self.getCommentsInfo(items) }
+            }
         }
     }
     // process the comments data from JSON
-    func getCommentsInfo(items: Array<AnyObject>) {
-        self.commentList.removeAll(keepCapacity: true)
-        for item in items {
-            if let itemDict: Dictionary<NSObject, AnyObject> = item as? Dictionary<NSObject, AnyObject> {
-                if let topSnippet: Dictionary<NSObject, AnyObject> = itemDict["snippet"] as? Dictionary<NSObject, AnyObject> {
-                    if let topLevel: Dictionary<NSObject, AnyObject> = topSnippet["topLevelComment"] as? Dictionary<NSObject, AnyObject> {
-                        if let commentSnippet: Dictionary<NSObject, AnyObject> = topLevel["snippet"] as? Dictionary<NSObject, AnyObject> {
-                            let comment = Comment(name: String(commentSnippet["authorDisplayName"]!), avatarUrl: String(commentSnippet["authorProfileImageUrl"]!), commentText: String(commentSnippet["textDisplay"]!))
-                            self.commentList.append(comment)
-                        }
-                    }
-                }
-            }
+    func getCommentsInfo(items: Array<Dictionary<NSObject, AnyObject>>) {
+        for comment in items {
+            guard let authorName = comment["snippet"]!["topLevelComment"]!!["snippet"]!!["authorDisplayName"] as? String else { print("getting user name failed"); break }
+            guard let userAvatar = comment["snippet"]!["topLevelComment"]!!["snippet"]!!["authorProfileImageUrl"] as? String else { print("getting user avatar failed"); break }
+            guard let commentText = comment["snippet"]!["topLevelComment"]!!["snippet"]!!["textDisplay"] as? String else { print("getting user comment text failed"); break }
+            self.commentList.append(Comment(name: authorName, avatarUrl: userAvatar, commentText: commentText))
         }
         self.commentListTableView.reloadData()
     }
@@ -561,7 +607,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.presentViewController(formSheetController, animated: true, completion: nil)
     }
     
-
+    
     
     // Function to dismiss keyboard
     func dismissKeyboard() {

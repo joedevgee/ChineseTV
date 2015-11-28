@@ -47,10 +47,10 @@
             </objects>
             <point key="canvasLocation" x="-5076" y="1153"/>
         </scene>
-        <!--Single Category Collection View Controller-->
+        <!--Drama Collection View Controller-->
         <scene sceneID="d1f-5k-kug">
             <objects>
-                <collectionViewController id="QJ7-cl-ATb" customClass="SingleCategoryCollectionViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController id="QJ7-cl-ATb" customClass="DramaCollectionViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="RhF-8d-NOp">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -80,10 +80,95 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" id="ofZ-XA-6LZ"/>
+                    <connections>
+                        <segue destination="7Lv-GJ-uWM" kind="show" identifier="showDrama" id="YQS-Rv-rXL"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nhz-Pn-5Eg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-4232" y="1153"/>
+        </scene>
+        <!--Reality Collection View Controller-->
+        <scene sceneID="Anq-Sk-va2">
+            <objects>
+                <collectionViewController id="BUX-45-3LE" customClass="RealityCollectionViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="rKO-En-fQD">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Ofa-Q9-N6G">
+                            <size key="itemSize" width="50" height="50"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="4Db-Hv-Rts" customClass="SingleCategoryCollectionCell" customModule="ChineseTV" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="64" width="50" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <animations/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <animations/>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="BUX-45-3LE" id="pgA-lL-20C"/>
+                            <outlet property="delegate" destination="BUX-45-3LE" id="RsV-PU-ilf"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" id="fga-U6-Tdq"/>
+                    <connections>
+                        <segue destination="7Lv-GJ-uWM" kind="show" identifier="showReality" id="82W-F4-fJB"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8WY-Vg-N46" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3436" y="1153"/>
+        </scene>
+        <!--Talkshow Collection View Controller-->
+        <scene sceneID="Ibi-xp-z4n">
+            <objects>
+                <collectionViewController id="jbV-PN-FZG" customClass="TalkshowCollectionViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="moL-bt-10T">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="WU8-f8-U9q">
+                            <size key="itemSize" width="50" height="50"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="waV-D5-kVR" customClass="SingleCategoryCollectionCell" customModule="ChineseTV" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="64" width="50" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <animations/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <animations/>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="jbV-PN-FZG" id="XiP-cl-uFe"/>
+                            <outlet property="delegate" destination="jbV-PN-FZG" id="3cV-Ee-DVY"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" id="tAV-lG-WRa"/>
+                    <connections>
+                        <segue destination="7Lv-GJ-uWM" kind="show" identifier="showTalkshow" id="nmQ-yP-DNN"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NHH-PJ-Z2N" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2676" y="1153"/>
         </scene>
         <!--Play List Detail View Controller-->
         <scene sceneID="o3U-iy-vNp">
@@ -104,70 +189,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xX8-Hf-zf0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-3796" y="2726"/>
-        </scene>
-        <!--Table View Controller-->
-        <scene sceneID="nmU-NV-hhw">
-            <objects>
-                <tableViewController id="HPS-3R-zzR" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="IEn-TP-bci">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="SE9-Yx-GZf">
-                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SE9-Yx-GZf" id="dhX-12-8aS">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <animations/>
-                                </tableViewCellContentView>
-                                <animations/>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="HPS-3R-zzR" id="yJR-AS-MMI"/>
-                            <outlet property="delegate" destination="HPS-3R-zzR" id="1ZY-lY-Hls"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" id="IGd-SH-wId"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Kqg-iE-MS2" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-3436" y="1153"/>
-        </scene>
-        <!--Table View Controller-->
-        <scene sceneID="Ncd-Nv-zqt">
-            <objects>
-                <tableViewController id="Zwp-9h-CPn" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="HDi-VK-Op9">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="vgN-Qp-jZj">
-                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vgN-Qp-jZj" id="oLN-IE-WOn">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <animations/>
-                                </tableViewCellContentView>
-                                <animations/>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="Zwp-9h-CPn" id="GEE-t6-l2g"/>
-                            <outlet property="delegate" destination="Zwp-9h-CPn" id="Zjp-PT-Gwu"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" id="s3I-EC-dOw"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="fec-86-ygb" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2676" y="1153"/>
         </scene>
         <!--Play List Table View Controller-->
         <scene sceneID="LLp-9m-Ohl">
@@ -387,7 +408,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="HPS-3R-zzR" kind="relationship" relationship="rootViewController" id="izE-ND-P2a"/>
+                        <segue destination="BUX-45-3LE" kind="relationship" relationship="rootViewController" id="YRO-4S-Fpk"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0KB-9I-mhs" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -407,7 +428,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="Zwp-9h-CPn" kind="relationship" relationship="rootViewController" id="3fa-p4-tcH"/>
+                        <segue destination="jbV-PN-FZG" kind="relationship" relationship="rootViewController" id="0Pb-AJ-CQs"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zht-Js-zaA" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -421,4 +442,7 @@
         <image name="ic_mic" width="24" height="24"/>
         <image name="ic_theaters" width="24" height="24"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="nmQ-yP-DNN"/>
+    </inferredMetricsTieBreakers>
 </document>
