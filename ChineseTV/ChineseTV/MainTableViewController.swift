@@ -77,18 +77,13 @@ class MainTableViewController: PFQueryTableViewController {
         if cell == nil {
             cell = MainTableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
         }
-        if let title:String = object!["listName"] as? String {
-            if let descName:String = object!["listDesc"] as? String {
-                cell?.listTitle.text = "\(title): \(descName)"
-            }
-        }
-        if let subtitle:String = object!["listSubtitle"] as? String {
-            cell?.listSubtitle.text = subtitle
-        }
-        if let url:String = object!["thumbnailUrl"] as? String {
-            cell?.thumbnailImage.sd_setImageWithURL(NSURL(string: url))
-        }
-        
+        guard let listTitle = object!["listName"] as? String else { return nil }
+        guard let listDesc = object!["listDesc"] as? String else { return nil }
+        guard let listSubtitle = object!["listSubtitle"] as? String else { return nil }
+        guard let thumbnailUrl = object!["thumbnailUrl"] as? String else { return nil }
+        cell?.listTitle.text = "\(listTitle): \(listDesc)"
+        cell?.listSubtitle.text = "\(listSubtitle)"
+        cell?.thumbnailImage.sd_setImageWithURL(NSURL(string: thumbnailUrl))
         cell?.setNeedsUpdateConstraints()
         cell?.updateConstraintsIfNeeded()
         return cell

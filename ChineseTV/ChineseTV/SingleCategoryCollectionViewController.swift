@@ -47,8 +47,8 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
         let menuButton = UIBarButtonItem(image: menuImage, style: .Plain, target: self, action: "toggle")
         navigationItem.leftBarButtonItem = menuButton
         
-        self.view.backgroundColor = dividerColor
-        collectionView?.backgroundColor = dividerColor
+        self.view.backgroundColor = collectionBackColor
+        collectionView?.backgroundColor = collectionBackColor
         
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -89,15 +89,19 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath, object: PFObject?) -> PFCollectionViewCell? {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! SingleCategoryCollectionCell
-        if let imageUrl = object!["thumbnailUrl"] as? String {
-            cell.videoThumbnailView.sd_setImageWithURL(NSURL(string: imageUrl))
-        }
-        if let videoTitle = object!["listName"] as? String {
-            cell.videoTitle.text = " " + videoTitle
-        }
+        
+        guard let listTitle = object!["listName"] as? String else { return nil }
+        guard let listDesc = object!["listDesc"] as? String else { return nil }
+        guard let thumbnailUrl = object!["thumbnailUrl"] as? String else { return nil }
+        
+        cell.videoTitle.text = "\(listTitle): \(listDesc)"
+        cell.videoThumbnailView.sd_setImageWithURL(NSURL(string: thumbnailUrl))
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
-        // Configure the cell
+        
+        if let listId = object!["listID"] as? String, savedListArray = NSUserDefaults.standardUserDefaults().arrayForKey("savedPlaylist") as? [String] {
+            if savedListArray.contains(listId) { cell.saveList.tintColor = themeColor } else { cell.saveList.tintColor = collectionBackColor }
+        }
         
         return cell
     }
@@ -117,7 +121,7 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
     }
     
     override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSize(width: screenWidth/2, height: screenHeight/3)
+        return CGSize(width: screenWidth/2, height: screenHeight/2.8)
     }
     
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
