@@ -18,6 +18,7 @@
 		0D10A5001BF1537D006C83FA /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D10A4FF1BF1537D006C83FA /* ToggleButton.swift */; };
 		0D10A5021BF15CFB006C83FA /* MainTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D10A5011BF15CFB006C83FA /* MainTableViewCell.swift */; };
 		0D2EC6BC1C09F102001BFDF9 /* DifferenteCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2EC6BB1C09F102001BFDF9 /* DifferenteCollectionViewController.swift */; };
+		0D40F71F1C0CE385007CB5EF /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D40F71E1C0CE385007CB5EF /* SearchResultViewController.swift */; };
 		0D58A5F21BF144E700BD1C7E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D58A5F11BF144E700BD1C7E /* AppDelegate.swift */; };
 		0D58A5F71BF144E700BD1C7E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D58A5F51BF144E700BD1C7E /* Main.storyboard */; };
 		0D58A5F91BF144E700BD1C7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D58A5F81BF144E700BD1C7E /* Assets.xcassets */; };
@@ -59,6 +60,7 @@
 		0DAC63DF1BFE9B3D001AC3E9 /* MZTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63D31BFE9B3D001AC3E9 /* MZTransition.m */; };
 		0DAC63E01BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63D51BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m */; };
 		0DC61B481BF183FF009DD17F /* AddPlayListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */; };
+		0DF925871C0BEE9F003E179C /* SearchBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF925861C0BEE9F003E179C /* SearchBarViewController.swift */; };
 		0DFE00471C02BA84001C448A /* LeftMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE00461C02BA84001C448A /* LeftMenuTableViewCell.swift */; };
 		6E42DB45D3E2A1B4FC7620DC /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30AFB0F3D2930987AD43A4EA /* Pods.framework */; };
 /* End PBXBuildFile section */
@@ -76,6 +78,7 @@
 		0D10A4FF1BF1537D006C83FA /* ToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleButton.swift; sourceTree = "<group>"; };
 		0D10A5011BF15CFB006C83FA /* MainTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTableViewCell.swift; sourceTree = "<group>"; };
 		0D2EC6BB1C09F102001BFDF9 /* DifferenteCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DifferenteCollectionViewController.swift; sourceTree = "<group>"; };
+		0D40F71E1C0CE385007CB5EF /* SearchResultViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultViewController.swift; sourceTree = "<group>"; };
 		0D58A5EE1BF144E700BD1C7E /* ChineseTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChineseTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D58A5F11BF144E700BD1C7E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D58A5F61BF144E700BD1C7E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -137,6 +140,7 @@
 		0DAC63D41BFE9B3D001AC3E9 /* UIViewController+TargetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+TargetViewController.h"; sourceTree = "<group>"; };
 		0DAC63D51BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+TargetViewController.m"; sourceTree = "<group>"; };
 		0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddPlayListViewController.swift; sourceTree = "<group>"; };
+		0DF925861C0BEE9F003E179C /* SearchBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBarViewController.swift; sourceTree = "<group>"; };
 		0DFE00461C02BA84001C448A /* LeftMenuTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftMenuTableViewCell.swift; sourceTree = "<group>"; };
 		30AFB0F3D2930987AD43A4EA /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B79A4D41E39DD9D8012284F6 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -200,6 +204,7 @@
 		0D10A4EC1BF14681006C83FA /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				0DF925831C0BE051003E179C /* SearchViewController */,
 				0DA3F9F51C001B8B00FA1960 /* PlayListViewController */,
 				0DAC63B81BFE9A8B001AC3E9 /* PopupViewController */,
 				0D6A66E91BF4088E008ABB5E /* DetailViewController */,
@@ -313,6 +318,7 @@
 			children = (
 				0DAC63BB1BFE9B3D001AC3E9 /* MZFormSheetPresentationController */,
 				0DAC63B91BFE9B08001AC3E9 /* SocialShareViewController.swift */,
+				0DF925861C0BEE9F003E179C /* SearchBarViewController.swift */,
 			);
 			name = PopupViewController;
 			sourceTree = "<group>";
@@ -356,6 +362,14 @@
 				0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */,
 			);
 			name = AddItemView;
+			sourceTree = "<group>";
+		};
+		0DF925831C0BE051003E179C /* SearchViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0D40F71E1C0CE385007CB5EF /* SearchResultViewController.swift */,
+			);
+			name = SearchViewController;
 			sourceTree = "<group>";
 		};
 		88D131F6C64B18D7AB4E7F5A /* Frameworks */ = {
@@ -514,6 +528,7 @@
 				0DAC63D61BFE9B3D001AC3E9 /* MZBlurEffectAdapter.m in Sources */,
 				0D7284851BF2A769006BB77A /* RESideMenu.m in Sources */,
 				0DAC63DE1BFE9B3D001AC3E9 /* MZMethodSwizzler.m in Sources */,
+				0DF925871C0BEE9F003E179C /* SearchBarViewController.swift in Sources */,
 				0DAC63D71BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationController.m in Sources */,
 				0DC61B481BF183FF009DD17F /* AddPlayListViewController.swift in Sources */,
 				0D2EC6BC1C09F102001BFDF9 /* DifferenteCollectionViewController.swift in Sources */,
@@ -537,6 +552,7 @@
 				0D7284841BF2A769006BB77A /* RECommonFunctions.m in Sources */,
 				0D7284861BF2A769006BB77A /* UIViewController+RESideMenu.m in Sources */,
 				0D0ED6AA1BFD51F900357A0A /* RSWeibo.swift in Sources */,
+				0D40F71F1C0CE385007CB5EF /* SearchResultViewController.swift in Sources */,
 				0DAC63DD1BFE9B3D001AC3E9 /* MZFormSheetPresentationViewControllerSegue.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

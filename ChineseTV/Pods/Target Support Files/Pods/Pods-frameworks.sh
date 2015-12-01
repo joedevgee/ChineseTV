@@ -94,11 +94,13 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/FontAwesomeKit.framework"
   install_framework "Pods/JGMethodSwizzler.framework"
   install_framework "Pods/MZAppearance.framework"
+  install_framework "Pods/NVActivityIndicatorView.framework"
   install_framework "Pods/Parse.framework"
   install_framework "Pods/ParseUI.framework"
   install_framework "Pods/PureLayout.framework"
   install_framework "Pods/SDWebImage.framework"
   install_framework "Pods/TTGSnackbar.framework"
+  install_framework "Pods/TextFieldEffects.framework"
   install_framework "Pods/XCDYouTubeKit.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
@@ -112,10 +114,12 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/FontAwesomeKit.framework"
   install_framework "Pods/JGMethodSwizzler.framework"
   install_framework "Pods/MZAppearance.framework"
+  install_framework "Pods/NVActivityIndicatorView.framework"
   install_framework "Pods/Parse.framework"
   install_framework "Pods/ParseUI.framework"
   install_framework "Pods/PureLayout.framework"
   install_framework "Pods/SDWebImage.framework"
   install_framework "Pods/TTGSnackbar.framework"
+  install_framework "Pods/TextFieldEffects.framework"
   install_framework "Pods/XCDYouTubeKit.framework"
 fi

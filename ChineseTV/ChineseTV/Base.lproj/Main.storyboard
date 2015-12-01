@@ -170,6 +170,25 @@
             </objects>
             <point key="canvasLocation" x="-2676" y="1153"/>
         </scene>
+        <!--Search Bar View Controller-->
+        <scene sceneID="Rd8-WQ-fW7">
+            <objects>
+                <viewController storyboardIdentifier="SearchBar" id="dXH-Eg-nyQ" customClass="SearchBarViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="QZ2-7v-5C3"/>
+                        <viewControllerLayoutGuide type="bottom" id="uyq-Sn-eoy"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ZCF-od-YhP">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zE1-Fb-kll" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1657" y="1153"/>
+        </scene>
         <!--Play List Detail View Controller-->
         <scene sceneID="o3U-iy-vNp">
             <objects>
@@ -204,7 +223,7 @@
                                 <rect key="frame" x="0.0" y="92" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0y3-fM-LD0" id="SIp-NV-3wc">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </tableViewCellContentView>
@@ -298,7 +317,7 @@
                                 <rect key="frame" x="0.0" y="28" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="EBi-83-hu9" id="Ti6-Ib-20Z">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </tableViewCellContentView>
@@ -443,6 +462,6 @@
         <image name="ic_theaters" width="24" height="24"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="nmQ-yP-DNN"/>
+        <segue reference="hcP-Aw-fWD"/>
     </inferredMetricsTieBreakers>
 </document>

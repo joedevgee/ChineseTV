@@ -23,7 +23,7 @@ class MainTableViewController: PFQueryTableViewController {
     override init(style: UITableViewStyle, className: String?) {
         super.init(style: style, className: className)
         parseClassName = "ChinesePlayList"
-        pullToRefreshEnabled = true
+        pullToRefreshEnabled = false
         paginationEnabled = true
         objectsPerPage = 35
     }
@@ -31,7 +31,7 @@ class MainTableViewController: PFQueryTableViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         parseClassName = "ChinesePlayList"
-        pullToRefreshEnabled = true
+        pullToRefreshEnabled = false
         paginationEnabled = true
         objectsPerPage = 35
     }
@@ -50,8 +50,24 @@ class MainTableViewController: PFQueryTableViewController {
         tableView.backgroundColor = dividerColor
         tableView.separatorStyle = .None
         tableView.allowsSelection = true
+        
+        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         // Add observe listen to user choosing side menu saved list
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedNotification:", name: passListNotificationKey, object: nil)
+        // Add observer listen to user found search result
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "foundSearchResult:", name: searchNotificationKey, object: nil)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        // Remove observer that listens for side menu touch
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: passListNotificationKey, object: nil)
+        // Remove observer that listens to search bar view
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: searchNotificationKey, object: nil)
     }
     
     func receivedNotification(sender: NSNotification) {
@@ -60,17 +76,26 @@ class MainTableViewController: PFQueryTableViewController {
         }
     }
     
+    func foundSearchResult(sender: NSNotification) {
+        if let data:Dictionary<String, String> = sender.userInfo as? Dictionary<String, String> {
+            var segueInfo = Array<String>()
+            guard let listId:String = data["listId"]! as String else { print("found no id") }
+            guard let listName:String = data["listName"]! as String else { print("found no name") }
+            segueInfo.append(listId)
+            segueInfo.append(listName)
+            self.performSegueWithIdentifier("showPlayList", sender: segueInfo)
+        }
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
         tabBarController!.tabBar.hidden = false
     }
     
-    // Tableviewcontroller delegate
+    // MARK:Tableviewcontroller delegate
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return self.rowHeight
     }
-    
-    
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, object: PFObject?) -> PFTableViewCell? {
         var cell = tableView.dequeueReusableCellWithIdentifier("Cell") as? MainTableViewCell
@@ -100,6 +125,7 @@ class MainTableViewController: PFQueryTableViewController {
         let menuButton = UIBarButtonItem(image: menuImage, style: .Plain, target: self, action: "toggle")
         navigationItem.leftBarButtonItem = menuButton
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: Selector("addPlayList:"))
+//        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: self, action: "showSearchBar")
     }
     
     func toggle() {
@@ -108,6 +134,15 @@ class MainTableViewController: PFQueryTableViewController {
     
     func addPlayList(sender: UIBarButtonItem) {
         performSegueWithIdentifier("addPlayList", sender: sender)
+    }
+    
+    func showSearchBar() {
+        let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("SearchBar") as! SearchBarViewController
+        let formSheetController = MZFormSheetPresentationViewController(contentViewController: viewController)
+        MZFormSheetPresentationController.appearance().shouldApplyBackgroundBlurEffect = true
+        formSheetController.allowDismissByPanningPresentedView = true
+        formSheetController.presentationController?.contentViewSize = searchViewSize
+        self.presentViewController(formSheetController, animated: true, completion: nil)
     }
     
     // Prepare for segue
@@ -136,6 +171,10 @@ class MainTableViewController: PFQueryTableViewController {
                         destVC.performSegueWithIdentifier("showVideo", sender: data)
                 }
                 
+            } else if let segueInfo:Array<String> = sender as? Array<String> {
+                destVC.requestPlayList(segueInfo[0])
+                destVC.currentListId = segueInfo[0]
+                destVC.currentListName = segueInfo[1]
             }
         }
     }

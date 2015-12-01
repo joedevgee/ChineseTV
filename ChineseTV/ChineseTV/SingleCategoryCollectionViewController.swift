@@ -18,7 +18,7 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
     var navigationTitle:String = ""
     var segueName:String = ""
     
-    // Configure parse query settings
+    // MARK:Configure parse query settings
     override init(collectionViewLayout layout: UICollectionViewLayout, className: String?) {
         super.init(collectionViewLayout: layout, className: className)
         parseClassName = "ChinesePlayList"
@@ -46,6 +46,7 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
         let menuImage = UIImage(named: "ic_menu")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         let menuButton = UIBarButtonItem(image: menuImage, style: .Plain, target: self, action: "toggle")
         navigationItem.leftBarButtonItem = menuButton
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: self, action: "showSearchBar")
         
         self.view.backgroundColor = collectionBackColor
         collectionView?.backgroundColor = collectionBackColor
@@ -64,15 +65,45 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedNotification:", name: passListNotificationKey, object: nil)
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        // Add observe listen to user choosing side menu saved list
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedNotification:", name: passListNotificationKey, object: nil)
+        // Add observer listen to user found search result
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "foundSearchResult:", name: searchNotificationKey, object: nil)
+    }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         // Remove observer that listens for side menu touch
         NSNotificationCenter.defaultCenter().removeObserver(self, name: passListNotificationKey, object: nil)
+        // Remove observer that listens to search bar view
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: searchNotificationKey, object: nil)
+    }
+    
+    func showSearchBar() {
+        let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("SearchBar") as! SearchBarViewController
+        let formSheetController = MZFormSheetPresentationViewController(contentViewController: viewController)
+        MZFormSheetPresentationController.appearance().shouldApplyBackgroundBlurEffect = true
+        formSheetController.allowDismissByPanningPresentedView = true
+        formSheetController.presentationController?.contentViewSize = searchViewSize
+        self.presentViewController(formSheetController, animated: true, completion: nil)
     }
     
     func receivedNotification(sender: NSNotification) {
         if let data:Dictionary<String, String> = sender.userInfo as? Dictionary<String, String> {
             self.performSegueWithIdentifier(self.segueName, sender: data)
+        }
+    }
+    
+    func foundSearchResult(sender: NSNotification) {
+        if let data:Dictionary<String, String> = sender.userInfo as? Dictionary<String, String> {
+            var segueInfo = Array<String>()
+            guard let listId:String = data["listId"]! as String else { print("found no id") }
+            guard let listName:String = data["listName"]! as String else { print("found no name") }
+            segueInfo.append(listId)
+            segueInfo.append(listName)
+            self.performSegueWithIdentifier(self.segueName, sender: segueInfo)
         }
     }
     
@@ -150,7 +181,10 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
                     }.main {
                         destVC.performSegueWithIdentifier("showVideo", sender: data)
                 }
-                
+            } else if let segueInfo:Array<String> = sender as? Array<String> {
+                destVC.requestPlayList(segueInfo[0])
+                destVC.currentListId = segueInfo[0]
+                destVC.currentListName = segueInfo[1]
             }
         }
     }
