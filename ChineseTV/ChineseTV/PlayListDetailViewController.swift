@@ -17,10 +17,17 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 import Parse
 import TTGSnackbar
+import NVActivityIndicatorView
 
 class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FBSDKLoginButtonDelegate, UITextViewDelegate {
     
     var currentListId:String?
+    
+    var nextVideoPageToken:String?
+    var videoTokenCheck = [String: Bool]()
+    
+    var nextCommentPageToken:String?
+    var commentTokenCheck = [String: Bool]()
     
     var videoList: [Video] = []
     var commentList: [Comment] = []
@@ -28,6 +35,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     var topContainer:UIView = UIView.newAutoLayoutView()
     var videoContainer:UIView = UIView.newAutoLayoutView()
     var youtubePlayer = XCDYouTubeVideoPlayerViewController()
+    var pacMan = NVActivityIndicatorView(frame: CGRectZero, type: .Pacman, color: UIColor.whiteColor(), size: CGSize(width: 35, height: 35))
     var videoSubContainer:UIView = UIView.newAutoLayoutView()
     
     var videoListButton:UIButton = UIButton.newAutoLayoutView()
@@ -159,6 +167,10 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         NSNotificationCenter.defaultCenter().removeObserver(youtubePlayer, name: MPMoviePlayerPlaybackDidFinishNotification, object: youtubePlayer.moviePlayer)
         // Add observer to handle changing video
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("changeVideo:"), name: XCDYouTubeVideoPlayerViewControllerDidReceiveVideoNotification, object: nil)
+        // Add observer to handle playback state change
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "moviePlayerStateChange", name: MPMoviePlayerPlaybackStateDidChangeNotification, object: nil)
+        // Add observer to handle load state change
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "moviePlayerStateChange", name: MPMoviePlayerLoadStateDidChangeNotification, object: nil)
         
         youtubePlayer.presentInView(self.videoContainer)
         youtubePlayer.moviePlayer.cancelAllThumbnailImageRequests()
@@ -172,6 +184,13 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         closeButton.tintColor = UIColor.whiteColor()
         closeButton.setImage(closeImage, forState: .Normal)
         youtubePlayer.moviePlayer.view.addSubview(closeButton)
+        
+        // Add a activity indicator to show that video is being loaded
+        pacMan.hidden = true
+        pacMan.startAnimation()
+        youtubePlayer.moviePlayer.view.addSubview(pacMan)
+        pacMan.autoCenterInSuperview()
+        
         
         closeButton.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
         closeButton.autoPinEdgeToSuperviewEdge(.Left)
@@ -238,6 +257,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.commentListTableView.registerClass(VideoDetailCommentCell.self, forCellReuseIdentifier: "Cell")
         self.commentListTableView.separatorStyle = .None
         self.commentListTableView.backgroundColor = videoTopColor
+        self.commentListTableView.allowsSelection = false
         
         // add gesture to dismiss keyboard
         let tapDismiss:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
@@ -454,6 +474,17 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    // MPMoviewPlayController notification methods
+    func moviePlayerStateChange() {
+        if let videoState:MPMoviePlaybackState = self.youtubePlayer.moviePlayer.playbackState as MPMoviePlaybackState {
+            if videoState == MPMoviePlaybackState.Playing {
+                self.pacMan.hidden = true
+            } else {
+                self.pacMan.hidden = false
+            }
+        }
+    }
+    
     func willEnterFullScreen() {
         print("Entering full screen")
         let value = UIInterfaceOrientation.LandscapeRight.rawValue
@@ -469,20 +500,32 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     
     // MARK: Network request methods
     // Use this function to retrieve videos in playlist
-    func requestPlayList(listId: String) {
-        let resultNumber:Int = 50
-        Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=\(resultNumber)&playlistId=\(listId)&key=\(googleApiKey)")
-            .responseJSON { response in if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> { self.processVideoList(items) }
+    func requestPlayList(listId: String, pageToken:String?) {
+        var searchParameters = [String: AnyObject]()
+        searchParameters["part"] = "snippet"
+        searchParameters["maxResults"] = 50
+        searchParameters["playlistId"] = listId
+        searchParameters["key"] = googleApiKey
+        if pageToken != nil { searchParameters["pageToken"] = pageToken }
+        Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?", parameters: searchParameters, encoding: ParameterEncoding.URLEncodedInURL)
+            .responseJSON { response in
+                if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextVideoPageToken { self.nextVideoPageToken = tempString; self.videoTokenCheck[tempString] = false }
+                if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> { self.processVideoList(items) }
         }
     }
     
     func processVideoList(items: Array<Dictionary<NSObject, AnyObject>>) {
         for video in items {
-            guard let videoId = video["snippet"]!["resourceId"]!!["videoId"] as? String else { print("getting video id failed");break }
-            guard let videoTitle = video["snippet"]!["title"] as? String else { print("getting video title failed");break }
-            guard let videoThumbnail = video["snippet"]!["thumbnails"]!!["default"]!!["url"] as? String else { print("getting video thumbnail failed");break }
-            guard let videoShareImage = video["snippet"]!["thumbnails"]!!["high"]!!["url"] as? String else { print("getting video image for share failed");break }
-            self.videoList.append(Video(id: videoId, name: videoTitle, thumbnailUrl: videoThumbnail, shareImageUrl: videoShareImage))
+            guard let snippet = video["snippet"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let videoTitle = snippet["title"] as? String else { continue }
+            guard let ids = snippet["resourceId"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let videoId = ids["videoId"] as? String else { continue }
+            guard let thumbnails = snippet["thumbnails"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let defaultThumbnail = thumbnails["default"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let defaultUrl = defaultThumbnail["url"] as? String else { continue }
+            guard let heighThumbnail = thumbnails["high"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let heighUrl = heighThumbnail["url"] as? String else { continue }
+            self.videoList.append(Video(id: videoId, name: videoTitle, thumbnailUrl: defaultUrl, shareImageUrl: heighUrl))
         }
         self.videoListTableView.reloadData()
     }
@@ -508,17 +551,35 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
             }
             // Second: get comments from youtube original video
             Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/commentThreads?key=\(googleApiKey)&textFormat=plainText&part=snippet&videoId=\(videoId)")
-                .responseJSON { response in if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> where items.count > 0 { self.getCommentsInfo(items) }
+                .responseJSON { response in
+                    if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextCommentPageToken { self.nextCommentPageToken = tempString; self.commentTokenCheck[tempString] = false }
+                    if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> where items.count > 0 { self.getCommentsInfo(items) }
             }
+        }
+    }
+    func nextComment(videoId: String, pageToken: String) {
+        var searchParameters = [String: AnyObject]()
+        searchParameters["textFormat"] = "plainText"
+        searchParameters["part"] = "snippet"
+        searchParameters["videoId"] = videoId
+        searchParameters["pageToken"] = pageToken
+        searchParameters["key"] = googleApiKey
+        Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/commentThreads?", parameters: searchParameters, encoding: .URLEncodedInURL)
+            .responseJSON { response in
+                if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextCommentPageToken { self.nextCommentPageToken = tempString; self.commentTokenCheck[tempString] = false }
+                if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> where items.count > 0 { self.getCommentsInfo(items) }
         }
     }
     // process the comments data from JSON
     func getCommentsInfo(items: Array<Dictionary<NSObject, AnyObject>>) {
         for comment in items {
-            guard let authorName = comment["snippet"]!["topLevelComment"]!!["snippet"]!!["authorDisplayName"] as? String else { print("getting user name failed"); break }
-            guard let userAvatar = comment["snippet"]!["topLevelComment"]!!["snippet"]!!["authorProfileImageUrl"] as? String else { print("getting user avatar failed"); break }
-            guard let commentText = comment["snippet"]!["topLevelComment"]!!["snippet"]!!["textDisplay"] as? String else { print("getting user comment text failed"); break }
-            self.commentList.append(Comment(name: authorName, avatarUrl: userAvatar, commentText: commentText))
+            guard let snippet = comment["snippet"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let topLevel = snippet["topLevelComment"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let topSnippet = topLevel["snippet"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let userName = topSnippet["authorDisplayName"] as? String else { continue }
+            guard let userAvatar = topSnippet["authorProfileImageUrl"] as? String else { continue }
+            guard let commentText = topSnippet["textDisplay"] as? String else { continue }
+            self.commentList.append(Comment(name: userName, avatarUrl: userAvatar, commentText: commentText))
         }
         self.commentListTableView.reloadData()
     }
@@ -548,8 +609,13 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         
         if tableView == self.videoListTableView {
             let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! VideoListTableViewCell
-            if let imageUrl:String = self.videoList[indexPath.row].thumbnailUrl as String {
-                cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl))
+            if let imageUrl:String = self.videoList[indexPath.row].shareImageUrl as String {
+//                cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl))
+                let playIcon:FAKFontAwesome = FAKFontAwesome.playIconWithSize(8)
+                playIcon.addAttribute(NSForegroundColorAttributeName, value: themeColor)
+                playIcon.drawingBackgroundColor = UIColor.clearColor()
+                let placeholderImage:UIImage = playIcon.imageWithSize(CGSize(width: 8, height: 8))
+                cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl), placeholderImage: placeholderImage)
             }
             if let videoTitle:String = self.videoList[indexPath.row].name as String {
                 cell.videoTitle.text = videoTitle
@@ -577,7 +643,6 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if tableView == self.videoListTableView {
-            print(indexPath.row)
             if let selectedVideo:Video = self.videoList[indexPath.row] as Video {
                 self.youtubePlayer.moviePlayer.stop()
                 self.youtubePlayer.videoIdentifier = selectedVideo.id
@@ -585,9 +650,24 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        if tableView == self.videoListTableView {
+            if self.nextVideoPageToken != nil && indexPath.row == self.videoList.count - 10 && self.videoTokenCheck[self.nextVideoPageToken!] != true {
+                self.requestPlayList(self.currentListId!, pageToken: self.nextVideoPageToken)
+                self.videoTokenCheck[self.nextVideoPageToken!] = true
+            }
+        } else if tableView == self.commentListTableView {
+            if self.nextCommentPageToken != nil && indexPath.row == self.commentList.count - 10 && self.commentTokenCheck[self.nextCommentPageToken!] != true {
+                self.nextComment(self.youtubePlayer.videoIdentifier!, pageToken: self.nextCommentPageToken!)
+                self.commentTokenCheck[self.nextCommentPageToken!] = true
+            }
+        }
+    }
+    
     func exitViewController() {
         UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Slide)
         dismissViewControllerAnimated(true, completion: nil)
+        self.youtubePlayer.moviePlayer.stop()
     }
     
     // MARK: Social share methods and like tv shows

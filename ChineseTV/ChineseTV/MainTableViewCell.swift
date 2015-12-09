@@ -41,7 +41,7 @@ class MainTableViewCell: PFTableViewCell {
     
     func setupViews() {
         
-        listSubtitle.font = UIFont.boldSystemFontOfSize(10)
+        listSubtitle.font = UIFont.systemFontOfSize(10)
         listSubtitle.sizeToFit()
         
         thumbnailImage.contentMode = .ScaleAspectFill

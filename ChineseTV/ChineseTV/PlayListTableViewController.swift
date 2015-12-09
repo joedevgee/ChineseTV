@@ -11,17 +11,22 @@ import Alamofire
 import SDWebImage
 import Async
 import TTGSnackbar
+import NVActivityIndicatorView
+import FontAwesomeKit
 
 class PlayListTableViewController: UITableViewController {
     
     var currentListId:String?
     var currentListName:String?
+    var nextPageToken:String?
+    var tokenCheck = [String: Bool]()
     var videoList: [Video] = []
     var savedPlaylist: [String] = []
     var listProgressName = [String: String]()
     var listProgressImageUrl = [String: String]()
     var listProgressId = [String: String]()
     var listName = [String: String]()
+    let indicatorView:UIView = UIView.newAutoLayoutView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +34,8 @@ class PlayListTableViewController: UITableViewController {
         // Uncomment the following line to preserve selection between presentations
         self.clearsSelectionOnViewWillAppear = true
         tableView.separatorStyle = .None
+        self.addIndicator()
+        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -39,6 +46,37 @@ class PlayListTableViewController: UITableViewController {
             navAddButton()
         }
     }
+    
+    func addIndicator() {
+        
+        self.view.addSubview(indicatorView)
+        
+        indicatorView.autoSetDimensionsToSize(CGSize(width: 120, height: 120))
+        
+        let pacMan = NVActivityIndicatorView(frame: CGRectZero, type: .Pacman, color: themeColor, size: CGSize(width: 50, height: 50))
+        pacMan.startAnimation()
+        self.view.addSubview(pacMan)
+        pacMan.autoCenterInSuperview()
+        
+        let loadingLabel = UILabel()
+        loadingLabel.text = "抓取数据中"
+        loadingLabel.textColor = themeColor
+        loadingLabel.font = UIFont.systemFontOfSize(15)
+        loadingLabel.textAlignment = .Center
+        
+        indicatorView.hidden = false
+        
+        indicatorView.addSubview(pacMan)
+        indicatorView.addSubview(loadingLabel)
+        
+        indicatorView.autoCenterInSuperview()
+        
+        pacMan.autoCenterInSuperview()
+        loadingLabel.autoAlignAxis(.Vertical, toSameAxisOfView: indicatorView)
+        loadingLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: pacMan, withOffset: 25)
+        
+    }
+    
     func navAddButton() {
         // Add a navi right button to let people add playlist
         let addImage = UIImage(named: "ic_playlist_add")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
@@ -59,12 +97,10 @@ class PlayListTableViewController: UITableViewController {
             self.savedPlaylist = tempArray
         }
         if self.savedPlaylist.contains(self.currentListId!) {
-            print("This list is already saved")
+            
         } else {
-            print("Adding list to user default")
             savedPlaylist.append(self.currentListId!)
             NSUserDefaults.standardUserDefaults().setObject(savedPlaylist, forKey: "savedPlaylist")
-            print("Successfully updated savedPlaylist")
             // Update the saved list with current progress
             // Save video name
             if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressName") as? [String: String] {
@@ -172,8 +208,12 @@ class PlayListTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! VideoListTableViewCell
         cell.contentView.backgroundColor = UIColor.whiteColor()
-        if let imageUrl:String = self.videoList[indexPath.row].thumbnailUrl as String {
-            cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl))
+        if let imageUrl:String = self.videoList[indexPath.row].shareImageUrl as String {
+        let playIcon:FAKFontAwesome = FAKFontAwesome.playIconWithSize(8)
+        playIcon.addAttribute(NSForegroundColorAttributeName, value: themeColor)
+        playIcon.drawingBackgroundColor = UIColor.clearColor()
+        let placeholderImage:UIImage = playIcon.imageWithSize(CGSize(width: 8, height: 8))
+        cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl), placeholderImage: placeholderImage)
         }
         if let videoTitle:String = self.videoList[indexPath.row].name as String {
             cell.videoTitle.text = videoTitle
@@ -183,26 +223,48 @@ class PlayListTableViewController: UITableViewController {
         cell.updateConstraintsIfNeeded()
         return cell
     }
+
+    override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        if self.nextPageToken != nil && indexPath.row == self.videoList.count - 10 && self.tokenCheck[self.nextPageToken!] != true {
+            self.requestPlayList(self.currentListId!, pageToken: self.nextPageToken)
+            self.tokenCheck[self.nextPageToken!] = true
+        }
+    }
     
     // MARK: Network request methods
     // Use this function to retrieve videos in playlist
-    func requestPlayList(listId: String) {
-        let resultNumber:Int = 50
-        Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=\(resultNumber)&playlistId=\(listId)&key=\(googleApiKey)")
-            .responseJSON { response in if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> { self.processVideoList(items) }
-        }
+    func requestPlayList(listId: String, pageToken:String?) {
+        var searchParameters = [String: AnyObject]()
+        searchParameters["part"] = "snippet"
+        searchParameters["maxResults"] = 50
+        searchParameters["playlistId"] = listId
+        searchParameters["key"] = googleApiKey
+        if pageToken != nil { searchParameters["pageToken"] = pageToken }
+        Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?", parameters: searchParameters, encoding: ParameterEncoding.URLEncodedInURL)
+            .responseJSON { response in
+                if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextPageToken { self.nextPageToken = tempString; self.tokenCheck[tempString] = false }
+                if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> { self.processVideoList(items) }
+                }
     }
     
     func processVideoList(items: Array<Dictionary<NSObject, AnyObject>>) {
         for video in items {
-            guard let videoId = video["snippet"]!["resourceId"]!!["videoId"] as? String else { print("getting video id failed");break }
-            guard let videoTitle = video["snippet"]!["title"] as? String else { print("getting video title failed");break }
-            guard let videoThumbnail = video["snippet"]!["thumbnails"]!!["default"]!!["url"] as? String else { print("getting video thumbnail failed");break }
-            guard let videoShareImage = video["snippet"]!["thumbnails"]!!["high"]!!["url"] as? String else { print("getting video image for share failed");break }
-            self.videoList.append(Video(id: videoId, name: videoTitle, thumbnailUrl: videoThumbnail, shareImageUrl: videoShareImage))
+
+            guard let snippet = video["snippet"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let videoTitle = snippet["title"] as? String else { continue }
+            guard let ids = snippet["resourceId"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let videoId = ids["videoId"] as? String else { continue }
+            guard let thumbnails = snippet["thumbnails"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let defaultThumbnail = thumbnails["default"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let defaultUrl = defaultThumbnail["url"] as? String else { continue }
+            guard let heighThumbnail = thumbnails["high"] as? Dictionary<NSObject, AnyObject> else { continue }
+            guard let heighUrl = heighThumbnail["url"] as? String else { continue }
+            self.videoList.append(Video(id: videoId, name: videoTitle, thumbnailUrl: defaultUrl, shareImageUrl: heighUrl))
         }
         tableView.reloadData()
+        self.indicatorView.hidden = true
     }
+    
     
     //MARK: Prepare for segue
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -216,8 +278,9 @@ class PlayListTableViewController: UITableViewController {
             }
             if self.videoList.count > 0 {
                 destVC.videoList = self.videoList
+                if self.nextPageToken != nil { destVC.nextVideoPageToken = self.nextPageToken }
             } else {
-                destVC.requestPlayList(self.currentListId!)
+                destVC.requestPlayList(self.currentListId!, pageToken: nil)
             }
             if let selectedVideo = sender as? Video {
                 destVC.youtubePlayer.videoIdentifier = selectedVideo.id

@@ -129,21 +129,6 @@ class SocialShareViewController: UIViewController {
         weixinLabel.textAlignment = .Center
         weixinLabel.font = UIFont.boldSystemFontOfSize(buttonLabelSize)
         
-        let qqIcon:FAKFontAwesome = FAKFontAwesome.qqIconWithSize(iconSize)
-        qqIcon.addAttribute(NSForegroundColorAttributeName, value: UIColor.whiteColor())
-        qqIcon.drawingBackgroundColor = UIColor(red: 64/255, green: 153/255, blue: 255/255, alpha: 1)
-        let qqImage:UIImage = qqIcon.imageWithSize(buttonSize)
-        qqShareButton.setImage(qqImage, forState: .Normal)
-        qqShareButton.addTarget(self, action: "shareToQq", forControlEvents: .TouchUpInside)
-        qqShareButton.layer.masksToBounds = true
-        qqShareButton.layer.cornerRadius = buttonSize.width/2
-        qqShareButton.clipsToBounds = true
-        
-        qqLabel.text = "QQ"
-        qqLabel.textColor = UIColor.whiteColor()
-        qqLabel.textAlignment = .Center
-        qqLabel.font = UIFont.boldSystemFontOfSize(buttonLabelSize)
-        
         self.view.addSubview(mainContainer)
         mainContainer.addSubview(closeButton)
         mainContainer.addSubview(topLabel)
@@ -171,12 +156,6 @@ class SocialShareViewController: UIViewController {
         bottomView.autoPinEdgeToSuperviewEdge(.Right)
         bottomView.autoPinEdgeToSuperviewEdge(.Bottom)
         
-        let centerPlaceholder:UILabel = UILabel.newAutoLayoutView()
-        centerPlaceholder.text = ""
-        
-        bottomView.addSubview(centerPlaceholder)
-        centerPlaceholder.autoCenterInSuperview()
-        
         bottomView.addSubview(fbShareButton)
         bottomView.addSubview(fbLabel)
         bottomView.addSubview(wechatShareButton)
@@ -186,23 +165,17 @@ class SocialShareViewController: UIViewController {
         bottomView.addSubview(qqShareButton)
         bottomView.addSubview(qqLabel)
         
-        fbShareButton.autoPinEdge(.Right, toEdge: .Left, ofView: centerPlaceholder, withOffset: -10)
+        fbShareButton.autoPinEdge(.Right, toEdge: .Left, ofView: wechatShareButton, withOffset: -20)
         fbShareButton.autoPinEdgeToSuperviewEdge(.Top)
         
         fbLabel.autoAlignAxis(.Vertical, toSameAxisOfView: fbShareButton)
         fbLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: fbShareButton, withOffset: 2, relation: .GreaterThanOrEqual)
         
-        wechatShareButton.autoPinEdge(.Left, toEdge: .Right, ofView: centerPlaceholder, withOffset: 10)
+        wechatShareButton.autoAlignAxisToSuperviewAxis(.Vertical)
         wechatShareButton.autoPinEdgeToSuperviewEdge(.Top)
         
         wechatLabel.autoAlignAxis(.Vertical, toSameAxisOfView: wechatShareButton)
         wechatLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: wechatShareButton, withOffset: 2, relation: .GreaterThanOrEqual)
-        
-        qqShareButton.autoPinEdge(.Right, toEdge: .Left, ofView: fbShareButton, withOffset: -20)
-        qqShareButton.autoPinEdgeToSuperviewEdge(.Top)
-        
-        qqLabel.autoAlignAxis(.Vertical, toSameAxisOfView: qqShareButton)
-        qqLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: qqShareButton, withOffset: 2, relation: .GreaterThanOrEqual)
         
         weixinShareButton.autoPinEdge(.Left, toEdge: .Right, ofView: wechatShareButton, withOffset: 20)
         weixinShareButton.autoAlignAxis(.Horizontal, toSameAxisOfView: wechatShareButton)
@@ -218,7 +191,8 @@ class SocialShareViewController: UIViewController {
     
     func shareToFacebook() {
         let msg = FBSDKShareLinkContent()
-        msg.contentURL = NSURL(string: "https://www.google.com")
+        let shareLink = "https://chinatv.firebaseapp.com/video#\(self.shareVideo!.id)"
+        msg.contentURL = NSURL(string: shareLink)
         msg.contentTitle = self.shareVideo?.name
         msg.imageURL = NSURL(string: (self.shareVideo?.shareImageUrl)!)
         let dialog = FBSDKShareDialog()
@@ -231,11 +205,12 @@ class SocialShareViewController: UIViewController {
     // Share to wechat friends
     func shareToWechat() {
         let msg:Message = Message()
-        msg.title = self.shareVideo?.name
+        msg.desc = self.shareVideo?.name
+        msg.title = "华视：华人的网络电视"
         if let shareImage:UIImage = self.defaultImageView.image {
             msg.image = UIImageJPEGRepresentation(shareImage, 1)
         }
-        msg.link = "https://www.google.com"
+        msg.link = "https://chinatv.firebaseapp.com/video#\(self.shareVideo!.id)"
         if let share = ShareManager.getShare(domain: RSWeChat.domain) as? RSWeChat {
             share.shareToWeChatSession(msg, success: { message in print("Success")}, fail: { message, error in print("fail")})
         }
@@ -248,31 +223,9 @@ class SocialShareViewController: UIViewController {
         if let shareImage:UIImage = self.defaultImageView.image {
             msg.image = UIImageJPEGRepresentation(shareImage, 1)
         }
-        msg.link = "https://www.google.com"
+        msg.link = "https://chinatv.firebaseapp.com/video#\(self.shareVideo!.id)"
         if let share = ShareManager.getShare(domain: RSWeChat.domain) as? RSWeChat {
             share.shareToWeChatTimeline(msg, success: { message in print("Success")}, fail: { message, error in print("fail")})
-        }
-    }
-    
-    
-    //TODO: get through with qq share process
-    func shareToQq() {
-        let msg:Message = Message()
-        msg.title = self.shareVideo?.name
-        if let shareImage:UIImage = self.defaultImageView.image {
-            msg.image = UIImageJPEGRepresentation(shareImage, 1)
-            msg.thumbnail = msg.image
-            msg.desc = "这里写的是msg.description"
-        }
-        msg.link = "https://www.google.com"
-        if let share = ShareManager.getShare(domain: RSQQ.domain) as? RSQQ {
-            share.shareToQQFriends(msg,
-                success: { message in print("success")},
-                fail: { message, error in
-                    print("fail")
-                    print(error)
-                }
-            )
         }
     }
 

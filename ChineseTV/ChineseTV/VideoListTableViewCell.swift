@@ -41,7 +41,7 @@ class VideoListTableViewCell: UITableViewCell {
         videoTitle.numberOfLines = 2
         videoTitle.textAlignment = .Left
         videoTitle.textColor = UIColor.whiteColor()
-        videoTitle.font = UIFont.boldSystemFontOfSize(12)
+        videoTitle.font = UIFont.systemFontOfSize(12)
         videoTitle.sizeToFit()
         
         contentView.backgroundColor = videoSubColor

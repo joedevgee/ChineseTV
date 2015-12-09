@@ -68,6 +68,10 @@ class LeftMenuViewController: UITableViewController {
         return self.savedPlaylist.count
     }
     
+    override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return "    收藏节目列表"
+    }
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! LeftMenuTableViewCell
         if self.savedPlaylist.count > 0 {

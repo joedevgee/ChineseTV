@@ -167,7 +167,7 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
             let destVC = segue.destinationViewController as! PlayListTableViewController
             if let indexPath:NSIndexPath = sender as? NSIndexPath {
                 if let listId:String = objectAtIndexPath(indexPath)!["listID"] as? String {
-                    destVC.requestPlayList(listId)
+                    destVC.requestPlayList(listId, pageToken: nil)
                     destVC.currentListId = listId
                     if let listName:String = objectAtIndexPath(sender as? NSIndexPath)!["listName"] as? String {
                         destVC.currentListName = listName
@@ -175,14 +175,14 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
                 }
             } else if let data:Dictionary<String, String> = sender as? Dictionary<String, String> {
                 Async.main {
-                    destVC.requestPlayList(data["listId"]!)
+                    destVC.requestPlayList(data["listId"]!, pageToken: nil)
                     destVC.currentListId = data["listId"]!
                     destVC.currentListName = data["listName"]!
                     }.main {
                         destVC.performSegueWithIdentifier("showVideo", sender: data)
                 }
             } else if let segueInfo:Array<String> = sender as? Array<String> {
-                destVC.requestPlayList(segueInfo[0])
+                destVC.requestPlayList(segueInfo[0], pageToken: nil)
                 destVC.currentListId = segueInfo[0]
                 destVC.currentListName = segueInfo[1]
             }
