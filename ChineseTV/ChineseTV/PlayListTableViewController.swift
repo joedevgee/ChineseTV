@@ -13,8 +13,10 @@ import Async
 import TTGSnackbar
 import NVActivityIndicatorView
 import FontAwesomeKit
+import GoogleMobileAds
+import PureLayout
 
-class PlayListTableViewController: UITableViewController {
+class PlayListTableViewController: UITableViewController, GADBannerViewDelegate {
     
     var currentListId:String?
     var currentListName:String?
@@ -197,7 +199,13 @@ class PlayListTableViewController: UITableViewController {
     // MARK: - Table view data source
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return (UIScreen.mainScreen().bounds.width / 3.5) * 0.7
+//        return (UIScreen.mainScreen().bounds.width / 3.5) * 0.7
+        let rowNumber = indexPath.row
+        if rowNumber > 1 && rowNumber % 8 == 0 {
+            return (UIScreen.mainScreen().bounds.width / 3.5) * 0.7 + 65
+        } else {
+            return (UIScreen.mainScreen().bounds.width / 3.5) * 0.7
+        }
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -217,22 +225,47 @@ class PlayListTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! VideoListTableViewCell
-        cell.contentView.backgroundColor = UIColor.whiteColor()
-        if let imageUrl:String = self.videoList[indexPath.row].shareImageUrl as String {
-        let playIcon:FAKFontAwesome = FAKFontAwesome.playIconWithSize(8)
-        playIcon.addAttribute(NSForegroundColorAttributeName, value: themeColor)
-        playIcon.drawingBackgroundColor = UIColor.clearColor()
-        let placeholderImage:UIImage = playIcon.imageWithSize(CGSize(width: 8, height: 8))
-        cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl), placeholderImage: placeholderImage)
+        let rowNumber = indexPath.row
+        if rowNumber > 1 && rowNumber % 8 == 0 {
+            // display cell with advertise
+            let cell = tableView.dequeueReusableCellWithIdentifier("AdCell") as! VideoAdListTableViewCell
+            cell.contentView.backgroundColor = UIColor.whiteColor()
+            if let imageUrl:String = self.videoList[indexPath.row].shareImageUrl as String {
+                let placeholderImage = UIImage(named: "Icon-Small")
+                cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl), placeholderImage: placeholderImage)
+            }
+            if let videoTitle:String = self.videoList[indexPath.row].name as String {
+                cell.videoTitle.text = videoTitle
+                cell.videoTitle.textColor = UIColor.blackColor()
+            }
+            
+            cell.bannerView.adUnitID = googleAdUnitId
+            cell.bannerView.rootViewController = self
+            let request = GADRequest()
+            request.testDevices = ["91b007bf71861f769b8e96af7b5922c3", kGADSimulatorID]
+            cell.bannerView.loadRequest(request)
+            
+            cell.setNeedsUpdateConstraints()
+            cell.updateConstraintsIfNeeded()
+            return cell
+        } else {
+            // display cell without ads
+            let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! VideoListTableViewCell
+            cell.contentView.backgroundColor = UIColor.whiteColor()
+            if let imageUrl:String = self.videoList[indexPath.row].shareImageUrl as String {
+            let placeholderImage = UIImage(named: "Icon-Small")
+            cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl), placeholderImage: placeholderImage)
+            }
+            if let videoTitle:String = self.videoList[indexPath.row].name as String {
+                cell.videoTitle.text = videoTitle
+                cell.videoTitle.textColor = UIColor.blackColor()
+            }
+            
+            cell.setNeedsUpdateConstraints()
+            cell.updateConstraintsIfNeeded()
+            return cell
         }
-        if let videoTitle:String = self.videoList[indexPath.row].name as String {
-            cell.videoTitle.text = videoTitle
-            cell.videoTitle.textColor = UIColor.blackColor()
-        }
-        cell.setNeedsUpdateConstraints()
-        cell.updateConstraintsIfNeeded()
-        return cell
+        
     }
 
     override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {

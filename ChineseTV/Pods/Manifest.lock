@@ -8,6 +8,7 @@ PODS:
     - Bolts/Tasks
   - Bolts/Tasks (1.5.0)
   - CBZSplashView (1.0.0)
+  - FBAudienceNetwork (4.7.0)
   - FBSDKCoreKit (4.8.0):
     - Bolts (~> 1.1)
     - FBSDKCoreKit/arc (= 4.8.0)
@@ -47,6 +48,7 @@ DEPENDENCIES:
   - AsyncSwift
   - Bolts
   - CBZSplashView (~> 1.0.0)
+  - FBAudienceNetwork
   - FBSDKCoreKit
   - FBSDKLoginKit
   - FBSDKMessengerShareKit
@@ -69,6 +71,7 @@ SPEC CHECKSUMS:
   AsyncSwift: 3c90beed237324f1b57e1f1c414dc5501985d208
   Bolts: 722ab9a4f8b50fc4ed1b9998a5a7a2b3f16d80b4
   CBZSplashView: 9ce4cba22024476ff4a97d6433e7347da6376016
+  FBAudienceNetwork: 4d69cb1946c3ba83491e2470ce288e559b7215bf
   FBSDKCoreKit: 66a935d17b6e00b6b64e604f2eb9b72c9ab7deb8
   FBSDKLoginKit: d893fcbb98d854496925e9ff73c67b896982d3c4
   FBSDKMessengerShareKit: 41c0b1a667d685c9433f993eb9611b3d5074e1cb

@@ -55,8 +55,6 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     var commentTextView:UITextView = UITextView.newAutoLayoutView()
     var sendCommentButton:UIButton = UIButton.newAutoLayoutView()
     
-    var bannerView:GADBannerView = GADBannerView.newAutoLayoutView()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupTopContainer()
@@ -90,17 +88,6 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         }
         // Observe for profile change
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "changeProfile", name: FBSDKProfileDidChangeNotification, object: nil)
-        
-        // Add google banner ad to the bottom
-        bannerView = GADBannerView.init(adSize: kGADAdSizeSmartBannerPortrait)
-        self.view.addSubview(bannerView)
-        bannerView.autoPinEdgeToSuperviewEdge(.Bottom)
-        bannerView.autoPinEdgeToSuperviewEdge(.Leading)
-        bannerView.autoPinEdgeToSuperviewEdge(.Trailing)
-        bannerView.autoSetDimension(.Height, toSize: 50)
-        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-        bannerView.rootViewController = self
-        bannerView.loadRequest(GADRequest())
         
     }
     
@@ -214,6 +201,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.videoListTableView.delegate = self
         self.videoListTableView.dataSource = self
         self.videoListTableView.registerClass(VideoListTableViewCell.self, forCellReuseIdentifier: "Cell")
+        self.videoListTableView.registerClass(VideoAdListTableViewCell.self, forCellReuseIdentifier: "AdCell")
         self.videoListTableView.separatorStyle = .None
         self.videoListTableView.backgroundColor = videoSubColor
         
@@ -269,6 +257,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.commentListTableView.delegate = self
         self.commentListTableView.dataSource = self
         self.commentListTableView.registerClass(VideoDetailCommentCell.self, forCellReuseIdentifier: "Cell")
+        self.commentListTableView.registerClass(VideoDetailCommentAdCell.self, forCellReuseIdentifier: "AdCell")
         self.commentListTableView.separatorStyle = .None
         self.commentListTableView.backgroundColor = videoTopColor
         self.commentListTableView.allowsSelection = false
@@ -614,7 +603,12 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if tableView == self.videoListTableView {
-            return (UIScreen.mainScreen().bounds.width / 3.5) * 0.7
+            let rowNumber = indexPath.row
+            if rowNumber > 1 && rowNumber % 5 == 0 {
+                return (UIScreen.mainScreen().bounds.width / 3.5) * 0.7 + 65
+            } else {
+                return (UIScreen.mainScreen().bounds.width / 3.5) * 0.7
+            }
         } else {
             return UITableViewAutomaticDimension
         }
@@ -624,35 +618,76 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         if tableView == self.videoListTableView {
-            let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! VideoListTableViewCell
-            if let imageUrl:String = self.videoList[indexPath.row].shareImageUrl as String {
-//                cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl))
-                let playIcon:FAKFontAwesome = FAKFontAwesome.playIconWithSize(8)
-                playIcon.addAttribute(NSForegroundColorAttributeName, value: themeColor)
-                playIcon.drawingBackgroundColor = UIColor.clearColor()
-                let placeholderImage:UIImage = playIcon.imageWithSize(CGSize(width: 8, height: 8))
-                cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl), placeholderImage: placeholderImage)
+            if indexPath.row > 1 && indexPath.row % 5 == 0 {
+                // display cell with advertise
+                let cell = tableView.dequeueReusableCellWithIdentifier("AdCell") as! VideoAdListTableViewCell
+                if let imageUrl:String = self.videoList[indexPath.row].shareImageUrl as String {
+                    let placeholderImage = UIImage(named: "Icon-Small")
+                    cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl), placeholderImage: placeholderImage)
+                }
+                if let videoTitle:String = self.videoList[indexPath.row].name as String {
+                    cell.videoTitle.text = videoTitle
+                }
+                
+                cell.bannerView.adUnitID = googleAdUnitId
+                cell.bannerView.rootViewController = self
+                let request = GADRequest()
+                request.testDevices = ["91b007bf71861f769b8e96af7b5922c3", kGADSimulatorID]
+                cell.bannerView.loadRequest(request)
+                
+                cell.setNeedsUpdateConstraints()
+                cell.updateConstraintsIfNeeded()
+                return cell
+            } else {
+                // display cell without ads
+                let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! VideoListTableViewCell
+                if let imageUrl:String = self.videoList[indexPath.row].shareImageUrl as String {
+                    let placeholderImage = UIImage(named: "Icon-Small")
+                    cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl), placeholderImage: placeholderImage)
+                }
+                if let videoTitle:String = self.videoList[indexPath.row].name as String {
+                    cell.videoTitle.text = videoTitle
+                }
+                
+                cell.setNeedsUpdateConstraints()
+                cell.updateConstraintsIfNeeded()
+                return cell
             }
-            if let videoTitle:String = self.videoList[indexPath.row].name as String {
-                cell.videoTitle.text = videoTitle
-            }
-            cell.setNeedsUpdateConstraints()
-            cell.updateConstraintsIfNeeded()
-            return cell
         } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! VideoDetailCommentCell
-            if let imageUrl: String = self.commentList[indexPath.row].avatarUrl as String {
-                cell.avatarView.sd_setImageWithURL(NSURL(string: imageUrl), placeholderImage: UIImage(named: "category.jpg"))
+            if indexPath.row > 1 && indexPath.row % 8 == 0 {
+                let cell = tableView.dequeueReusableCellWithIdentifier("AdCell") as! VideoDetailCommentAdCell
+                if let imageUrl: String = self.commentList[indexPath.row].avatarUrl as String {
+                    cell.avatarView.sd_setImageWithURL(NSURL(string: imageUrl))
+                }
+                if let nameText: String = self.commentList[indexPath.row].name as String {
+                    cell.userNameLabel.text = nameText
+                }
+                if let commentText: String = self.commentList[indexPath.row].commentText as String {
+                    cell.commentLabel.text = commentText
+                }
+                cell.bannerView.adUnitID = googleAdUnitId
+                cell.bannerView.rootViewController = self
+                let request = GADRequest()
+                request.testDevices = ["91b007bf71861f769b8e96af7b5922c3", kGADSimulatorID]
+                cell.bannerView.loadRequest(request)
+                cell.setNeedsUpdateConstraints()
+                cell.updateConstraintsIfNeeded()
+                return cell
+            } else {
+                let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! VideoDetailCommentCell
+                if let imageUrl: String = self.commentList[indexPath.row].avatarUrl as String {
+                    cell.avatarView.sd_setImageWithURL(NSURL(string: imageUrl))
+                }
+                if let nameText: String = self.commentList[indexPath.row].name as String {
+                    cell.userNameLabel.text = nameText
+                }
+                if let commentText: String = self.commentList[indexPath.row].commentText as String {
+                    cell.commentLabel.text = commentText
+                }
+                cell.setNeedsUpdateConstraints()
+                cell.updateConstraintsIfNeeded()
+                return cell
             }
-            if let nameText: String = self.commentList[indexPath.row].name as String {
-                cell.userNameLabel.text = nameText
-            }
-            if let commentText: String = self.commentList[indexPath.row].commentText as String {
-                cell.commentLabel.text = commentText
-            }
-            cell.setNeedsUpdateConstraints()
-            cell.updateConstraintsIfNeeded()
-            return cell
         }
         
     }
@@ -681,9 +716,9 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func exitViewController() {
+        self.youtubePlayer.moviePlayer.stop()
         UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Slide)
         dismissViewControllerAnimated(true, completion: nil)
-        self.youtubePlayer.moviePlayer.stop()
     }
     
     // MARK: Social share methods and like tv shows

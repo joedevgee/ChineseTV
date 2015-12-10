@@ -50,7 +50,7 @@ class MainTableViewController: PFQueryTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let animateDuration:Double = 5.0
+        let animateDuration:Double = 2.5
         
         // logo splash
         tabBarController!.tabBar.hidden = true
@@ -133,12 +133,8 @@ class MainTableViewController: PFQueryTableViewController {
         guard let thumbnailUrl = object!["thumbnailUrl"] as? String else { return nil }
         cell?.listTitle.text = "\(listTitle): \(listDesc)"
         cell?.listSubtitle.text = "\(listSubtitle)"
-//        cell?.thumbnailImage.sd_setImageWithURL(NSURL(string: thumbnailUrl))
 
-        let playIcon:FAKFontAwesome = FAKFontAwesome.playIconWithSize(30)
-        playIcon.addAttribute(NSForegroundColorAttributeName, value: themeColor)
-        playIcon.drawingBackgroundColor = UIColor.clearColor()
-        let placeholderImage:UIImage = playIcon.imageWithSize(CGSize(width: 35, height: 35))
+        let placeholderImage = UIImage(named: "Icon-Small")
         cell?.thumbnailImage.sd_setImageWithURL(NSURL(string: thumbnailUrl), placeholderImage: placeholderImage)
         cell?.setNeedsUpdateConstraints()
         cell?.updateConstraintsIfNeeded()

@@ -10,6 +10,8 @@ import UIKit
 
 let googleApiKey:String = "AIzaSyCz2mjzHjPyuS8WBZwuYbMVV_jdYwDF8vc"
 
+let googleAdUnitId = "ca-app-pub-4758129846397321/3693386298"
+
 let themeColor:UIColor = UIColor(red: 244/255, green: 67/255, blue: 54/255, alpha: 1)
 
 let lighterThemeColor:UIColor = UIColor(red: 210/255, green: 77/255, blue: 87/255, alpha: 0.5)

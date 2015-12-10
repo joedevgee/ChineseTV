@@ -8,6 +8,7 @@
 
 import UIKit
 import PureLayout
+import GoogleMobileAds
 
 class VideoListTableViewCell: UITableViewCell {
     
@@ -61,7 +62,7 @@ class VideoListTableViewCell: UITableViewCell {
             videoTitle.autoPinEdgeToSuperviewEdge(.Top, withInset: 5)
             videoTitle.autoPinEdge(.Left, toEdge: .Right, ofView: thumbnailImageView, withOffset: 10)
             videoTitle.autoPinEdgeToSuperviewEdge(.Right, withInset: 10)
-            videoTitle.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 10)
+//            videoTitle.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 10)
             
             didSetupConstraints = true
         }
@@ -82,4 +83,73 @@ class Video {
         self.thumbnailUrl = thumbnailUrl
         self.shareImageUrl = shareImageUrl
     }
+}
+
+class VideoAdListTableViewCell: UITableViewCell {
+    
+    var didSetupConstraints = false
+    var thumbnailImageView:UIImageView = UIImageView.newAutoLayoutView()
+    var videoTitle:UILabel = UILabel.newAutoLayoutView()
+    
+    var bannerView:GADBannerView = GADBannerView.newAutoLayoutView()
+    
+    let imageWidth:CGFloat = UIScreen.mainScreen().bounds.width / 3.5
+    let imageHeight:CGFloat = (UIScreen.mainScreen().bounds.width / 3.5) * 0.55
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String!)
+    {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupViews()
+    }
+    
+    required init?(coder aDecoder: NSCoder)
+    {
+        super.init(coder: aDecoder)
+        setupViews()
+    }
+    
+    func setupViews() {
+        
+        thumbnailImageView.backgroundColor = UIColor.clearColor()
+        thumbnailImageView.layer.cornerRadius = 5
+        thumbnailImageView.contentMode = .ScaleAspectFill
+        thumbnailImageView.clipsToBounds = true
+        
+        videoTitle.lineBreakMode = .ByTruncatingTail
+        videoTitle.numberOfLines = 2
+        videoTitle.textAlignment = .Left
+        videoTitle.textColor = UIColor.whiteColor()
+        videoTitle.font = UIFont.systemFontOfSize(12)
+        videoTitle.sizeToFit()
+        
+        contentView.backgroundColor = videoSubColor
+        
+        bannerView = GADBannerView.init(adSize: kGADAdSizeSmartBannerPortrait)
+        
+        contentView.addSubview(thumbnailImageView)
+        contentView.addSubview(videoTitle)
+        contentView.addSubview(bannerView)
+        
+    }
+    
+    override func updateConstraints() {
+        if !didSetupConstraints {
+            
+            thumbnailImageView.autoSetDimensionsToSize(CGSize(width: imageWidth, height: imageHeight))
+            thumbnailImageView.autoPinEdgeToSuperviewEdge(.Top, withInset: 5)
+            thumbnailImageView.autoPinEdgeToSuperviewEdge(.Left, withInset: 10)
+            
+            videoTitle.autoPinEdgeToSuperviewEdge(.Top, withInset: 5)
+            videoTitle.autoPinEdge(.Left, toEdge: .Right, ofView: thumbnailImageView, withOffset: 10)
+            videoTitle.autoPinEdgeToSuperviewEdge(.Right, withInset: 10)
+            
+            bannerView.autoPinEdgeToSuperviewEdge(.Leading)
+            bannerView.autoPinEdgeToSuperviewEdge(.Trailing)
+            bannerView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5)
+            
+            didSetupConstraints = true
+        }
+        super.updateConstraints()
+    }
+    
 }
