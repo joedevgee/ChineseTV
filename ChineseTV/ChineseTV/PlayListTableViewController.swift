@@ -36,6 +36,17 @@ class PlayListTableViewController: UITableViewController {
         tableView.separatorStyle = .None
         self.addIndicator()
         
+        if let viewShowed:Bool = NSUserDefaults.standardUserDefaults().boolForKey("listViewShowed") {
+            if viewShowed == true {
+                print("playlist view already showed before")
+            } else {
+                print("play list view is showing the first time")
+                let tutorialBar = TTGSnackbar.init(message: "点击右上角加号可以收藏当前节目", duration: TTGSnackbarDuration.Long)
+                tutorialBar.show()
+                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "listViewShowed")
+            }
+        }
+        
     }
     
     override func viewDidAppear(animated: Bool) {

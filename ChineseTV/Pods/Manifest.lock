@@ -7,6 +7,7 @@ PODS:
   - Bolts/AppLinks (1.5.0):
     - Bolts/Tasks
   - Bolts/Tasks (1.5.0)
+  - CBZSplashView (1.0.0)
   - FBSDKCoreKit (4.8.0):
     - Bolts (~> 1.1)
     - FBSDKCoreKit/arc (= 4.8.0)
@@ -24,6 +25,7 @@ PODS:
   - FontAwesomeKit/Core (2.2.0)
   - FontAwesomeKit/FontAwesome (2.2.0):
     - FontAwesomeKit/Core
+  - Google-Mobile-Ads-SDK (7.6.0)
   - JGMethodSwizzler (2.0.1)
   - MZAppearance (1.1.6)
   - NVActivityIndicatorView (2.1)
@@ -44,11 +46,13 @@ DEPENDENCIES:
   - Alamofire
   - AsyncSwift
   - Bolts
+  - CBZSplashView (~> 1.0.0)
   - FBSDKCoreKit
   - FBSDKLoginKit
   - FBSDKMessengerShareKit
   - FBSDKShareKit
   - FontAwesomeKit/FontAwesome
+  - Google-Mobile-Ads-SDK (~> 7.0)
   - JGMethodSwizzler
   - MZAppearance
   - NVActivityIndicatorView
@@ -64,11 +68,13 @@ SPEC CHECKSUMS:
   Alamofire: 9f93b56389e48def9220dd57d1f44b1927229a5a
   AsyncSwift: 3c90beed237324f1b57e1f1c414dc5501985d208
   Bolts: 722ab9a4f8b50fc4ed1b9998a5a7a2b3f16d80b4
+  CBZSplashView: 9ce4cba22024476ff4a97d6433e7347da6376016
   FBSDKCoreKit: 66a935d17b6e00b6b64e604f2eb9b72c9ab7deb8
   FBSDKLoginKit: d893fcbb98d854496925e9ff73c67b896982d3c4
   FBSDKMessengerShareKit: 41c0b1a667d685c9433f993eb9611b3d5074e1cb
   FBSDKShareKit: e7577ee3adf80fc04fb656dd133fbb522250672b
   FontAwesomeKit: 025fd4dd1017fe4e3f8d47b03e024deedbb33cd4
+  Google-Mobile-Ads-SDK: 0290020329c61183c4685304264b73382bc49fb4
   JGMethodSwizzler: e0ea5c1c6c55304ec4ef3f54e441400c6735c899
   MZAppearance: 0c06d3fa9cc55142f1da14bc8631fbe8fd6e19d5
   NVActivityIndicatorView: 84aa48f7ec1efbfd0645e9f469097d94c6f65417

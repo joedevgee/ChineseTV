@@ -13,10 +13,13 @@ import SDWebImage
 import Alamofire
 import Async
 import FontAwesomeKit
+import CBZSplashView
 
 class MainTableViewController: PFQueryTableViewController {
     
     var toggleButton = MenuButton(frame: CGRectMake(100, 100, 30, 30))
+    
+    var splashed:Bool = false
     
     let rowHeight:CGFloat = UIScreen.mainScreen().bounds.size.height/3
     
@@ -47,12 +50,36 @@ class MainTableViewController: PFQueryTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.setupNavBar()
+        let animateDuration:Double = 5.0
+        
+        // logo splash
+        tabBarController!.tabBar.hidden = true
+        let playIcon:FAKFontAwesome = FAKFontAwesome.playIconWithSize(50)
+        playIcon.addAttribute(NSForegroundColorAttributeName, value: themeColor)
+        playIcon.drawingBackgroundColor = UIColor.clearColor()
+        let placeholderImage:UIImage = playIcon.imageWithSize(CGSize(width: 50, height: 50))
+        let splashView = CBZSplashView(icon: placeholderImage, backgroundColor: themeColor)
+        self.view.addSubview(splashView)
+        splashView.animationDuration = CGFloat(animateDuration)
+        splashView.startAnimation()
+        
+        Async.main(after: animateDuration/2) {
+            self.setupNavBar()
+            self.splashed = true
+        }
+        
         tableView.backgroundColor = dividerColor
         tableView.separatorStyle = .None
         tableView.allowsSelection = true
-        
-        
+    
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        navigationItem.title = nil
+        super.viewWillAppear(true)
+        if self.splashed {
+            tabBarController!.tabBar.hidden = false
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -88,10 +115,7 @@ class MainTableViewController: PFQueryTableViewController {
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(true)
-        tabBarController!.tabBar.hidden = false
-    }
+    
     
     // MARK:Tableviewcontroller delegate
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -133,6 +157,7 @@ class MainTableViewController: PFQueryTableViewController {
         navigationItem.leftBarButtonItem = menuButton
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: Selector("addPlayList:"))
         //        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: self, action: "showSearchBar")
+        tabBarController?.tabBar.hidden = false
     }
     
     func toggle() {

@@ -18,6 +18,7 @@ import FBSDKLoginKit
 import Parse
 import TTGSnackbar
 import NVActivityIndicatorView
+import GoogleMobileAds
 
 class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FBSDKLoginButtonDelegate, UITextViewDelegate {
     
@@ -54,6 +55,8 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     var commentTextView:UITextView = UITextView.newAutoLayoutView()
     var sendCommentButton:UIButton = UIButton.newAutoLayoutView()
     
+    var bannerView:GADBannerView = GADBannerView.newAutoLayoutView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupTopContainer()
@@ -87,6 +90,17 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         }
         // Observe for profile change
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "changeProfile", name: FBSDKProfileDidChangeNotification, object: nil)
+        
+        // Add google banner ad to the bottom
+        bannerView = GADBannerView.init(adSize: kGADAdSizeSmartBannerPortrait)
+        self.view.addSubview(bannerView)
+        bannerView.autoPinEdgeToSuperviewEdge(.Bottom)
+        bannerView.autoPinEdgeToSuperviewEdge(.Leading)
+        bannerView.autoPinEdgeToSuperviewEdge(.Trailing)
+        bannerView.autoSetDimension(.Height, toSize: 50)
+        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        bannerView.rootViewController = self
+        bannerView.loadRequest(GADRequest())
         
     }
     
@@ -450,6 +464,8 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                             if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressName") as? [String:String] {
                                 var newDict = tempDict
                                 newDict[self.currentListId!] = video.name
+                                // update the current play title
+                                self.videoListHeaderTitle.text = "正在播放： " + video.name
                                 NSUserDefaults.standardUserDefaults().setObject(newDict, forKey: "playlistProgressName")
                             }
                             // update the progress image url

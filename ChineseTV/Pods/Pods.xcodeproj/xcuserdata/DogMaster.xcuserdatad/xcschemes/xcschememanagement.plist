@@ -19,6 +19,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>CBZSplashView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>FBSDKCoreKit.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -107,11 +112,6 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>1F9F8FB0E478CD4DE05BE8C1ABCADB51</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>432ECC54282C84882B482CCB4CF227FC</key>
 		<dict>
 			<key>primary</key>
@@ -127,7 +127,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>4F5E891BB114FD7D0CEE62EA8B4D0AF4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>511B536F0DE06D9C3BD65397A91990C0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>53A080936EB16C8253090BACB36C2578</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -147,22 +157,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>90DC2DFA2232F79E6503A615200EE0EF</key>
+		<key>6E348B42297E3965347D9B555FFB6FBB</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>AE0C8B7331744613A32D3F88B47FF0E8</key>
+		<key>99FD401BF0508882068368F3BF0C6E9F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>C181C206DBBB0E0464A61E129104B749</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>CB8F8765276DD1866358A6DE19C0CE9D</key>
+		<key>9ABD84305DCC051E77A0B961EF21CE51</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -172,12 +177,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DF4A9B0CB1F085116F7BEFC65D05EFD8</key>
+		<key>D96A240E649E2EBF89696290A2509DC8</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>E002C26D3D67A7A45492E941CB73D185</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E9B2BDEE909AEADE5400CAAADBC7A1F2</key>
 		<dict>
 			<key>primary</key>
 			<true/>

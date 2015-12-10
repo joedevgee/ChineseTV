@@ -21,11 +21,15 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>OpenShare</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.8pon.ChineseTV</string>
+				<string>wxaa9dddb0cb66f8b5</string>
+				<string>tencent1104904597</string>
+				<string>tencent1104904597.content</string>
+				<string>tanit1F4J8m0vDeM</string>
+				<string>fb413103085560111</string>
 			</array>
 		</dict>
 	</array>
@@ -51,69 +55,45 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>fb413103085560111</string>
-            </array>
-        </dict>
-    </array>
-    <key>FacebookAppID</key>
-    <string>413103085560111</string>
-    <key>FacebookDisplayName</key>
-    <string>时差电视台</string>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSExceptionDomains</key>
-        <dict>
-            <key>facebook.com</key>
-            <dict>
-                <key>NSIncludesSubdomains</key>
-                <true/>
-                <key>NSExceptionRequiresForwardSecrecy</key>
-                <false/>
-            </dict>
-            <key>fbcdn.net</key>
-            <dict>
-                <key>NSIncludesSubdomains</key>
-                <true/>
-                <key>NSExceptionRequiresForwardSecrecy</key>
-                <false/>
-            </dict>
-            <key>akamaihd.net</key>
-            <dict>
-                <key>NSIncludesSubdomains</key>
-                <true/>
-                <key>NSExceptionRequiresForwardSecrecy</key>
-                <false/>
-            </dict>
-        </dict>
-    </dict>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>fbapi</string>
-        <string>fb-messenger-api</string>
-        <string>fbauth2</string>
-        <string>fbshareextension</string>
-    </array>
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleURLName</key>
-            <string>OpenShare</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <!--       微信         -->
-                <string>wxaa9dddb0cb66f8b5</string>
-                <!--        QQ         -->
-                <string>tencent1104904597</string>
-                <string>tencent1104904597.content</string>
-                <string>tanit1F4J8m0vDeM</string>
-                <string>fb413103085560111</string>
-            </array>
-        </dict>
-    </array>
+	<key>FacebookAppID</key>
+	<string>413103085560111</string>
+	<key>FacebookDisplayName</key>
+	<string>时差电视台</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>facebook.com</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
+			<key>fbcdn.net</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
+			<key>akamaihd.net</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
+		</dict>
+	</dict>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
 </dict>
 </plist>
