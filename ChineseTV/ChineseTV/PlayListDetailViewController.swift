@@ -20,7 +20,7 @@ import TTGSnackbar
 import NVActivityIndicatorView
 import GoogleMobileAds
 
-class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FBSDKLoginButtonDelegate, UITextViewDelegate {
+class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FBSDKLoginButtonDelegate, UITextViewDelegate, GADBannerViewDelegate {
     
     var currentListId:String?
     
@@ -90,6 +90,9 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "changeProfile", name: FBSDKProfileDidChangeNotification, object: nil)
         
     }
+    
+    // GADBanner view delegate
+    
     
     // MARK: Setup the UI
     func setupTopContainer() {
@@ -441,7 +444,12 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         Async.main {
             self.youtubePlayer.moviePlayer.prepareToPlay()
             self.youtubePlayer.moviePlayer.play()
-            }.background {
+            for video in self.videoList {
+                if video.id == self.youtubePlayer.videoIdentifier {
+                    self.videoListHeaderTitle.text = "正在播放： \(video.name)"
+                }
+            }
+            }.main {
                 self.getVideoCommentsData(self.youtubePlayer.videoIdentifier!)
                 // Check if the current video is in a saved playlist
                 if let userList = NSUserDefaults.standardUserDefaults().arrayForKey("savedPlaylist") as? [String] where userList.contains(self.currentListId!) {
@@ -454,7 +462,6 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                                 var newDict = tempDict
                                 newDict[self.currentListId!] = video.name
                                 // update the current play title
-                                self.videoListHeaderTitle.text = "正在播放： " + video.name
                                 NSUserDefaults.standardUserDefaults().setObject(newDict, forKey: "playlistProgressName")
                             }
                             // update the progress image url
@@ -614,7 +621,6 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
-    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         if tableView == self.videoListTableView {
@@ -628,7 +634,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                 if let videoTitle:String = self.videoList[indexPath.row].name as String {
                     cell.videoTitle.text = videoTitle
                 }
-                
+                cell.bannerView.delegate = self
                 cell.bannerView.adUnitID = googleAdUnitId
                 cell.bannerView.rootViewController = self
                 let request = GADRequest()
@@ -665,6 +671,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                 if let commentText: String = self.commentList[indexPath.row].commentText as String {
                     cell.commentLabel.text = commentText
                 }
+                cell.bannerView.delegate = self
                 cell.bannerView.adUnitID = googleAdUnitId
                 cell.bannerView.rootViewController = self
                 let request = GADRequest()
@@ -737,8 +744,6 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         formSheetController.presentationController?.contentViewSize = socialViewSize
         self.presentViewController(formSheetController, animated: true, completion: nil)
     }
-    
-    
     
     // Function to dismiss keyboard
     func dismissKeyboard() {

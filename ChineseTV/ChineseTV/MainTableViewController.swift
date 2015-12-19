@@ -29,7 +29,7 @@ class MainTableViewController: PFQueryTableViewController {
         parseClassName = "ChinesePlayList"
         pullToRefreshEnabled = false
         paginationEnabled = true
-        objectsPerPage = 35
+        objectsPerPage = 60
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -37,7 +37,7 @@ class MainTableViewController: PFQueryTableViewController {
         parseClassName = "ChinesePlayList"
         pullToRefreshEnabled = false
         paginationEnabled = true
-        objectsPerPage = 35
+        objectsPerPage = 60
     }
     
     override func queryForTable() -> PFQuery {
@@ -50,7 +50,7 @@ class MainTableViewController: PFQueryTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let animateDuration:Double = 2.5
+        let animateDuration:Double = 2.0
         
         // logo splash
         tabBarController!.tabBar.hidden = true
@@ -151,8 +151,8 @@ class MainTableViewController: PFQueryTableViewController {
         let menuImage = UIImage(named: "ic_menu")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         let menuButton = UIBarButtonItem(image: menuImage, style: .Plain, target: self, action: "toggle")
         navigationItem.leftBarButtonItem = menuButton
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: Selector("addPlayList:"))
-        //        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: self, action: "showSearchBar")
+//        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: Selector("addPlayList:"))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: self, action: "showSearchBar")
         tabBarController?.tabBar.hidden = false
     }
     

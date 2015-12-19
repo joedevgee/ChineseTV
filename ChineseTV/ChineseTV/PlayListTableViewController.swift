@@ -16,7 +16,7 @@ import FontAwesomeKit
 import GoogleMobileAds
 import PureLayout
 
-class PlayListTableViewController: UITableViewController, GADBannerViewDelegate {
+class PlayListTableViewController: UITableViewController {
     
     var currentListId:String?
     var currentListName:String?
@@ -199,7 +199,6 @@ class PlayListTableViewController: UITableViewController, GADBannerViewDelegate 
     // MARK: - Table view data source
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-//        return (UIScreen.mainScreen().bounds.width / 3.5) * 0.7
         let rowNumber = indexPath.row
         if rowNumber > 1 && rowNumber % 8 == 0 {
             return (UIScreen.mainScreen().bounds.width / 3.5) * 0.7 + 65

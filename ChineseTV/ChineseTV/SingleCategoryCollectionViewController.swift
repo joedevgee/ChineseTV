@@ -24,14 +24,14 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
         parseClassName = "ChinesePlayList"
         pullToRefreshEnabled = false
         paginationEnabled = true
-        objectsPerPage = 20
+        objectsPerPage = 60
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         parseClassName = "ChinesePlayList"
         pullToRefreshEnabled = false
         paginationEnabled = true
-        objectsPerPage = 20
+        objectsPerPage = 60
     }
     override func queryForCollection() -> PFQuery {
         let query = PFQuery(className: self.parseClassName!)
