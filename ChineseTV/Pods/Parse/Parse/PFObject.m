@@ -58,7 +58,7 @@
 #import "ParseInternal.h"
 #import "Parse_Private.h"
 
-/*!
+/**
  Checks if an object can be used as a value for PFObject.
  */
 static void PFObjectAssertValueIsKindOfValidClass(id object) {
@@ -113,14 +113,14 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
     [[self subclassingController] unregisterSubclass:subclass];
 }
 
-/*!
+/**
  Returns the object that should be used to synchronize all internal data access.
  */
 - (NSObject *)lock {
     return lock;
 }
 
-/*!
+/**
  Blocks until all outstanding operations have completed.
  */
 - (void)waitUntilFinished {
@@ -129,13 +129,13 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
     }] waitForResult:nil];
 }
 
-/*!
+/**
  For operations that need to be put into multiple objects queues, like saveAll
  and fetchAll, this method does the nasty work.
  @param taskStart - A block that is called when all of the objects are ready.
  It can return a promise that all of the queues will then wait on.
  @param objects - The objects that this operation affects.
- @returns - Returns a promise that is fulfilled once the promise returned by the
+ @return - Returns a promise that is fulfilled once the promise returned by the
  block is fulfilled.
  */
 + (BFTask *)_enqueue:(BFTask *(^)(BFTask *toAwait))taskStart forObjects:(NSArray *)objects {
@@ -193,7 +193,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
 #pragma mark - Children helpers
 ///--------------------------------------
 
-/*!
+/**
  Finds all of the objects that are reachable from child, including child itself,
  and adds them to the given mutable array.  It traverses arrays and json objects.
  @param node  An kind object to search for children.
@@ -377,12 +377,16 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
 // This saves all of the objects and files reachable from the given object.
 // It does its work in multiple waves, saving as many as possible in each wave.
 // If there's ever an error, it just gives up, sets error, and returns NO;
-+ (BFTask *)_deepSaveAsync:(id)object withCurrentUser:(PFUser *)currentUser sessionToken:(NSString *)sessionToken {
-    BFTask *task = [BFTask taskWithResult:@YES];
-
++ (BFTask *)_deepSaveAsyncChildrenOfObject:(id)object withCurrentUser:(PFUser *)currentUser sessionToken:(NSString *)sessionToken {
     NSMutableSet *uniqueObjects = [NSMutableSet set];
     NSMutableSet *uniqueFiles = [NSMutableSet set];
     [self collectDirtyChildren:object children:uniqueObjects files:uniqueFiles currentUser:currentUser];
+    // Remove object from the queue of objects to save as this method should only save children.
+    if ([object isKindOfClass:[PFObject class]]) {
+        [uniqueObjects removeObject:object];
+    }
+
+    BFTask *task = [BFTask taskWithResult:@YES];
     for (PFFile *file in uniqueFiles) {
         task = [task continueAsyncWithSuccessBlock:^id(BFTask *task) {
             return [[file saveInBackground] continueAsyncWithBlock:^id(BFTask *task) {
@@ -622,9 +626,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
 
 - (BFTask *)_saveChildrenInBackgroundWithCurrentUser:(PFUser *)currentUser sessionToken:(NSString *)sessionToken {
     @synchronized (lock) {
-        return [[self class] _deepSaveAsync:_estimatedData.dictionaryRepresentation
-                            withCurrentUser:currentUser
-                               sessionToken:sessionToken];
+        return [[self class] _deepSaveAsyncChildrenOfObject:self withCurrentUser:currentUser sessionToken:sessionToken];
     }
 }
 
@@ -686,9 +688,9 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
 - (void)setHasBeenFetched:(BOOL)fetched {
     @synchronized (lock) {
         if (self._state.complete != fetched) {
-            PFMutableObjectState *state = [_pfinternal_state mutableCopy];
-            state.complete = fetched;
-            self._state = state;
+            self._state = [self._state copyByMutatingWithBlock:^(PFMutableObjectState *state) {
+                state.complete = fetched;
+            }];
         }
     }
 }
@@ -696,9 +698,9 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
 - (void)_setDeleted:(BOOL)deleted {
     @synchronized (lock) {
         if (self._state.deleted != deleted) {
-            PFMutableObjectState *state = [_pfinternal_state mutableCopy];
-            state.deleted = deleted;
-            self._state = state;
+            self._state = [self._state copyByMutatingWithBlock:^(PFMutableObjectState *state) {
+                state.deleted = deleted;
+            }];
         }
     }
 }
@@ -725,7 +727,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
     return;
 }
 
-/*!
+/**
  Checks if Parse class name could be used to initialize a given instance of PFObject or it's subclass.
  */
 + (void)_assertValidInstanceClassName:(NSString *)className {
@@ -792,7 +794,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
     return result;
 }
 
-/*!
+/**
  Creates a PFObject from a dictionary object.
 
  @param dictionary Undecoded dictionary.
@@ -815,7 +817,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
     return object;
 }
 
-/*!
+/**
  When the app was previously a non-LDS app and want to enable LDS, currentUser and currentInstallation
  will be discarded if we don't migrate them. This is a helper method to migrate user/installation
  from disk to pin.
@@ -828,7 +830,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
     return [self _migrateObjectInBackgroundFromFile:fileName toPin:pinName usingMigrationBlock:nil];
 }
 
-/*!
+/**
  When the app was previously a non-LDS app and want to enable LDS, currentUser and currentInstallation
  will be discarded if we don't migrate them. This is a helper method to migrate user/installation
  from disk to pin.
@@ -873,7 +875,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
 #pragma mark - REST operations
 ///--------------------------------------
 
-/*!
+/**
  Encodes parse object into NSDictionary suitable for persisting into LDS.
  */
 - (NSDictionary *)RESTDictionaryWithObjectEncoder:(PFEncoder *)objectEncoder
@@ -1055,10 +1057,10 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
 #pragma mark - Eventually Helper
 ///--------------------------------------
 
-/*!
+/**
  Enqueues saveEventually operation asynchronously.
 
- @returns A task which result is a saveEventually task.
+ @return A task which result is a saveEventually task.
  */
 - (BFTask *)_enqueueSaveEventuallyWithChildren:(BOOL)saveChildren {
     return [_eventuallyTaskQueue enqueue:^BFTask *(BFTask *toAwait) {
@@ -1070,7 +1072,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
             @synchronized (lock) {
                 [self _objectWillSave];
                 if (![self isDirty:NO]) {
-                    return [BFTask taskWithResult:@YES];
+                    return @YES;
                 }
             }
 
@@ -1118,7 +1120,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
 }
 
 
-/*!
+/**
  Enqueues the saveEventually PFOperationSet in PFObject taskQueue
  */
 - (BFTask *)_enqueueSaveEventuallyOperationAsync:(PFOperationSet *)operationSet {
@@ -1155,7 +1157,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
     }
 }
 
-/*!
+/**
  performOperation:forKey: is like setObject:forKey, but instead of just taking a
  new value, it takes a PFFieldOperation that modifies the value.
  */
@@ -1182,7 +1184,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
     return NO;
 }
 
-/*!
+/**
  Returns the set of PFFieldOperations that will be sent in the next save.
  */
 - (PFOperationSet *)unsavedChanges {
@@ -1191,8 +1193,8 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
     }
 }
 
-/*!
- @returns YES if there's unsaved changes in this object. This complements ivar `dirty` for `isDirty` check.
+/**
+ @return YES if there's unsaved changes in this object. This complements ivar `dirty` for `isDirty` check.
  */
 - (BOOL)_hasChanges {
     @synchronized (lock) {
@@ -1200,8 +1202,8 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
     }
 }
 
-/*!
- @returns YES if this PFObject has operations in operationSetQueue that haven't been completed yet,
+/**
+ @return YES if this PFObject has operations in operationSetQueue that haven't been completed yet,
  NO if there are no operations in the operationSetQueue.
  */
 - (BOOL)_hasOutstandingOperations {
@@ -1225,12 +1227,12 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
             return self;
         }
 
-        PFMutableObjectState *state = [self._state mutableCopy];
-        state.objectId = other.objectId;
-        state.createdAt = other.createdAt;
-        state.updatedAt = other.updatedAt;
-        state.serverData = [other._state.serverData mutableCopy];
-        self._state = state;
+        self._state = [self._state copyByMutatingWithBlock:^(PFMutableObjectState *state) {
+            state.objectId = other.objectId;
+            state.createdAt = other.createdAt;
+            state.updatedAt = other.updatedAt;
+            state.serverData = [other._state.serverData mutableCopy];
+        }];
 
         dirty = NO;
 
@@ -1251,16 +1253,14 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
 
 - (void)removeOldKeysAfterFetch:(NSDictionary *)result {
     @synchronized (lock) {
-        PFMutableObjectState *state = [self._state mutableCopy];
+        self._state = [self._state copyByMutatingWithBlock:^(PFMutableObjectState *state) {
+            NSMutableDictionary *removedDictionary = [NSMutableDictionary dictionaryWithDictionary:state.serverData];
+            [removedDictionary removeObjectsForKeys:result.allKeys];
 
-        NSMutableDictionary *removedDictionary = [NSMutableDictionary dictionaryWithDictionary:state.serverData];
-        [removedDictionary removeObjectsForKeys:result.allKeys];
-
-        NSArray *removedKeys = removedDictionary.allKeys;
-        [state removeServerDataObjectsForKeys:removedKeys];
-        [_availableKeys minusSet:[NSSet setWithArray:removedKeys]];
-
-        self._state = state;
+            NSArray *removedKeys = removedDictionary.allKeys;
+            [state removeServerDataObjectsForKeys:removedKeys];
+            [_availableKeys minusSet:[NSSet setWithArray:removedKeys]];
+        }];
     }
 }
 
@@ -1274,9 +1274,9 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
             PFOperationSet *operationsForNextSave = operationSetQueue[0];
             [operationsForNextSave mergeOperationSet:operationsBeforeSave];
         } else {
-            PFMutableObjectState *state = [self._state mutableCopy];
-            [state applyOperationSet:operationsBeforeSave];
-            self._state = state;
+            self._state = [self._state copyByMutatingWithBlock:^(PFMutableObjectState *state) {
+                [state applyOperationSet:operationsBeforeSave];
+            }];
 
             [self _mergeFromServerWithResult:result decoder:decoder completeData:NO];
             [self rebuildEstimatedData];
@@ -1286,41 +1286,40 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
 
 - (void)_mergeFromServerWithResult:(NSDictionary *)result decoder:(PFDecoder *)decoder completeData:(BOOL)completeData {
     @synchronized (lock) {
-        PFMutableObjectState *state = [self._state mutableCopy];
+        self._state = [self._state copyByMutatingWithBlock:^(PFMutableObjectState *state) {
+            // If the server's data is complete, consider this object to be fetched.
+            state.complete |= completeData;
 
-        // If the server's data is complete, consider this object to be fetched.
-        state.complete |= completeData;
-
-        [result enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-            if ([key isEqualToString:PFObjectObjectIdRESTKey]) {
-                state.objectId = obj;
-            } else if ([key isEqualToString:PFObjectCreatedAtRESTKey]) {
-                // These dates can be passed in as NSDate or as NSString,
-                // depending on whether they were wrapped inside JSONObject with __type: Date or not.
-                if ([obj isKindOfClass:[NSDate class]]) {
-                    state.createdAt = obj;
+            [result enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                if ([key isEqualToString:PFObjectObjectIdRESTKey]) {
+                    state.objectId = obj;
+                } else if ([key isEqualToString:PFObjectCreatedAtRESTKey]) {
+                    // These dates can be passed in as NSDate or as NSString,
+                    // depending on whether they were wrapped inside JSONObject with __type: Date or not.
+                    if ([obj isKindOfClass:[NSDate class]]) {
+                        state.createdAt = obj;
+                    } else {
+                        [state setCreatedAtFromString:obj];
+                    }
+                } else if ([key isEqualToString:PFObjectUpdatedAtRESTKey]) {
+                    // These dates can be passed in as NSDate or as NSString,
+                    // depending on whether they were wrapped inside JSONObject with __type: Date or not.
+                    if ([obj isKindOfClass:[NSDate class]]) {
+                        state.updatedAt = obj;
+                    } else {
+                        [state setUpdatedAtFromString:obj];
+                    }
+                } else if ([key isEqualToString:PFObjectACLRESTKey]) {
+                    PFACL *acl = [PFACL ACLWithDictionary:obj];
+                    [state setServerDataObject:acl forKey:key];
                 } else {
-                    [state setCreatedAtFromString:obj];
+                    [state setServerDataObject:[decoder decodeObject:obj] forKey:key];
                 }
-            } else if ([key isEqualToString:PFObjectUpdatedAtRESTKey]) {
-                // These dates can be passed in as NSDate or as NSString,
-                // depending on whether they were wrapped inside JSONObject with __type: Date or not.
-                if ([obj isKindOfClass:[NSDate class]]) {
-                    state.updatedAt = obj;
-                } else {
-                    [state setUpdatedAtFromString:obj];
-                }
-            } else if ([key isEqualToString:PFObjectACLRESTKey]) {
-                PFACL *acl = [PFACL ACLWithDictionary:obj];
-                [state setServerDataObject:acl forKey:key];
-            } else {
-                [state setServerDataObject:[decoder decodeObject:obj] forKey:key];
+            }];
+            if (state.updatedAt == nil && state.createdAt != nil) {
+                state.updatedAt = state.createdAt;
             }
         }];
-        if (state.updatedAt == nil && state.createdAt != nil) {
-            state.updatedAt = state.createdAt;
-        }
-        self._state = state;
         [_availableKeys addObjectsFromArray:result.allKeys];
 
         dirty = NO;
@@ -1335,11 +1334,9 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
 // to add special actions after operations.
 
 - (BFTask *)handleSaveResultAsync:(NSDictionary *)result {
-    BFTask *task = [BFTask taskWithResult:nil];
-
     NSDictionary *fetchedObjects = [self _collectFetchedObjects];
 
-    [task continueWithBlock:^id(BFTask *task) {
+    BFTask *task = [BFTask taskFromExecutor:[BFExecutor defaultExecutor] withBlock:^id{
         PFKnownParseObjectDecoder *decoder = [PFKnownParseObjectDecoder decoderWithFetchedObjects:fetchedObjects];
         @synchronized (self.lock) {
             // TODO (hallucinogen): t5611821 we need to make mergeAfterSave that accepts decoder and operationBeforeSave
@@ -1360,7 +1357,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
             if (self.saveDelegate) {
                 [self.saveDelegate invoke:self error:nil];
             }
-            return [BFTask taskWithResult:@(!!result)];
+            return @(result != nil);
         }
     }];
 }
@@ -1391,7 +1388,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
         }] continueWithBlock:^id(BFTask *task) {
             @synchronized (lock) {
                 if (![self isDirty:YES]) {
-                    return [BFTask taskWithResult:@YES];
+                    return @YES;
                 }
 
                 [self _objectWillSave];
@@ -1764,9 +1761,10 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
 
         dirty = YES;
 
-        PFMutableObjectState *state = [self._state mutableCopy];
-        state.objectId = objectId;
-        _pfinternal_state = state;
+        // Use ivar directly to avoid going through the custom setter.
+        _pfinternal_state = [self._state copyByMutatingWithBlock:^(PFMutableObjectState *state) {
+            state.objectId = objectId;
+        }];
 
         [self _notifyObjectIdChangedFrom:oldObjectId toObjectId:objectId];
     }
@@ -2349,7 +2347,7 @@ static void PFObjectAssertValueIsKindOfValidClass(id object) {
     return [[controller getCurrentObjectAsync] continueWithBlock:^id(BFTask *task) {
         PFUser *currentUser = task.result;
         NSString *sessionToken = currentUser.sessionToken;
-        return [PFObject _deepSaveAsync:objects withCurrentUser:currentUser sessionToken:sessionToken];
+        return [self _deepSaveAsyncChildrenOfObject:objects withCurrentUser:currentUser sessionToken:sessionToken];
     }];
 }
 

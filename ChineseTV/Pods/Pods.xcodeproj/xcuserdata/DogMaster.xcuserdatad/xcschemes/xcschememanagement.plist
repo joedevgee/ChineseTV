@@ -84,6 +84,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>RazzleDazzle.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>SDWebImage.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -99,7 +104,17 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>VBFPopFlatButton.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>XCDYouTubeKit.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>pop.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -107,7 +122,17 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>18BE4850DED199C4FFFF1FC072467E3F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>1D808FA082475E5C7087D716ECD7FC54</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>2CA7BF66A77EFA62209314649C94F37A</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -117,7 +142,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>46A5DE0A4280FA63F2400C0644C38FF5</key>
+		<key>4D596897AFBEE2B6DF3B0F9295BA2BF7</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -137,11 +162,6 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>53A080936EB16C8253090BACB36C2578</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>57ADC05E440A960212657DE6DA1FEDD5</key>
 		<dict>
 			<key>primary</key>
@@ -157,17 +177,32 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>6E348B42297E3965347D9B555FFB6FBB</key>
+		<key>626D49AD18621B0A3059EE726B27AE89</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>99FD401BF0508882068368F3BF0C6E9F</key>
+		<key>6427A0AB9C584A47EECFA6B57716412E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9ABD84305DCC051E77A0B961EF21CE51</key>
+		<key>924F62E038A12E6CD843BB57D8248C55</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A0C115B088F9525ECAB4F78BC0C9A185</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AED814F64CB006B2F342E47C93293E28</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C55C8307B4372F3CE8C7FC3A93A4E832</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -177,17 +212,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D96A240E649E2EBF89696290A2509DC8</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>E002C26D3D67A7A45492E941CB73D185</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>E9B2BDEE909AEADE5400CAAADBC7A1F2</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -198,6 +223,11 @@
 			<true/>
 		</dict>
 		<key>F710EAB41DD6932844C4A82A87A2628F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>FE624842B568C46D0E1744330A95D388</key>
 		<dict>
 			<key>primary</key>
 			<true/>

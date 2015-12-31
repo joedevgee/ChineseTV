@@ -29,12 +29,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navBar.barTintColor = themeColor
         navBar.tintColor = UIColor.whiteColor()
         navBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+        navBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        navBar.translucent = false
+        navBar.shadowImage = UIImage()
         // End of configuring navBar
         
         // Configure the look of tabbar
         let tabBar = UITabBar.appearance()
         tabBar.tintColor = themeColor
         tabBar.barTintColor = UIColor.whiteColor()
+        tabBar.shadowImage = UIImage()
         // End of tabbar configure
         
         // Configure parse related items

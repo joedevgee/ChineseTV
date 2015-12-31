@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChineseTV/AppDelegate.swift"
-            timestampString = "469812448.68162"
+            timestampString = "472967635.137293"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "60"
-            endingLineNumber = "60"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
             landmarkName = "AppDelegate"
             landmarkType = "3">
          </BreakpointContent>

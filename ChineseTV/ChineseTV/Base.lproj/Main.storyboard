@@ -195,6 +195,24 @@
             </objects>
             <point key="canvasLocation" x="-3796" y="2726"/>
         </scene>
+        <!--Sign Up View Controller-->
+        <scene sceneID="GDy-jK-3lD">
+            <objects>
+                <viewController storyboardIdentifier="SignUp" id="6Zq-lw-snL" customClass="SignUpViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="RtV-FS-aXd"/>
+                        <viewControllerLayoutGuide type="bottom" id="P3q-jF-RIe"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="2JM-he-aJ9">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6sd-Mh-TqB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3796" y="3570"/>
+        </scene>
         <!--Play List Table View Controller-->
         <scene sceneID="LLp-9m-Ohl">
             <objects>

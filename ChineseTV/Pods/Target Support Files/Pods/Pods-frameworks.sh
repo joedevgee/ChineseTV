@@ -99,10 +99,13 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/Parse.framework"
   install_framework "Pods/ParseUI.framework"
   install_framework "Pods/PureLayout.framework"
+  install_framework "Pods/RazzleDazzle.framework"
   install_framework "Pods/SDWebImage.framework"
   install_framework "Pods/TTGSnackbar.framework"
   install_framework "Pods/TextFieldEffects.framework"
+  install_framework "Pods/VBFPopFlatButton.framework"
   install_framework "Pods/XCDYouTubeKit.framework"
+  install_framework "Pods/pop.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/Alamofire.framework"
@@ -120,8 +123,11 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/Parse.framework"
   install_framework "Pods/ParseUI.framework"
   install_framework "Pods/PureLayout.framework"
+  install_framework "Pods/RazzleDazzle.framework"
   install_framework "Pods/SDWebImage.framework"
   install_framework "Pods/TTGSnackbar.framework"
   install_framework "Pods/TextFieldEffects.framework"
+  install_framework "Pods/VBFPopFlatButton.framework"
   install_framework "Pods/XCDYouTubeKit.framework"
+  install_framework "Pods/pop.framework"
 fi

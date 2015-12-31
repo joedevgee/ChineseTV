@@ -24,5 +24,8 @@ let videoSubColor:UIColor = UIColor(red: 150/255, green: 40/255, blue: 27/255, a
 
 let videoTopColor:UIColor = UIColor(red: 192/255, green: 57/255, blue: 43/255, alpha: 1)
 
-
-
+let savedListArray = "savedPlaylist"
+let savedListNameDict = "playlistName"
+let savedVideoNameDict = "playlistProgressName"
+let savedVideoImageDict = "playlistProgressImageUrl"
+let savedVideoIdDict = "playlistProgressId"

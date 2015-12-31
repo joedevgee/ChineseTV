@@ -226,9 +226,9 @@ static BOOL revocableSessionEnabled_;
             BOOL new = (result.httpResponse.statusCode == 201); // 201 means Created
             @synchronized (self.lock) {
                 if (self._state.isNew != new) {
-                    PFMutableUserState *state = [self._state mutableCopy];
-                    state.isNew = new;
-                    self._state = state;
+                    self._state = [self._state copyByMutatingWithBlock:^(PFMutableUserState *state) {
+                        state.isNew = new;
+                    }];
                 }
                 if (resultDictionary) {
                     self.isLazy = NO;
@@ -240,7 +240,7 @@ static BOOL revocableSessionEnabled_;
                         return self;
                     }];
                 }
-                return [BFTask taskWithResult:self];
+                return self;
             }
         }];
     }];
@@ -265,10 +265,10 @@ static BOOL revocableSessionEnabled_;
             if (saveResult) {
                 @synchronized (self.lock) {
                     // Save the session information
-                    PFMutableUserState *state = [self._state mutableCopy];
-                    state.sessionToken = result[PFUserSessionTokenRESTKey];
-                    state.isNew = YES;
-                    self._state = state;
+                    self._state = [self._state copyByMutatingWithBlock:^(PFMutableUserState *state) {
+                        state.sessionToken = result[PFUserSessionTokenRESTKey];
+                        state.isNew = YES;
+                    }];
                     self.isLazy = NO;
                 }
             }
@@ -295,7 +295,7 @@ static BOOL revocableSessionEnabled_;
     }
 }
 
-/*!
+/**
  Copies special PFUser fields from another user.
  */
 - (PFObject *)mergeFromObject:(PFUser *)other {
@@ -307,10 +307,10 @@ static BOOL revocableSessionEnabled_;
             return self;
         }
 
-        PFMutableUserState *state = [self._state mutableCopy];
-        state.sessionToken = other.sessionToken;
-        state.isNew = other._state.isNew;
-        self._state = state;
+        self._state = [self._state copyByMutatingWithBlock:^(PFMutableUserState *state) {
+            state.sessionToken = other.sessionToken;
+            state.isNew = other._state.isNew;
+        }];
 
         [self.authData removeAllObjects];
         [self.authData addEntriesFromDictionary:other.authData];
@@ -340,15 +340,13 @@ static BOOL revocableSessionEnabled_;
     @synchronized([self lock]) {
         // save the session token
 
-        PFMutableUserState *state = [self._state mutableCopy];
-
         NSString *newSessionToken = result[PFUserSessionTokenRESTKey];
         if (newSessionToken) {
             // Save the session token
-            state.sessionToken = newSessionToken;
+            self._state = [self._state copyByMutatingWithBlock:^(PFMutableUserState *state) {
+                state.sessionToken = newSessionToken;
+            }];
         }
-
-        self._state = state;
 
         // Merge the linked service metadata
         NSDictionary *newAuthData = [decoder decodeObject:result[PFUserAuthDataRESTKey]];
@@ -701,7 +699,7 @@ static BOOL revocableSessionEnabled_;
 
         // Bail-out early if session token is already revocable.
         if ([PFSessionUtilities isSessionTokenRevocable:sessionToken]) {
-            return [BFTask taskWithResult:currentUser];
+            return currentUser;
         }
         return [currentUser _upgradeToRevocableSessionInBackground];
     }];
@@ -720,7 +718,7 @@ static BOOL revocableSessionEnabled_;
 
             // Check session token here as well, to make sure we didn't upgrade the token in between.
             if ([PFSessionUtilities isSessionTokenRevocable:token]) {
-                return [BFTask taskWithResult:self];
+                return self;
             }
 
             PFRESTCommand *command = [PFRESTUserCommand upgradeToRevocableSessionCommandWithSessionToken:token];
@@ -731,9 +729,9 @@ static BOOL revocableSessionEnabled_;
                                                      defaultClassName:[PFSession parseClassName]
                                                          completeData:YES];
                 @synchronized(self.lock) {
-                    PFMutableUserState *state = [self._state mutableCopy];
-                    state.sessionToken = session.sessionToken;
-                    self._state = state;
+                    self._state = [self._state copyByMutatingWithBlock:^(PFMutableUserState *state) {
+                        state.sessionToken = session.sessionToken;
+                    }];
                 }
                 PFCurrentUserController *controller = [[self class] currentUserController];
                 return [controller saveCurrentObjectAsync:self];
@@ -1038,9 +1036,9 @@ static BOOL revocableSessionEnabled_;
 
         token = [self.sessionToken copy];
 
-        PFMutableUserState *state = [self._state mutableCopy];
-        state.sessionToken = nil;
-        self._state = state;
+        self._state = [self._state copyByMutatingWithBlock:^(PFMutableUserState *state) {
+            state.sessionToken = nil;
+        }];
     }
 
     BFTask *task = [BFTask taskForCompletionOfAllTasks:tasks];

@@ -8,7 +8,6 @@
 
 import UIKit
 import Parse
-import ParseUI
 import SDWebImage
 
 let passListNotificationKey:String = "com.8pon.choseSavedPlaylistAndContinueToCurrentVideo"
@@ -37,28 +36,23 @@ class LeftMenuViewController: UITableViewController {
     
     func updateList() {
         // Retrieve saved lists from NSUserDefault
-        if let tempList = NSUserDefaults.standardUserDefaults().arrayForKey("savedPlaylist") as? [String] {
-            self.savedPlaylist = tempList
-        }
-        if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistName") as? [String: String] {
-            self.savedPlaylistNames = tempDict
-        }
-        if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressName") as? [String: String] {
-            self.savedPlaylistProgressName = tempDict
-        }
-        if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressImageUrl") as? [String: String] {
-            self.savedPlaylistProgressImageUrl = tempDict
-        }
-        if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressId") as? [String: String] {
-            self.savedPlaylistProgressId = tempDict
-        }
+        guard let nudSavedList:[String] = NSUserDefaults.standardUserDefaults().arrayForKey(savedListArray) as? [String] else { print("no saved play list");return }
+        guard let nudListNames:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedListNameDict) as? [String: String] else { print("failed getting list name");return }
+        guard let nudListProgressName:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoNameDict) as? [String: String] else { print("failed getting video name");return }
+        guard let nudImageUrl:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoImageDict) as? [String: String] else { print("failed getting image url");return }
+        guard let nudVideoId:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoIdDict) as? [String: String] else { print("failed getting video id");return }
+        savedPlaylist = nudSavedList
+        savedPlaylistNames = nudListNames
+        savedPlaylistProgressName = nudListProgressName
+        savedPlaylistProgressImageUrl = nudImageUrl
+        savedPlaylistProgressId = nudVideoId
         tableView.reloadData()
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return self.rowHeight
     }
-  
+    
     // MARK: Tableview data source
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -74,20 +68,19 @@ class LeftMenuViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! LeftMenuTableViewCell
-        if self.savedPlaylist.count > 0 {
-            if let listId:String = self.savedPlaylist[indexPath.row] as String {
-                if let listTitle:String = self.savedPlaylistNames[listId]! as String {
-                    cell.playlistName.text = listTitle
-                }
-                if let currentVideoName:String = self.savedPlaylistProgressName[listId]! as String {
-                    cell.progressInfo.text = "播放进度： \(currentVideoName)"
-                }
-                if let currentVideoImage:String = self.savedPlaylistProgressImageUrl[listId]! as String {
-                    cell.playlistImageView.sd_setImageWithURL(NSURL(string: currentVideoImage))
-                }
-            }
+        switch self.savedPlaylist.isEmpty {
+        case true:
+            print("List is empty")
+        case false:
+            // Update the cell
+            guard let listID:String = self.savedPlaylist[indexPath.row] as String else { break }
+            guard let listTitle:String = self.savedPlaylistNames[listID]! as String else { break }
+            guard let videoName:String = self.savedPlaylistProgressName[listID]! as String else { break }
+            guard let videoImage:String = self.savedPlaylistProgressImageUrl[listID]! as String else { break }
+            cell.playlistName.text = listTitle
+            cell.progressInfo.text = "播放进度： \(videoName)"
+            cell.playlistImageView.sd_setImageWithURL(NSURL(string: videoImage))
         }
-        
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
         return cell
@@ -95,20 +88,21 @@ class LeftMenuViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         var dataDict = Dictionary<String, String>()
-        if let selectedListId:String = self.savedPlaylist[indexPath.row] as String {
-            dataDict["listId"] = selectedListId
-            if let selectedListName:String = self.savedPlaylistNames[selectedListId]! as String {
-                dataDict["listName"] = selectedListName
-            }
-            if let selectedVideoId:String = self.savedPlaylistProgressId[selectedListId]! as String {
-                dataDict["videoId"] = selectedVideoId
-            }
-            if let selectedVideoName:String = self.savedPlaylistProgressName[selectedListId]! as String {
-                dataDict["videoName"] = selectedVideoName
-            }
+        switch self.savedPlaylist.isEmpty {
+        case true:
+            print("There is no list to direct to")
+        case false:
+            guard let listID:String = self.savedPlaylist[indexPath.row] as String else { break }
+            guard let listTitle:String = self.savedPlaylistNames[listID]! as String else { break }
+            guard let videoID:String = self.savedPlaylistProgressId[listID]! as String else { break }
+            guard let videoName:String = self.savedPlaylistProgressName[listID]! as String else { break }
+            dataDict["listId"] = listID
+            dataDict["listName"] = listTitle
+            dataDict["videoId"] = videoID
+            dataDict["videoName"] = videoName
+            // TODO: use notification to handle jumping through controllers
+            NSNotificationCenter.defaultCenter().postNotificationName(passListNotificationKey, object: nil, userInfo: dataDict)
         }
-        // TODO: use notification to handle jumping through controllers
-        NSNotificationCenter.defaultCenter().postNotificationName(passListNotificationKey, object: nil, userInfo: dataDict)
         self.sideMenuViewController.hideMenuViewController()
     }
     

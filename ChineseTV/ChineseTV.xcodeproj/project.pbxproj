@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D07E2E11C2F47B90020A9EC /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D07E2E01C2F47B90020A9EC /* SignUpViewController.swift */; };
 		0D0ED6A11BFD46E300357A0A /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0D0ED6A01BFD46E300357A0A /* FontAwesome.otf */; };
 		0D0ED6A71BFD51F900357A0A /* RawShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ED6A31BFD51F900357A0A /* RawShare.swift */; };
 		0D0ED6A81BFD51F900357A0A /* RSQQ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ED6A41BFD51F900357A0A /* RSQQ.swift */; };
@@ -18,7 +19,6 @@
 		0D10A5001BF1537D006C83FA /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D10A4FF1BF1537D006C83FA /* ToggleButton.swift */; };
 		0D10A5021BF15CFB006C83FA /* MainTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D10A5011BF15CFB006C83FA /* MainTableViewCell.swift */; };
 		0D2EC6BC1C09F102001BFDF9 /* DifferenteCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2EC6BB1C09F102001BFDF9 /* DifferenteCollectionViewController.swift */; };
-		0D3615F21C1929B4000D31A6 /* PlayListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3615F11C1929B4000D31A6 /* PlayListViewController.swift */; };
 		0D40F71F1C0CE385007CB5EF /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D40F71E1C0CE385007CB5EF /* SearchResultViewController.swift */; };
 		0D58A5F21BF144E700BD1C7E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D58A5F11BF144E700BD1C7E /* AppDelegate.swift */; };
 		0D58A5F71BF144E700BD1C7E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D58A5F51BF144E700BD1C7E /* Main.storyboard */; };
@@ -67,6 +67,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0D07E2E01C2F47B90020A9EC /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		0D0ED6A01BFD46E300357A0A /* FontAwesome.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.otf; path = Pods/FontAwesomeKit/FontAwesomeKit/FontAwesome.otf; sourceTree = "<group>"; };
 		0D0ED6A31BFD51F900357A0A /* RawShare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RawShare.swift; sourceTree = "<group>"; };
 		0D0ED6A41BFD51F900357A0A /* RSQQ.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSQQ.swift; sourceTree = "<group>"; };
@@ -79,7 +80,6 @@
 		0D10A4FF1BF1537D006C83FA /* ToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleButton.swift; sourceTree = "<group>"; };
 		0D10A5011BF15CFB006C83FA /* MainTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTableViewCell.swift; sourceTree = "<group>"; };
 		0D2EC6BB1C09F102001BFDF9 /* DifferenteCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DifferenteCollectionViewController.swift; sourceTree = "<group>"; };
-		0D3615F11C1929B4000D31A6 /* PlayListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayListViewController.swift; sourceTree = "<group>"; };
 		0D40F71E1C0CE385007CB5EF /* SearchResultViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultViewController.swift; sourceTree = "<group>"; };
 		0D58A5EE1BF144E700BD1C7E /* ChineseTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChineseTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D58A5F11BF144E700BD1C7E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -311,7 +311,6 @@
 			isa = PBXGroup;
 			children = (
 				0DA3F9F61C001BA500FA1960 /* PlayListTableViewController.swift */,
-				0D3615F11C1929B4000D31A6 /* PlayListViewController.swift */,
 			);
 			name = PlayListViewController;
 			sourceTree = "<group>";
@@ -322,6 +321,7 @@
 				0DAC63BB1BFE9B3D001AC3E9 /* MZFormSheetPresentationController */,
 				0DAC63B91BFE9B08001AC3E9 /* SocialShareViewController.swift */,
 				0DF925861C0BEE9F003E179C /* SearchBarViewController.swift */,
+				0D07E2E01C2F47B90020A9EC /* SignUpViewController.swift */,
 			);
 			name = PopupViewController;
 			sourceTree = "<group>";
@@ -528,10 +528,10 @@
 				0D10A5021BF15CFB006C83FA /* MainTableViewCell.swift in Sources */,
 				0D5E688F1BF3E4E60081CEDB /* SingleCategoryCollectionViewController.swift in Sources */,
 				0D0ED6A71BFD51F900357A0A /* RawShare.swift in Sources */,
+				0D07E2E11C2F47B90020A9EC /* SignUpViewController.swift in Sources */,
 				0D8E9E2A1BF983EE00C80A66 /* VideoListTableViewCell.swift in Sources */,
 				0DAC63D61BFE9B3D001AC3E9 /* MZBlurEffectAdapter.m in Sources */,
 				0D7284851BF2A769006BB77A /* RESideMenu.m in Sources */,
-				0D3615F21C1929B4000D31A6 /* PlayListViewController.swift in Sources */,
 				0DAC63DE1BFE9B3D001AC3E9 /* MZMethodSwizzler.m in Sources */,
 				0DF925871C0BEE9F003E179C /* SearchBarViewController.swift in Sources */,
 				0DAC63D71BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationController.m in Sources */,

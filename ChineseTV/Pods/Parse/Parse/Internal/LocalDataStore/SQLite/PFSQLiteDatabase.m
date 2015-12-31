@@ -44,12 +44,12 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
     NSMutableDictionary *_cachedStatements;
 }
 
-/*!
+/**
  Database instance
  */
 @property (nonatomic, assign) sqlite3 *database;
 
-/*!
+/**
  Database path
  */
 @property (nonatomic, copy) NSString *databasePath;
@@ -69,12 +69,13 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
     _databaseClosedTaskCompletionSource = [[BFTaskCompletionSource alloc] init];
     _databasePath = [path copy];
 
-    _databaseQueue = PFThreadsafetyCreateQueueForObject(self);
+    dispatch_queue_t queue = PFThreadsafetyCreateQueueForObject(self);
+    _databaseQueue = queue;
     _databaseExecutor = [BFExecutor executorWithBlock:^(dispatch_block_t block) {
         // Execute asynchrounously on the proper queue.
         // Seems a bit backwards, but we don't have PFThreadsafetySafeDispatchAsync.
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            PFThreadsafetySafeDispatchSync(_databaseQueue, block);
+            PFThreadsafetySafeDispatchSync(queue, block);
         });
     }];
 
@@ -124,7 +125,7 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
         }
 
         self.database = db;
-        return [BFTask taskWithResult:nil];
+        return nil;
     }];
 }
 
@@ -177,7 +178,7 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
 #pragma mark - Query Methods
 ///--------------------------------------
 
-- (BFTask *)_executeQueryAsync:(NSString *)sql withArgumentsInArray:(NSArray *)args cachingEnabled:(BOOL)enableCaching {
+- (BFTask PF_GENERIC(PFSQLiteDatabaseResult *)*)_executeQueryAsync:(NSString *)sql withArgumentsInArray:(NSArray *)args cachingEnabled:(BOOL)enableCaching {
     int resultCode = 0;
     PFSQLiteStatement *statement = enableCaching ? [self _cachedStatementForQuery:sql] : nil;
     if (!statement) {
@@ -225,9 +226,15 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
     }];
 }
 
-- (BFTask *)executeQueryAsync:(NSString *)sql withArgumentsInArray:(NSArray *)args {
+- (BFTask *)executeQueryAsync:(NSString *)query withArgumentsInArray:(nullable NSArray *)args block:(PFSQLiteDatabaseQueryBlock)block {
     return [BFTask taskFromExecutor:_databaseExecutor withBlock:^id {
-        return [self _executeQueryAsync:sql withArgumentsInArray:args cachingEnabled:NO];
+        BFTask PF_GENERIC(PFSQLiteDatabaseResult *)*task = [self _executeQueryAsync:query withArgumentsInArray:args cachingEnabled:NO];
+        return [[task continueImmediatelyWithSuccessBlock:^id(BFTask PF_GENERIC(PFSQLiteDatabaseResult *)*task) {
+            return block(task.result);
+        }] continueImmediatelyWithBlock:^id(BFTask *resultTask) {
+            [task.result close];
+            return resultTask;
+        }];
     }];
 }
 
@@ -242,7 +249,7 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
 
             switch (sqliteResultCode) {
                 case SQLITE_DONE: {
-                    return [BFTask taskWithResult:nil];
+                    return nil;
                 }
                 case SQLITE_ROW: {
                     NSError *error = [self _errorWithErrorCode:PFSQLiteDatabaseInvalidSQL
@@ -259,7 +266,7 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
     }];
 }
 
-/*!
+/**
  bindObject will bind any object supported by PFSQLiteDatabase to query statement.
  Note: sqlite3 query index binding is one-based, while querying result is zero-based.
  */
@@ -311,7 +318,7 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
 #pragma mark - Errors
 ///--------------------------------------
 
-/*!
+/**
  Generates SQLite error. The details of the error code can be seen in: www.sqlite.org/c3ref/errcode.html
  */
 - (NSError *)_errorWithErrorCode:(int)errorCode {
@@ -325,7 +332,7 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
                               domain:PFSQLiteDatabaseErrorSQLiteDomain];
 }
 
-/*!
+/**
  Generates SQLite/PFSQLiteDatabase error.
  */
 - (NSError *)_errorWithErrorCode:(int)errorCode

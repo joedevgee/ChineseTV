@@ -45,7 +45,7 @@ class RootViewController: RESideMenu, RESideMenuDelegate {
     // MARK: RESide Delegate Methods
     
     func sideMenu(sideMenu: RESideMenu!, willShowMenuViewController menuViewController: UIViewController!) {
-        print("This will show the menu")
+//        print("This will show the menu")
     }
     
     func sideMenu(sideMenu: RESideMenu!, didHideMenuViewController menuViewController: UIViewController!) {

@@ -1,6 +1,9 @@
 NVActivityIndicatorView
 ===================
 
+[![Cocoapods Compatible](https://img.shields.io/cocoapods/v/NVActivityIndicatorView.svg)](https://img.shields.io/cocoapods/v/NVActivityIndicatorView.svg)
+[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+
 # Introduction
 NVActivityIndicatorView is a collection of nice loading animations.
 
@@ -36,6 +39,22 @@ Then, run the following command
 ```bash
 $ pod install
 ```
+## Carthage
+
+Install Carthage if need be
+
+```bash
+$ brew update
+$ brew install carthage
+```
+
+Add NVActivityIndicatorView in your `Cartfile`
+
+```bash
+github "ninjaprox/NVActivityIndicatorView"
+```
+
+Run `carthage` to build the framework and drag the built `NVActivityIndicatorView.framework` into your Xcode project.
 
 ## Manual
 
@@ -48,6 +67,8 @@ Firstly, import NVActivityIndicatorView
 ```swift
 import NVActivityIndicatorView
 ```
+
+## Initialization
 
 Then, there are multiple ways you can create NVActivityIndicatorView:
 
@@ -63,39 +84,83 @@ NVActivityIndicatorView(frame: frame, type: type, color: color, size: size)
 Any of the last three arguments can be omitted. If an argument is omitted it will use the default values which are 40, white, .Pacman for size, color and type respectively.
 Therefore, you can also create NVActivityIndicatorView using any of the following:
 
-- specify only frame, type and color
+- Specify only frame, type and color
 ```swift
 NVActivityIndicatorView(frame: frame, type: type, color: color)
 ```
 
-- specify only frame, type and size
+- Specify only frame, type and size
 ```swift
 NVActivityIndicatorView(frame: frame, type: type, size: size)
 ```
 
-- specify only frame, size and color
+- Specify only frame, size and color
 ```swift
 NVActivityIndicatorView(frame: frame, size: size, color: color)
 ```
 
-- specify only frame and type
+- Specify only frame and type
 ```swift
 NVActivityIndicatorView(frame: frame, type: type)
 ```
 
-- specify only frame and color
+- Specify only frame and color
 ```swift
 NVActivityIndicatorView(frame: frame, color: color)
 ```
 
-- specify only frame and size
+- Specify only frame and size
 ```swift
 NVActivityIndicatorView(frame: frame, size: size)
 ```
 
-- specify only frame
+- Specify only frame
 ```swift
 NVActivityIndicatorView(frame: frame)
+```
+
+## Start/Stop animation
+
+Start animation
+
+```swift
+activityIndicatorView.startAnimation()
+```
+
+Stop animation
+
+```swift
+activityIndicatorView.stopAnimation()
+```
+
+## Change properties
+
+Specify individual properties after initialization:
+
+- Specify type
+```swift
+activityIndicatorView.type = .LineScale
+```
+
+- Specify color
+```swift
+activityIndicatorView.color = UIColor.redColor()
+```
+
+- Specify size
+```swift
+activityIndicatorView.size = CGSize(width: 100, height: 100)
+```
+
+Specify whether activity indicator view should hide once stopped
+
+```swift
+activityIndicatorView.hidesWhenStopped = true
+```
+
+Get current status of animation
+```swift
+animation = activityIndicatorView.animating
 ```
 
 # Acknowledgment

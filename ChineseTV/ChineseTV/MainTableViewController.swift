@@ -29,7 +29,7 @@ class MainTableViewController: PFQueryTableViewController {
         parseClassName = "ChinesePlayList"
         pullToRefreshEnabled = false
         paginationEnabled = true
-        objectsPerPage = 60
+        objectsPerPage = 100
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -37,7 +37,7 @@ class MainTableViewController: PFQueryTableViewController {
         parseClassName = "ChinesePlayList"
         pullToRefreshEnabled = false
         paginationEnabled = true
-        objectsPerPage = 60
+        objectsPerPage = 100
     }
     
     override func queryForTable() -> PFQuery {
@@ -50,7 +50,7 @@ class MainTableViewController: PFQueryTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let animateDuration:Double = 2.0
+        let animateDuration:Double = 1.7
         
         // logo splash
         tabBarController!.tabBar.hidden = true
@@ -115,8 +115,6 @@ class MainTableViewController: PFQueryTableViewController {
         }
     }
     
-    
-    
     // MARK:Tableviewcontroller delegate
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return self.rowHeight
@@ -174,7 +172,6 @@ class MainTableViewController: PFQueryTableViewController {
     }
     
     // Prepare for segue
-    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         self.navigationItem.title = "主页"
         if segue.identifier == "addPlayList" {

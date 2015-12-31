@@ -10,6 +10,7 @@
 #import "PFOfflineQueryLogic.h"
 
 #import <Bolts/BFTask.h>
+#import <Bolts/BFExecutor.h>
 
 #import "PFACL.h"
 #import "PFAssert.h"
@@ -27,7 +28,7 @@
 typedef BOOL (^PFComparatorDeciderBlock)(id value, id constraint);
 typedef BOOL (^PFSubQueryMatcherBlock)(id object, NSArray *results);
 
-/*!
+/**
  A query to be used in $inQuery, $notInQuery, $select and $dontSelect
  */
 @interface PFSubQueryMatcher : NSObject
@@ -160,7 +161,7 @@ typedef BOOL (^PFSubQueryMatcherBlock)(id object, NSArray *results);
 #pragma mark - Matcher With Decider
 ///--------------------------------------
 
-/*!
+/**
  Returns YES if decider returns YES for any value in the given array.
  */
 + (BOOL)matchesArray:(NSArray *)array
@@ -174,7 +175,7 @@ typedef BOOL (^PFSubQueryMatcherBlock)(id object, NSArray *results);
     return NO;
 }
 
-/*!
+/**
  Returns YES if decider returns YES for any value in the given array.
  */
 + (BOOL)matchesValue:(id)value
@@ -191,7 +192,7 @@ typedef BOOL (^PFSubQueryMatcherBlock)(id object, NSArray *results);
 #pragma mark - Matcher
 ///--------------------------------------
 
-/*!
+/**
  Implements simple equality constraints. This emulates Mongo's behavior where "equals" can mean array containment.
  */
 + (BOOL)matchesValue:(id)value
@@ -214,7 +215,7 @@ typedef BOOL (^PFSubQueryMatcherBlock)(id object, NSArray *results);
     }];
 }
 
-/*!
+/**
  Matches $ne constraints.
  */
 + (BOOL)matchesValue:(id)value
@@ -222,7 +223,7 @@ typedef BOOL (^PFSubQueryMatcherBlock)(id object, NSArray *results);
     return ![self matchesValue:value equalTo:constraint];
 }
 
-/*!
+/**
  Matches $lt constraints.
  */
 + (BOOL)matchesValue:(id)value
@@ -236,7 +237,7 @@ typedef BOOL (^PFSubQueryMatcherBlock)(id object, NSArray *results);
     }];
 }
 
-/*!
+/**
  Matches $lte constraints.
  */
 + (BOOL)matchesValue:(id)value
@@ -250,7 +251,7 @@ typedef BOOL (^PFSubQueryMatcherBlock)(id object, NSArray *results);
     }];
 }
 
-/*!
+/**
  Matches $gt constraints.
  */
 + (BOOL)matchesValue:(id)value
@@ -264,7 +265,7 @@ typedef BOOL (^PFSubQueryMatcherBlock)(id object, NSArray *results);
     }];
 }
 
-/*!
+/**
  Matches $gte constraints.
  */
 + (BOOL)matchesValue:(id)value
@@ -278,7 +279,7 @@ greaterThanOrEqualTo:(id)constraint {
     }];
 }
 
-/*!
+/**
  Matches $in constraints.
  $in returns YES if the intersection of value and constraint is not an empty set.
  */
@@ -298,7 +299,7 @@ greaterThanOrEqualTo:(id)constraint {
     return NO;
 }
 
-/*!
+/**
  Matches $nin constraints.
  */
 + (BOOL)matchesValue:(id)value
@@ -306,7 +307,7 @@ greaterThanOrEqualTo:(id)constraint {
     return ![self matchesValue:value containedIn:constraint];
 }
 
-/*!
+/**
  Matches $all constraints.
  */
 + (BOOL)matchesValue:(id)value containsAllObjectsInArray:(id)constraints {
@@ -321,7 +322,7 @@ greaterThanOrEqualTo:(id)constraint {
     return YES;
 }
 
-/*!
+/**
  Matches $regex constraints.
  */
 + (BOOL)matchesValue:(id)value
@@ -360,7 +361,7 @@ greaterThanOrEqualTo:(id)constraint {
     return matches.count > 0;
 }
 
-/*!
+/**
  Matches $exists constraints.
  */
 + (BOOL)matchesValue:(id)value
@@ -372,7 +373,7 @@ greaterThanOrEqualTo:(id)constraint {
     return value == nil || value == [NSNull null];
 }
 
-/*!
+/**
  Matches $nearSphere constraints.
  */
 + (BOOL)matchesValue:(id)value
@@ -389,7 +390,7 @@ greaterThanOrEqualTo:(id)constraint {
     return [point1 distanceInRadiansTo:point2] <= [maxDistance doubleValue];
 }
 
-/*!
+/**
  Matches $within constraints.
  */
 + (BOOL)matchesValue:(id)value
@@ -414,7 +415,7 @@ greaterThanOrEqualTo:(id)constraint {
             target.longitude <= northEast.longitude);
 }
 
-/*!
+/**
  Returns YES iff the given value matches the given operator and constraint.
  Raise NSInvalidArgumentException if the operator is not one this function can handle
  */
@@ -462,7 +463,7 @@ greaterThanOrEqualTo:(id)constraint {
     return YES;
 }
 
-/*!
+/**
  Creates a matcher that handles $inQuery constraints.
  */
 - (PFConstraintMatcherBlock)createMatcherForKey:(NSString *)key
@@ -477,7 +478,7 @@ greaterThanOrEqualTo:(id)constraint {
     } user:user];
 }
 
-/*!
+/**
  Creates a matcher that handles $notInQuery constraints.
  */
 - (PFConstraintMatcherBlock)createMatcherForKey:(NSString *)key
@@ -491,7 +492,7 @@ greaterThanOrEqualTo:(id)constraint {
     };
 }
 
-/*!
+/**
  Creates a matcher that handles $select constraints.
  */
 - (PFConstraintMatcherBlock)createMatcherForKey:(NSString *)key
@@ -514,7 +515,7 @@ greaterThanOrEqualTo:(id)constraint {
     } user:user];
 }
 
-/*!
+/**
  Creates a matcher that handles $dontSelect constraints.
  */
 - (PFConstraintMatcherBlock)createMatcherForKey:(NSString *)key
@@ -528,7 +529,7 @@ greaterThanOrEqualTo:(id)constraint {
     };
 }
 
-/*!
+/**
  Creates a matcher for a particular constraint operator.
  */
 - (PFConstraintMatcherBlock)createMatcherWithOperator:(NSString *)operator
@@ -556,7 +557,7 @@ greaterThanOrEqualTo:(id)constraint {
     }
 }
 
-/*!
+/**
  Handles $or queries.
  */
 - (PFConstraintMatcherBlock)createOrMatcherForQueries:(NSArray *)queries user:(PFUser *)user {
@@ -581,7 +582,7 @@ greaterThanOrEqualTo:(id)constraint {
     };
 }
 
-/*!
+/**
  Returns a PFConstraintMatcherBlock that return true iff the object matches queryConstraints. This
  takes in a SQLiteDatabase connection because SQLite is finicky about nesting connections, so we
  want to reuse them whenever possible.
@@ -695,7 +696,7 @@ greaterThanOrEqualTo:(id)constraint {
         rest = [[parts subarrayWithRange:range] componentsJoinedByString:@"."];
     }
 
-    return [[[BFTask taskWithResult:nil] continueWithBlock:^id(BFTask *task) {
+    return [[BFTask taskFromExecutor:[BFExecutor defaultExecutor] withBlock:^id{
         if ([container isKindOfClass:[PFObject class]]) {
             BFTask *fetchTask = [self fetchIncludeAsync:nil container:container database:database];
             return [fetchTask continueWithSuccessBlock:^id(BFTask *task) {

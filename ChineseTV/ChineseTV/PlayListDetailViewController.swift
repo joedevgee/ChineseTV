@@ -16,6 +16,7 @@ import FontAwesomeKit
 import FBSDKCoreKit
 import FBSDKLoginKit
 import Parse
+import ParseUI
 import TTGSnackbar
 import NVActivityIndicatorView
 import GoogleMobileAds
@@ -37,6 +38,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     var videoContainer:UIView = UIView.newAutoLayoutView()
     var youtubePlayer = XCDYouTubeVideoPlayerViewController()
     var pacMan = NVActivityIndicatorView(frame: CGRectZero, type: .Pacman, color: UIColor.whiteColor(), size: CGSize(width: 35, height: 35))
+    var playerCloseButton:UIButton = UIButton.newAutoLayoutView()
     var videoSubContainer:UIView = UIView.newAutoLayoutView()
     
     var videoListButton:UIButton = UIButton.newAutoLayoutView()
@@ -52,15 +54,18 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     var fbLoginButton:FBSDKLoginButton = FBSDKLoginButton.newAutoLayoutView()
     var loginInfoLabel:UILabel = UILabel.newAutoLayoutView()
     var fbProfileView:FBSDKProfilePictureView = FBSDKProfilePictureView.newAutoLayoutView()
+    var parseAvatarView:PFImageView = PFImageView.newAutoLayoutView()
     var commentTextView:UITextView = UITextView.newAutoLayoutView()
     var sendCommentButton:UIButton = UIButton.newAutoLayoutView()
     
+    // To comply with Apple review rules, build own user system
+    var registerButton:UIButton = UIButton.newAutoLayoutView()
+    
+    var didSetupConstraints = false
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.setupTopContainer()
-        self.setupVideoPlayer()
-        self.setupVideoList()
-        self.setupCommentList()
         
         // show comment list first
         self.showCommentList()
@@ -79,15 +84,19 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
             self.loginInfoLabel.hidden = true
             self.commentTextView.hidden = false
             self.sendCommentButton.hidden = true
+            self.registerButton.hidden = true
         } else {
             self.fbProfileView.hidden = true
             self.commentTextView.hidden = true
             self.sendCommentButton.hidden = true
             self.fbLoginButton.hidden = false
             self.loginInfoLabel.hidden = false
+            if let _:String = NSUserDefaults.standardUserDefaults().valueForKey("userID") as? String { parseRegistered() }
         }
         // Observe for profile change
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "changeProfile", name: FBSDKProfileDidChangeNotification, object: nil)
+        // Observe for user registering with Parse
+        //        NSNotificationCenter.defaultCenter().addObserver(self, selector: "parseRegistered", name: registerNotificationKey, object: nil)
         
     }
     
@@ -95,10 +104,106 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     
     
     // MARK: Setup the UI
+    
+    override func loadView() {
+        view = UIView()
+        view.addSubview(topContainer)
+        view.addSubview(videoListTableView)
+        view.addSubview(commentListTableView)
+        
+        self.setupTopContainer()
+        self.setupVideoPlayer()
+        self.setupCommentList()
+        self.setupVideoList()
+        
+        view.setNeedsUpdateConstraints()
+    }
+    
+    override func updateViewConstraints() {
+        if !self.didSetupConstraints {
+            // Configure auto layout constraints for top container
+            commentListButton.autoPinEdgeToSuperviewEdge(.Left)
+            commentListButton.autoPinEdgeToSuperviewEdge(.Top)
+            commentListButton.autoPinEdgeToSuperviewEdge(.Bottom)
+            commentListButton.autoMatchDimension(.Width, toDimension: .Width, ofView: videoSubContainer, withMultiplier: 0.5)
+            
+            videoListButton.autoPinEdgeToSuperviewEdge(.Top)
+            videoListButton.autoPinEdgeToSuperviewEdge(.Right)
+            videoListButton.autoPinEdgeToSuperviewEdge(.Bottom)
+            videoListButton.autoPinEdge(.Left, toEdge: .Right, ofView: commentListButton)
+            
+            videoButtonUnderline.autoSetDimension(.Height, toSize: 2)
+            videoButtonUnderline.autoPinEdgeToSuperviewEdge(.Bottom)
+            videoButtonUnderline.autoPinEdgeToSuperviewEdge(.Leading)
+            videoButtonUnderline.autoPinEdgeToSuperviewEdge(.Trailing)
+            
+            commentButtonUnderline.autoSetDimension(.Height, toSize: 2)
+            commentButtonUnderline.autoPinEdgeToSuperviewEdge(.Leading)
+            commentButtonUnderline.autoPinEdgeToSuperviewEdge(.Trailing)
+            commentButtonUnderline.autoPinEdgeToSuperviewEdge(.Bottom)
+            
+            // Configure auto layout constraints for video player
+            pacMan.autoCenterInSuperview()
+            playerCloseButton.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
+            playerCloseButton.autoPinEdgeToSuperviewEdge(.Left)
+            
+            // Configure auto layout constraints for comment list
+            fbProfileView.autoSetDimensionsToSize(CGSize(width: 30, height: 30))
+            fbProfileView.autoPinEdgeToSuperviewEdge(.Top, withInset: 8, relation: .LessThanOrEqual)
+            fbProfileView.autoPinEdgeToSuperviewEdge(.Leading, withInset: 5, relation: .LessThanOrEqual)
+            
+            parseAvatarView.autoSetDimensionsToSize(CGSize(width: 30, height: 30))
+            parseAvatarView.autoPinEdgeToSuperviewEdge(.Top, withInset: 8, relation: .LessThanOrEqual)
+            parseAvatarView.autoPinEdgeToSuperviewEdge(.Leading, withInset: 5, relation: .LessThanOrEqual)
+            
+            commentShareButton.autoPinEdgeToSuperviewEdge(.Right, withInset: 10, relation: .LessThanOrEqual)
+            commentShareButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5, relation: .LessThanOrEqual)
+            
+            sendCommentButton.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
+            sendCommentButton.autoAlignAxis(.Vertical, toSameAxisOfView: commentShareButton)
+            
+            loginInfoLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 12, relation: .LessThanOrEqual)
+            loginInfoLabel.autoAlignAxisToSuperviewAxis(.Vertical)
+            
+            fbLoginButton.autoCenterInSuperview()
+            
+            registerButton.autoPinEdgeToSuperviewEdge(.Left, withInset: 10, relation: .LessThanOrEqual)
+            registerButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5, relation: .LessThanOrEqual)
+            
+            commentTextView.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
+            commentTextView.autoPinEdge(.Left, toEdge: .Right, ofView: fbProfileView, withOffset: 5)
+            commentTextView.autoPinEdge(.Right, toEdge: .Left, ofView: sendCommentButton, withOffset: -5)
+            commentTextView.autoPinEdge(.Bottom, toEdge: .Top, ofView: commentShareButton, withOffset: -2)
+            
+            commentListTableView.estimatedRowHeight = 50
+            commentListTableView.autoPinEdge(.Top, toEdge: .Bottom, ofView: topContainer)
+            commentListTableView.autoPinEdgeToSuperviewEdge(.Left)
+            commentListTableView.autoPinEdgeToSuperviewEdge(.Right)
+            commentListTableView.autoPinEdgeToSuperviewEdge(.Bottom)
+            
+            // Configure auto layout constraints for video list
+            videoListHeaderTitle.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
+            videoListHeaderTitle.autoSetDimension(.Width, toSize: UIScreen.mainScreen().bounds.width*0.9, relation: .LessThanOrEqual)
+            videoListHeaderTitle.autoAlignAxisToSuperviewMarginAxis(.Vertical)
+            
+            videoShareButton.autoPinEdgeToSuperviewEdge(.Right, withInset: 10, relation: .LessThanOrEqual)
+            videoShareButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5, relation: .LessThanOrEqual)
+            
+            videoListTableView.autoPinEdge(.Top, toEdge: .Bottom, ofView: topContainer)
+            videoListTableView.autoPinEdgeToSuperviewEdge(.Left)
+            videoListTableView.autoPinEdgeToSuperviewEdge(.Right)
+            videoListTableView.autoPinEdgeToSuperviewEdge(.Bottom)
+            
+            self.didSetupConstraints = true
+        }
+        super.updateViewConstraints()
+    }
+    
+    
+    
     func setupTopContainer() {
         
         topContainer.backgroundColor = UIColor.clearColor()
-        self.view.addSubview(topContainer)
         topContainer.autoPinToTopLayoutGuideOfViewController(self, withInset: 0)
         topContainer.autoPinEdgeToSuperviewEdge(.Left)
         topContainer.autoPinEdgeToSuperviewEdge(.Right)
@@ -139,28 +244,9 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         videoSubContainer.addSubview(videoListButton)
         videoSubContainer.addSubview(commentListButton)
         
-        commentListButton.autoPinEdgeToSuperviewEdge(.Left)
-        commentListButton.autoPinEdgeToSuperviewEdge(.Top)
-        commentListButton.autoPinEdgeToSuperviewEdge(.Bottom)
-        commentListButton.autoMatchDimension(.Width, toDimension: .Width, ofView: videoSubContainer, withMultiplier: 0.5)
-        
-        videoListButton.autoPinEdgeToSuperviewEdge(.Top)
-        videoListButton.autoPinEdgeToSuperviewEdge(.Right)
-        videoListButton.autoPinEdgeToSuperviewEdge(.Bottom)
-        videoListButton.autoPinEdge(.Left, toEdge: .Right, ofView: commentListButton)
-        
         videoListButton.addSubview(videoButtonUnderline)
         commentListButton.addSubview(commentButtonUnderline)
         
-        videoButtonUnderline.autoSetDimension(.Height, toSize: 2)
-        videoButtonUnderline.autoPinEdgeToSuperviewEdge(.Bottom)
-        videoButtonUnderline.autoPinEdgeToSuperviewEdge(.Leading)
-        videoButtonUnderline.autoPinEdgeToSuperviewEdge(.Trailing)
-        
-        commentButtonUnderline.autoSetDimension(.Height, toSize: 2)
-        commentButtonUnderline.autoPinEdgeToSuperviewEdge(.Leading)
-        commentButtonUnderline.autoPinEdgeToSuperviewEdge(.Trailing)
-        commentButtonUnderline.autoPinEdgeToSuperviewEdge(.Bottom)
     }
     
     func setupVideoPlayer() {
@@ -181,23 +267,18 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         youtubePlayer.moviePlayer.shouldAutoplay = true
         youtubePlayer.moviePlayer.scalingMode = .AspectFill
         
-        let closeButton = UIButton()
-        closeButton.addTarget(self, action: Selector("exitViewController"), forControlEvents: .TouchUpInside)
+        playerCloseButton.addTarget(self, action: Selector("exitViewController"), forControlEvents: .TouchUpInside)
         let closeImage = UIImage(named:"ic_clear")?.imageWithRenderingMode(
             UIImageRenderingMode.AlwaysTemplate)
-        closeButton.tintColor = UIColor.whiteColor()
-        closeButton.setImage(closeImage, forState: .Normal)
-        youtubePlayer.moviePlayer.view.addSubview(closeButton)
+        playerCloseButton.tintColor = UIColor.whiteColor()
+        playerCloseButton.setImage(closeImage, forState: .Normal)
+        youtubePlayer.moviePlayer.view.addSubview(playerCloseButton)
         
         // Add a activity indicator to show that video is being loaded
         pacMan.hidden = true
         pacMan.startAnimation()
         youtubePlayer.moviePlayer.view.addSubview(pacMan)
-        pacMan.autoCenterInSuperview()
         
-        
-        closeButton.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
-        closeButton.autoPinEdgeToSuperviewEdge(.Left)
     }
     
     func setupVideoList() {
@@ -227,21 +308,9 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         videoListHeader.addSubview(videoListHeaderTitle)
         videoListHeader.addSubview(videoShareButton)
         
-        videoListHeaderTitle.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
-        videoListHeaderTitle.autoSetDimension(.Width, toSize: UIScreen.mainScreen().bounds.width*0.9, relation: .LessThanOrEqual)
-        videoListHeaderTitle.autoAlignAxisToSuperviewMarginAxis(.Vertical)
-        
-        videoShareButton.autoPinEdgeToSuperviewEdge(.Right, withInset: 10, relation: .LessThanOrEqual)
-        videoShareButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5, relation: .LessThanOrEqual)
-        
         videoListTableView.tableHeaderView = videoListHeader
-        self.view.addSubview(self.videoListTableView)
         videoListTableView.hidden = true
         
-        videoListTableView.autoPinEdge(.Top, toEdge: .Bottom, ofView: topContainer)
-        videoListTableView.autoPinEdgeToSuperviewEdge(.Left)
-        videoListTableView.autoPinEdgeToSuperviewEdge(.Right)
-        videoListTableView.autoPinEdgeToSuperviewEdge(.Bottom)
     }
     
     func showVideoList() {
@@ -273,7 +342,6 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         commentListHeader.backgroundColor = videoTopColor
         
         commentListTableView.tableHeaderView = commentListHeader
-        self.view.addSubview(commentListTableView)
         commentListTableView.hidden = false
         
         commentTextView.delegate = self
@@ -285,6 +353,13 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         fbProfileView.layer.masksToBounds = true
         fbProfileView.layer.cornerRadius = 15
         fbProfileView.clipsToBounds = true
+        fbProfileView.hidden = true
+        parseAvatarView.layer.borderWidth = 0.1
+        parseAvatarView.layer.masksToBounds = true
+        parseAvatarView.layer.cornerRadius = 15
+        parseAvatarView.clipsToBounds = true
+        parseAvatarView.contentMode = .ScaleAspectFill
+        parseAvatarView.hidden = true
         
         sendCommentButton.setTitle("发送", forState: .Normal)
         sendCommentButton.setTitleColor(videoTopColor, forState: .Disabled)
@@ -305,39 +380,19 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         loginInfoLabel.textAlignment = .Center
         loginInfoLabel.font = UIFont.boldSystemFontOfSize(15)
         
+        registerButton.backgroundColor = UIColor.clearColor()
+        registerButton.setTitle("注册", forState: .Normal)
+        registerButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        registerButton.addTarget(self, action: "showRegister:", forControlEvents: .TouchUpInside)
+        
         commentListHeader.addSubview(fbProfileView)
+        commentListHeader.addSubview(parseAvatarView)
         commentListHeader.addSubview(fbLoginButton)
         commentListHeader.addSubview(loginInfoLabel)
         commentListHeader.addSubview(commentTextView)
         commentListHeader.addSubview(sendCommentButton)
         commentListHeader.addSubview(commentShareButton)
-        
-        fbProfileView.autoSetDimensionsToSize(CGSize(width: 30, height: 30))
-        fbProfileView.autoPinEdgeToSuperviewEdge(.Top, withInset: 8, relation: .LessThanOrEqual)
-        fbProfileView.autoPinEdgeToSuperviewEdge(.Leading, withInset: 5, relation: .LessThanOrEqual)
-        
-        commentShareButton.autoPinEdgeToSuperviewEdge(.Right, withInset: 10, relation: .LessThanOrEqual)
-        commentShareButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5, relation: .LessThanOrEqual)
-        
-        sendCommentButton.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
-        sendCommentButton.autoAlignAxis(.Vertical, toSameAxisOfView: commentShareButton)
-        
-        loginInfoLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 20, relation: .GreaterThanOrEqual)
-        loginInfoLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 20, relation: .GreaterThanOrEqual)
-        
-        fbLoginButton.autoAlignAxis(.Horizontal, toSameAxisOfView: loginInfoLabel)
-        fbLoginButton.autoPinEdge(.Left, toEdge: .Right, ofView: loginInfoLabel, withOffset: 10, relation: .GreaterThanOrEqual)
-        
-        commentTextView.autoPinEdgeToSuperviewEdge(.Top, withInset: 10)
-        commentTextView.autoPinEdge(.Left, toEdge: .Right, ofView: fbProfileView, withOffset: 5)
-        commentTextView.autoPinEdge(.Right, toEdge: .Left, ofView: sendCommentButton, withOffset: -5)
-        commentTextView.autoPinEdge(.Bottom, toEdge: .Top, ofView: commentShareButton, withOffset: -2)
-        
-        commentListTableView.estimatedRowHeight = 50
-        commentListTableView.autoPinEdge(.Top, toEdge: .Bottom, ofView: topContainer)
-        commentListTableView.autoPinEdgeToSuperviewEdge(.Left)
-        commentListTableView.autoPinEdgeToSuperviewEdge(.Right)
-        commentListTableView.autoPinEdgeToSuperviewEdge(.Bottom)
+        commentListHeader.addSubview(registerButton)
         
     }
     
@@ -427,6 +482,30 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     func changeProfile() {
         self.fbProfileView.profileID = FBSDKAccessToken.currentAccessToken().userID
     }
+    // Update the comment list header after user registered in Parse
+    func parseRegistered() {
+        self.fbProfileView.hidden = true
+        self.commentTextView.hidden = false
+        self.registerButton.hidden = true
+        self.sendCommentButton.hidden = false
+        self.fbLoginButton.hidden = true
+        self.loginInfoLabel.hidden = true
+        if let userID:String = NSUserDefaults.standardUserDefaults().valueForKey("userID") as? String {
+            // Query the user profile info from Parse
+            let query = PFQuery(className: "UserProfile")
+            query.getObjectInBackgroundWithId(userID) {
+                (userProfile: PFObject?, error: NSError?) -> Void in
+                if error == nil && userProfile != nil {
+                    let avatarPicture = userProfile!["avatar"] as! PFFile
+                    self.parseAvatarView.file = avatarPicture
+                    self.parseAvatarView.loadInBackground()
+                    self.parseAvatarView.hidden = false
+                }
+            }
+        } else {
+            print("Failed getting profile from Parse")
+        }
+    }
     
     func showCommentList() {
         self.commentButtonUnderline.hidden = false
@@ -436,6 +515,18 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         if self.commentList.count == 0 {
             self.getVideoCommentsData(self.youtubePlayer.videoIdentifier!)
         }
+    }
+    
+    // MARK: if user opt not to use facebook
+    // provide option to register with our own user system
+    func showRegister(sender: UIButton) {
+        // Show the user register view controller
+        let viewController = self.storyboard!.instantiateViewControllerWithIdentifier("SignUp") as! SignUpViewController
+        let formSheetController = MZFormSheetPresentationViewController(contentViewController: viewController)
+        MZFormSheetPresentationController.appearance().shouldApplyBackgroundBlurEffect = true
+        formSheetController.allowDismissByPanningPresentedView = true
+        formSheetController.presentationController?.contentViewSize = signUpViewSize
+        self.presentViewController(formSheetController, animated: true, completion: nil)
     }
     
     // MARK: XCDYouTubeKit delegate methods
@@ -454,7 +545,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                 // Check if the current video is in a saved playlist
                 if let userList = NSUserDefaults.standardUserDefaults().arrayForKey("savedPlaylist") as? [String] where userList.contains(self.currentListId!) {
                     // User has saved this list
-                    // Update the saved playlist with current progress-- current video
+                    // Update the saved playlist with current progress -- current video
                     for video in self.videoList {
                         if video.id == self.youtubePlayer.videoIdentifier {
                             // update the progress name
