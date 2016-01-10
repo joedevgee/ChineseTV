@@ -15,7 +15,7 @@
 
 @class BFCancellationToken;
 
-@class BFTask PF_GENERIC(__covariant BFGenericType);
+@class BFTask<__covariant BFGenericType>;
 @class PFQueryState;
 @class PFRESTCommand;
 @class PFCommandResult;
@@ -28,16 +28,18 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak, readonly) id<PFCommandRunnerProvider> commonDataSource;
 
 ///--------------------------------------
-/// @name Init
+#pragma mark - Init
 ///--------------------------------------
 
 - (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
+
 - (instancetype)initWithCommonDataSource:(id<PFCommandRunnerProvider>)dataSource NS_DESIGNATED_INITIALIZER;
 
 + (instancetype)controllerWithCommonDataSource:(id<PFCommandRunnerProvider>)dataSource;
 
 ///--------------------------------------
-/// @name Find
+#pragma mark - Find
 ///--------------------------------------
 
 /**
@@ -55,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
                                      user:(nullable PFUser *)user; // TODO: (nlutsenko) Pass `PFUserState` instead of user.
 
 ///--------------------------------------
-/// @name Count
+#pragma mark - Count
 ///--------------------------------------
 
 /**
@@ -73,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
                                       user:(nullable PFUser *)user; // TODO: (nlutsenko) Pass `PFUserState` instead of user.
 
 ///--------------------------------------
-/// @name Caching
+#pragma mark - Caching
 ///--------------------------------------
 
 - (NSString *)cacheKeyForQueryState:(PFQueryState *)queryState sessionToken:(nullable NSString *)sessionToken;

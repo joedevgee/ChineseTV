@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0D07E2E11C2F47B90020A9EC /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D07E2E01C2F47B90020A9EC /* SignUpViewController.swift */; };
+		0D0D9DC21C38DCDC007AC29F /* FeaturedListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D9DC11C38DCDC007AC29F /* FeaturedListViewController.swift */; };
 		0D0ED6A11BFD46E300357A0A /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0D0ED6A01BFD46E300357A0A /* FontAwesome.otf */; };
 		0D0ED6A71BFD51F900357A0A /* RawShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ED6A31BFD51F900357A0A /* RawShare.swift */; };
 		0D0ED6A81BFD51F900357A0A /* RSQQ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ED6A41BFD51F900357A0A /* RSQQ.swift */; };
@@ -47,6 +48,8 @@
 		0D786EBD1BFD96E100E0D5B1 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D786EBC1BFD96E100E0D5B1 /* Default-568h@2x.png */; };
 		0D8E9E2A1BF983EE00C80A66 /* VideoListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8E9E291BF983EE00C80A66 /* VideoListTableViewCell.swift */; };
 		0D8E9E2C1BF9840300C80A66 /* CommentListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8E9E2B1BF9840300C80A66 /* CommentListTableViewCell.swift */; };
+		0DA2A4731C428A7800F88896 /* EditFeaturedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA2A4721C428A7800F88896 /* EditFeaturedViewController.swift */; };
+		0DA2A4751C428D2900F88896 /* EditFeaturedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA2A4741C428D2900F88896 /* EditFeaturedTableViewCell.swift */; };
 		0DA3F9F71C001BA500FA1960 /* PlayListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA3F9F61C001BA500FA1960 /* PlayListTableViewController.swift */; };
 		0DAC63BA1BFE9B08001AC3E9 /* SocialShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63B91BFE9B08001AC3E9 /* SocialShareViewController.swift */; };
 		0DAC63D61BFE9B3D001AC3E9 /* MZBlurEffectAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63BD1BFE9B3D001AC3E9 /* MZBlurEffectAdapter.m */; };
@@ -68,6 +71,7 @@
 
 /* Begin PBXFileReference section */
 		0D07E2E01C2F47B90020A9EC /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		0D0D9DC11C38DCDC007AC29F /* FeaturedListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeaturedListViewController.swift; sourceTree = "<group>"; };
 		0D0ED6A01BFD46E300357A0A /* FontAwesome.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.otf; path = Pods/FontAwesomeKit/FontAwesomeKit/FontAwesome.otf; sourceTree = "<group>"; };
 		0D0ED6A31BFD51F900357A0A /* RawShare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RawShare.swift; sourceTree = "<group>"; };
 		0D0ED6A41BFD51F900357A0A /* RSQQ.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSQQ.swift; sourceTree = "<group>"; };
@@ -113,6 +117,8 @@
 		0D786EBC1BFD96E100E0D5B1 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		0D8E9E291BF983EE00C80A66 /* VideoListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoListTableViewCell.swift; sourceTree = "<group>"; };
 		0D8E9E2B1BF9840300C80A66 /* CommentListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentListTableViewCell.swift; sourceTree = "<group>"; };
+		0DA2A4721C428A7800F88896 /* EditFeaturedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditFeaturedViewController.swift; sourceTree = "<group>"; };
+		0DA2A4741C428D2900F88896 /* EditFeaturedTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditFeaturedTableViewCell.swift; sourceTree = "<group>"; };
 		0DA3F9F61C001BA500FA1960 /* PlayListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayListTableViewController.swift; sourceTree = "<group>"; };
 		0DAC63B91BFE9B08001AC3E9 /* SocialShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocialShareViewController.swift; sourceTree = "<group>"; };
 		0DAC63BC1BFE9B3D001AC3E9 /* MZBlurEffectAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MZBlurEffectAdapter.h; sourceTree = "<group>"; };
@@ -182,6 +188,16 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		0D0D9DC01C38DCC6007AC29F /* FeaturedList */ = {
+			isa = PBXGroup;
+			children = (
+				0D0D9DC11C38DCDC007AC29F /* FeaturedListViewController.swift */,
+				0DA2A4721C428A7800F88896 /* EditFeaturedViewController.swift */,
+				0DA2A4741C428D2900F88896 /* EditFeaturedTableViewCell.swift */,
+			);
+			name = FeaturedList;
+			sourceTree = "<group>";
+		};
 		0D0ED6A21BFD51DB00357A0A /* ShareManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -206,6 +222,7 @@
 		0D10A4EC1BF14681006C83FA /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				0D0D9DC01C38DCC6007AC29F /* FeaturedList */,
 				0DF925831C0BE051003E179C /* SearchViewController */,
 				0DA3F9F51C001B8B00FA1960 /* PlayListViewController */,
 				0DAC63B81BFE9A8B001AC3E9 /* PopupViewController */,
@@ -532,6 +549,7 @@
 				0D8E9E2A1BF983EE00C80A66 /* VideoListTableViewCell.swift in Sources */,
 				0DAC63D61BFE9B3D001AC3E9 /* MZBlurEffectAdapter.m in Sources */,
 				0D7284851BF2A769006BB77A /* RESideMenu.m in Sources */,
+				0D0D9DC21C38DCDC007AC29F /* FeaturedListViewController.swift in Sources */,
 				0DAC63DE1BFE9B3D001AC3E9 /* MZMethodSwizzler.m in Sources */,
 				0DF925871C0BEE9F003E179C /* SearchBarViewController.swift in Sources */,
 				0DAC63D71BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationController.m in Sources */,
@@ -540,6 +558,7 @@
 				0D10A5001BF1537D006C83FA /* ToggleButton.swift in Sources */,
 				0DAC63BA1BFE9B08001AC3E9 /* SocialShareViewController.swift in Sources */,
 				0D10A4FE1BF14E63006C83FA /* GlobalConfigs.swift in Sources */,
+				0DA2A4731C428A7800F88896 /* EditFeaturedViewController.swift in Sources */,
 				0DAC63D81BFE9B3D001AC3E9 /* MZFormSheetContentSizingNavigationControllerAnimator.m in Sources */,
 				0D10A4EF1BF146C5006C83FA /* MainTableViewController.swift in Sources */,
 				0D72848A1BF2A848006BB77A /* LeftMenuViewController.swift in Sources */,
@@ -553,6 +572,7 @@
 				0D0ED6A91BFD51F900357A0A /* RSWeChat.swift in Sources */,
 				0D5E68911BF3EA630081CEDB /* SingleCategoryCollectionCell.swift in Sources */,
 				0D0ED6AC1BFD521200357A0A /* Utils.swift in Sources */,
+				0DA2A4751C428D2900F88896 /* EditFeaturedTableViewCell.swift in Sources */,
 				0DAC63DF1BFE9B3D001AC3E9 /* MZTransition.m in Sources */,
 				0D7284841BF2A769006BB77A /* RECommonFunctions.m in Sources */,
 				0D7284861BF2A769006BB77A /* UIViewController+RESideMenu.m in Sources */,

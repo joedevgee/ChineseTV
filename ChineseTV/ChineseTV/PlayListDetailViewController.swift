@@ -5,7 +5,7 @@
 //  Created by Qiaowei Liu on 11/11/15.
 //  Copyright © 2015 Qiaowei Liu. All rights reserved.
 //
-
+import Foundation
 import UIKit
 import SDWebImage
 import PureLayout
@@ -21,7 +21,7 @@ import TTGSnackbar
 import NVActivityIndicatorView
 import GoogleMobileAds
 
-class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FBSDKLoginButtonDelegate, UITextViewDelegate, GADBannerViewDelegate {
+class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FBSDKLoginButtonDelegate, UITextViewDelegate, GADBannerViewDelegate, SignUpViewControllerDelegate {
     
     var currentListId:String?
     
@@ -91,12 +91,11 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
             self.sendCommentButton.hidden = true
             self.fbLoginButton.hidden = false
             self.loginInfoLabel.hidden = false
-            if let _:String = NSUserDefaults.standardUserDefaults().valueForKey("userID") as? String { parseRegistered() }
+            if let userID:String = NSUserDefaults.standardUserDefaults().valueForKey("userID") as? String { parseRegistered(userID) }
         }
         // Observe for profile change
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "changeProfile", name: FBSDKProfileDidChangeNotification, object: nil)
         // Observe for user registering with Parse
-        //        NSNotificationCenter.defaultCenter().addObserver(self, selector: "parseRegistered", name: registerNotificationKey, object: nil)
         
     }
     
@@ -425,41 +424,39 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
             print(sendingComment)
             self.commentTextView.text = ""
             self.view.endEditing(true)
-            var commenterName:String = ""
-            var commenterImageUrl:String = ""
             // Retrieve info from facebook
-            if FBSDKAccessToken.currentAccessToken() != nil {
+            if FBSDKAccessToken.currentAccessToken() != nil && self.youtubePlayer.videoIdentifier != nil {
                 FBSDKGraphRequest(graphPath: "me", parameters: ["fields": "name,id,picture"]).startWithCompletionHandler({ (connection, result, error) -> Void in
-                    if error != nil {
-                        print("Graph request failed with error: \(error)")
-                    } else {
-                        if let name:NSString =  result.valueForKey("name") as? NSString {
-                            commenterName = name as String
-                        }
-                        if let imageUrl:NSString = result.valueForKey("picture")!.valueForKey("data")?.valueForKey("url") as? NSString {
-                            commenterImageUrl = imageUrl as String
-                        }
-                        // Save new comment to Parse
-                        let savingComment = PFObject(className: "Comment")
-                        savingComment["text"] = sendingComment
-                        savingComment["name"] = commenterName
-                        savingComment["imageUrl"] = commenterImageUrl
-                        savingComment["videoId"] = self.youtubePlayer.videoIdentifier
-                        // Create a placeholder Comment item to display when user successfully posted new comment
-                        let newComment = Comment(name: commenterName, avatarUrl: commenterImageUrl, commentText: sendingComment)
-                        savingComment.saveInBackgroundWithBlock {
-                            (success:Bool, error:NSError?) -> Void in
-                            if success {
-                                let successBar = TTGSnackbar.init(message: "您的回复已成功发送", duration: .Middle)
-                                successBar.show()
-                                self.commentList.insert(newComment, atIndex: 0)
-                                self.commentListTableView.reloadData()
-                            }
-                        }
+                    if error == nil {
+                        guard let name:NSString = result.valueForKey("name") as? NSString else { return }
+                        guard let imageUrl:NSString = result.valueForKey("picture")!.valueForKey("data")?.valueForKey("url") as? NSString else { return }
+                        self.savingComment(sendingComment, name: name as String, image: imageUrl as String, videoID: self.youtubePlayer.videoIdentifier!)
                     }
                 })
+                // End of retrieving info from facebook graph
+            } else {
+                // Not facebook user, use parse profile info
+                guard let userName = NSUserDefaults.standardUserDefaults().stringForKey("userName") else { return }
+                guard let imageUrl = NSUserDefaults.standardUserDefaults().stringForKey("userAvatarUrl") else { return }
+                self.savingComment(sendingComment, name: userName, image: imageUrl, videoID: self.youtubePlayer.videoIdentifier!)
             }
-            // End of retrieving info from facebook graph
+        }
+    }
+    private func savingComment(text: String, name: String, image: String, videoID: String) {
+        let savingComment = PFObject(className: "Comment")
+        savingComment["text"] = text
+        savingComment["name"] = name
+        savingComment["imageUrl"] = image
+        savingComment["videoId"] = videoID
+        let newComment = Comment(name: name, avatarUrl: image, commentText: text)
+        savingComment.saveInBackgroundWithBlock {
+            (success:Bool, error:NSError?) -> Void in
+            if success {
+                let successBar = TTGSnackbar.init(message: "您的回复已成功发送", duration: .Middle)
+                successBar.show()
+                self.commentList.insert(newComment, atIndex: 0)
+                self.commentListTableView.reloadData()
+            }
         }
     }
     
@@ -483,27 +480,23 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.fbProfileView.profileID = FBSDKAccessToken.currentAccessToken().userID
     }
     // Update the comment list header after user registered in Parse
-    func parseRegistered() {
+    func parseRegistered(userID: String) {
         self.fbProfileView.hidden = true
         self.commentTextView.hidden = false
         self.registerButton.hidden = true
-        self.sendCommentButton.hidden = false
+        self.sendCommentButton.hidden = true
         self.fbLoginButton.hidden = true
         self.loginInfoLabel.hidden = true
-        if let userID:String = NSUserDefaults.standardUserDefaults().valueForKey("userID") as? String {
-            // Query the user profile info from Parse
-            let query = PFQuery(className: "UserProfile")
-            query.getObjectInBackgroundWithId(userID) {
-                (userProfile: PFObject?, error: NSError?) -> Void in
-                if error == nil && userProfile != nil {
-                    let avatarPicture = userProfile!["avatar"] as! PFFile
-                    self.parseAvatarView.file = avatarPicture
-                    self.parseAvatarView.loadInBackground()
-                    self.parseAvatarView.hidden = false
-                }
+        // Query the user profile info from Parse
+        let query = PFQuery(className: "UserProfile")
+        query.getObjectInBackgroundWithId(userID) {
+            (userProfile: PFObject?, error: NSError?) -> Void in
+            if error == nil && userProfile != nil {
+                let avatarPicture = userProfile!["avatar"] as! PFFile
+                self.parseAvatarView.file = avatarPicture
+                self.parseAvatarView.loadInBackground()
+                self.parseAvatarView.hidden = false
             }
-        } else {
-            print("Failed getting profile from Parse")
         }
     }
     
@@ -522,11 +515,17 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     func showRegister(sender: UIButton) {
         // Show the user register view controller
         let viewController = self.storyboard!.instantiateViewControllerWithIdentifier("SignUp") as! SignUpViewController
+        viewController.delegate = self
         let formSheetController = MZFormSheetPresentationViewController(contentViewController: viewController)
         MZFormSheetPresentationController.appearance().shouldApplyBackgroundBlurEffect = true
         formSheetController.allowDismissByPanningPresentedView = true
         formSheetController.presentationController?.contentViewSize = signUpViewSize
         self.presentViewController(formSheetController, animated: true, completion: nil)
+    }
+    
+    // MARK: signupview delegate
+    func didPassSignUp(controller: SignUpViewController, userID: String) {
+        self.parseRegistered(userID)
     }
     
     // MARK: XCDYouTubeKit delegate methods
@@ -540,40 +539,40 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                     self.videoListHeaderTitle.text = "正在播放： \(video.name)"
                 }
             }
-            }.main {
+            }.background {
                 self.getVideoCommentsData(self.youtubePlayer.videoIdentifier!)
                 // Check if the current video is in a saved playlist
-                if let userList = NSUserDefaults.standardUserDefaults().arrayForKey("savedPlaylist") as? [String] where userList.contains(self.currentListId!) {
-                    // User has saved this list
-                    // Update the saved playlist with current progress -- current video
-                    for video in self.videoList {
-                        if video.id == self.youtubePlayer.videoIdentifier {
-                            // update the progress name
-                            if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressName") as? [String:String] {
-                                var newDict = tempDict
-                                newDict[self.currentListId!] = video.name
-                                // update the current play title
-                                NSUserDefaults.standardUserDefaults().setObject(newDict, forKey: "playlistProgressName")
-                            }
-                            // update the progress image url
-                            if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressImageUrl") as? [String:String] {
-                                var newDict = tempDict
-                                newDict[self.currentListId!] = video.thumbnailUrl
-                                NSUserDefaults.standardUserDefaults().setObject(newDict, forKey: "playlistProgressImageUrl")
-                            }
-                            // update the progress id
-                            if let tempDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("playlistProgressId") as? [String:String] {
-                                var newDict = tempDict
-                                newDict[self.currentListId!] = video.id
-                                NSUserDefaults.standardUserDefaults().setObject(newDict, forKey: "playlistProgressId")
-                            }
-                        }
+                guard let userList = NSUserDefaults.standardUserDefaults().arrayForKey(savedListArray) as? [String] else { return }
+                if self.currentListId != nil {
+                    switch userList.contains(self.currentListId!) {
+                    case true:
+                        self.updateSavedList()
+                    case false:
+                        print("User didnot saved this list, do nothing")
                     }
-                    // End of updateing playlist info
-                } else {
-                    // The video is not in a saved playlist by the user
-                    // Do nothing
                 }
+        }
+    }
+    
+    private func updateSavedList() {
+        for video in self.videoList {
+            if video.id == self.youtubePlayer.videoIdentifier && self.currentListId != nil {
+                // update video name
+                guard let nudSavedVideoNameDict:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoNameDict) as? [String: String] else { break }
+                var savingNewVideoNameDict = nudSavedVideoNameDict
+                savingNewVideoNameDict[self.currentListId!] = video.name
+                NSUserDefaults.standardUserDefaults().setObject(savingNewVideoNameDict, forKey: savedVideoNameDict)
+                // update video image
+                guard let nudSavedVideoImageDict:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoImageDict) as? [String: String] else { break }
+                var savingNewVideoImageDict = nudSavedVideoImageDict
+                savingNewVideoImageDict[self.currentListId!] = video.thumbnailUrl
+                NSUserDefaults.standardUserDefaults().setObject(savingNewVideoImageDict, forKey: savedVideoImageDict)
+                // update video id
+                guard let nudSavedVideoIdDict:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoIdDict) as? [String: String] else { break }
+                var savingNewVideoIdDict = nudSavedVideoIdDict
+                savingNewVideoIdDict[self.currentListId!] = video.id
+                NSUserDefaults.standardUserDefaults().setObject(savingNewVideoIdDict, forKey: savedVideoIdDict)
+            }
         }
     }
     
@@ -842,3 +841,4 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     }
     
 }
+

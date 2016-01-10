@@ -12,24 +12,29 @@
 #import <Parse/PFConstants.h>
 
 #import "PFDataProvider.h"
+#import "PFMacros.h"
 
-@class BFTask PF_GENERIC(__covariant BFGenericType);
+@class BFTask<__covariant BFGenericType>;
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface PFAnalyticsController : NSObject
 
 @property (nonatomic, weak, readonly) id<PFEventuallyQueueProvider> dataSource;
 
 ///--------------------------------------
-/// @name Init
+#pragma mark - Init
 ///--------------------------------------
 
 - (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
+
 - (instancetype)initWithDataSource:(id<PFEventuallyQueueProvider>)dataSource NS_DESIGNATED_INITIALIZER;
 
 + (instancetype)controllerWithDataSource:(id<PFEventuallyQueueProvider>)dataSource;
 
 ///--------------------------------------
-/// @name Track Event
+#pragma mark - Track Event
 ///--------------------------------------
 
 /**
@@ -42,8 +47,8 @@
 
  @return `BFTask` with result set to `@YES`.
  */
-- (BFTask *)trackAppOpenedEventAsyncWithRemoteNotificationPayload:(NSDictionary *)payload
-                                                     sessionToken:(NSString *)sessionToken;
+- (BFTask<PFVoid> *)trackAppOpenedEventAsyncWithRemoteNotificationPayload:(nullable NSDictionary *)payload
+                                                             sessionToken:(nullable NSString *)sessionToken;
 
 /**
  Tracks the occurrence of a custom event with additional dimensions.
@@ -54,8 +59,10 @@
 
  @return `BFTask` with result set to `@YES`.
  */
-- (BFTask *)trackEventAsyncWithName:(NSString *)name
-                         dimensions:(NSDictionary *)dimensions
-                       sessionToken:(NSString *)sessionToken;
+- (BFTask<PFVoid> *)trackEventAsyncWithName:(NSString *)name
+                                 dimensions:(nullable NSDictionary<NSString *, NSString *> *)dimensions
+                               sessionToken:(nullable NSString *)sessionToken;
 
 @end
+
+NS_ASSUME_NONNULL_END

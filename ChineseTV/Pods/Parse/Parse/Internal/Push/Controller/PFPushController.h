@@ -14,7 +14,7 @@
 PF_TV_UNAVAILABLE_WARNING
 PF_WATCH_UNAVAILABLE_WARNING
 
-@class BFTask PF_GENERIC(__covariant BFGenericType);
+@class BFTask<__covariant BFGenericType>;
 @class PFPushState;
 @protocol PFCommandRunning;
 
@@ -25,16 +25,18 @@ PF_TV_UNAVAILABLE PF_WATCH_UNAVAILABLE @interface PFPushController : NSObject
 @property (nonatomic, strong, readonly) id<PFCommandRunning> commandRunner;
 
 ///--------------------------------------
-/// @name Init
+#pragma mark - Init
 ///--------------------------------------
 
 - (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
+
 - (instancetype)initWithCommandRunner:(id<PFCommandRunning>)commandRunner NS_DESIGNATED_INITIALIZER;
 
 + (instancetype)controllerWithCommandRunner:(id<PFCommandRunning>)commandRunner;
 
 ///--------------------------------------
-/// @name Sending Push
+#pragma mark - Sending Push
 ///--------------------------------------
 
 /**

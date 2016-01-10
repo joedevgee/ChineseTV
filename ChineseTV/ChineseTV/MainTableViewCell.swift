@@ -94,17 +94,6 @@ class MainTableViewCell: PFTableViewCell {
             
             listTitle.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5))
             
-//            footerView.autoPinEdge(.Top, toEdge: .Bottom, ofView: bottomView)
-//            footerView.autoPinEdgeToSuperviewEdge(.Leading)
-//            footerView.autoPinEdgeToSuperviewEdge(.Trailing)
-//            footerView.autoPinEdgeToSuperviewEdge(.Bottom)
-//            
-//            footerLabel.autoAlignAxisToSuperviewAxis(.Horizontal)
-//            footerLabel.autoPinEdge(.Left, toEdge: .Right, ofView: footerImageView, withOffset: 5)
-//            
-//            footerImageView.autoPinEdgeToSuperviewEdge(.Leading, withInset: 5)
-//            footerImageView.autoAlignAxisToSuperviewAxis(.Horizontal)
-            
             didSetupConstraints = true
         }
         super.updateConstraints()

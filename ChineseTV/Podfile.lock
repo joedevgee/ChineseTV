@@ -29,7 +29,7 @@ PODS:
   - JGMethodSwizzler (2.0.1)
   - MZAppearance (1.1.6)
   - NVActivityIndicatorView (2.3)
-  - Parse (1.11.0):
+  - Parse (1.12.0):
     - Bolts/Tasks (~> 1.5)
   - ParseUI (1.1.7):
     - Bolts/Tasks (~> 1.3)
@@ -37,14 +37,15 @@ PODS:
   - pop (1.0.8)
   - PureLayout (3.0.1)
   - RazzleDazzle (0.1.1)
-  - SDWebImage (3.7.3):
-    - SDWebImage/Core (= 3.7.3)
-  - SDWebImage/Core (3.7.3)
+  - SDWebImage (3.7.4):
+    - SDWebImage/Core (= 3.7.4)
+  - SDWebImage/Core (3.7.4)
   - TextFieldEffects (1.1.0)
+  - Toucan (0.5.0)
   - TTGSnackbar (0.2.2)
   - VBFPopFlatButton (0.0.6):
     - pop
-  - XCDYouTubeKit (2.4.3)
+  - XCDYouTubeKit (2.5.0)
 
 DEPENDENCIES:
   - Alamofire
@@ -66,6 +67,7 @@ DEPENDENCIES:
   - RazzleDazzle
   - SDWebImage
   - TextFieldEffects
+  - Toucan
   - TTGSnackbar
   - VBFPopFlatButton
   - XCDYouTubeKit
@@ -84,15 +86,16 @@ SPEC CHECKSUMS:
   JGMethodSwizzler: e0ea5c1c6c55304ec4ef3f54e441400c6735c899
   MZAppearance: 0c06d3fa9cc55142f1da14bc8631fbe8fd6e19d5
   NVActivityIndicatorView: c7ef25ef527ab5e51b00322cb1ddd58681bcf2a3
-  Parse: 886af46a0a677402f6374bb97ac212e795f70afe
+  Parse: de2c52a9a1421b91ae7594ab8ce191afd184f19b
   ParseUI: c2bcdfbb00330e464b5b773266ae221697a3bb7b
   pop: bb773ae2c791ca2629de13b347e7a8b450fa6a57
   PureLayout: f35f5384c9c4e4479df041dbe33ad7577b71ddfb
   RazzleDazzle: 022270e9ec0a4269ed40a6dcee42c8fa969cbc9a
-  SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
+  SDWebImage: 247edd7dd80dd6124197b0d6a17846fe9d1df968
   TextFieldEffects: 8e43fea8836e97be80fc4db27a1596c9e98a26ba
+  Toucan: 0519c341148252ae114c5a657d2a85bb9ada9e40
   TTGSnackbar: 6013f3c7aa556fdac91fef64ccf3f5c136903027
   VBFPopFlatButton: 782344da63f104c279a857d806e065117a7e1196
-  XCDYouTubeKit: a4a1a60faa7bc97744a1184501e82ef10ca15897
+  XCDYouTubeKit: 9db45d0f5af8fb5a47561ac7f2fe6de885f57453
 
 COCOAPODS: 0.39.0

@@ -11,7 +11,7 @@
 
 #import <Parse/PFConstants.h>
 
-@class BFTask PF_GENERIC(__covariant BFGenericType);
+@class BFTask<__covariant BFGenericType>;
 @class PFFileManager;
 @class PFSQLiteDatabase;
 
@@ -22,15 +22,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) PFFileManager *fileManager;
 
 ///--------------------------------------
-/// @name Init
+#pragma mark - Init
 ///--------------------------------------
 
 - (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
+
 - (instancetype)initWithFileManager:(PFFileManager *)fileManager NS_DESIGNATED_INITIALIZER;
 + (instancetype)controllerWithFileManager:(PFFileManager *)fileManager;
 
 ///--------------------------------------
-/// @name Opening
+#pragma mark - Opening
 ///--------------------------------------
 
 /**

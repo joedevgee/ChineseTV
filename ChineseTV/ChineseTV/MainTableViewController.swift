@@ -19,6 +19,8 @@ class MainTableViewController: PFQueryTableViewController {
     
     var toggleButton = MenuButton(frame: CGRectMake(100, 100, 30, 30))
     
+    var scrollView = UIScrollView()
+    
     var splashed:Bool = false
     
     let rowHeight:CGFloat = UIScreen.mainScreen().bounds.size.height/3
@@ -71,7 +73,9 @@ class MainTableViewController: PFQueryTableViewController {
         tableView.backgroundColor = dividerColor
         tableView.separatorStyle = .None
         tableView.allowsSelection = true
-    
+        self.configureScrollView()
+        NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: "moveToNextPage", userInfo: nil, repeats: true)
+        tableView.tableHeaderView = scrollView
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -115,6 +119,38 @@ class MainTableViewController: PFQueryTableViewController {
         }
     }
     
+    // MARK: Add a scroll banner view on top of the tableview
+    private func configureScrollView() {
+        self.scrollView.backgroundColor = themeColor
+        self.scrollView.frame = CGRectMake(0, 0, view.frame.width, view.frame.width*0.4)
+        let scrollViewWidth:CGFloat = self.scrollView.frame.width
+        let scrollViewHeight:CGFloat = self.scrollView.frame.height
+        let viewOne = UIView(frame: CGRectMake(0,0,scrollViewWidth,scrollViewHeight))
+        viewOne.tag = 0
+        let viewTwo = UIView(frame: CGRectMake(scrollViewWidth,0,scrollViewWidth,scrollViewHeight))
+        viewTwo.tag = 1
+        let viewThree = UIView(frame: CGRectMake(scrollViewWidth*2,0,scrollViewWidth,scrollViewHeight))
+        viewThree.tag = 2
+        view.addSubview(scrollView)
+        self.scrollView.addSubview(viewOne)
+        self.scrollView.addSubview(viewTwo)
+        self.scrollView.addSubview(viewThree)
+        self.scrollView.contentSize = CGSizeMake(self.scrollView.frame.width*3, self.scrollView.frame.height)
+        scrollView.pagingEnabled = true
+        scrollView.showsHorizontalScrollIndicator = false
+        self.scrollView.delegate = self
+    }
+    func moveToNextPage (){
+        let pageWidth:CGFloat = CGRectGetWidth(self.scrollView.frame)
+        let maxWidth:CGFloat = pageWidth * 3
+        let contentOffset:CGFloat = self.scrollView.contentOffset.x
+        var slideToX = contentOffset + pageWidth
+        if  contentOffset + pageWidth == maxWidth{
+            slideToX = 0
+        }
+        self.scrollView.scrollRectToVisible(CGRectMake(slideToX, 0, pageWidth, CGRectGetHeight(self.scrollView.frame)), animated: true)
+    }
+    
     // MARK:Tableviewcontroller delegate
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return self.rowHeight
@@ -150,7 +186,8 @@ class MainTableViewController: PFQueryTableViewController {
         let menuButton = UIBarButtonItem(image: menuImage, style: .Plain, target: self, action: "toggle")
         navigationItem.leftBarButtonItem = menuButton
 //        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: Selector("addPlayList:"))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: self, action: "showSearchBar")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: Selector("addFeatured:"))
+//        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: self, action: "showSearchBar")
         tabBarController?.tabBar.hidden = false
     }
     
@@ -160,6 +197,10 @@ class MainTableViewController: PFQueryTableViewController {
     
     func addPlayList(sender: UIBarButtonItem) {
         performSegueWithIdentifier("addPlayList", sender: sender)
+    }
+    
+    func addFeatured(sender: UIBarButtonItem) {
+        performSegueWithIdentifier("featuredList", sender: sender)
     }
     
     func showSearchBar() {
@@ -175,7 +216,7 @@ class MainTableViewController: PFQueryTableViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         self.navigationItem.title = "主页"
         if segue.identifier == "addPlayList" {
-            
+            print("This view will add new list to Parse")
         } else if segue.identifier == "showPlayList" {
             tabBarController!.tabBar.hidden = true
             let destVC = segue.destinationViewController as! PlayListTableViewController
@@ -201,6 +242,8 @@ class MainTableViewController: PFQueryTableViewController {
                 destVC.currentListId = segueInfo[0]
                 destVC.currentListName = segueInfo[1]
             }
+        } else if segue.identifier == "featuredList" {
+            print("This will configure the featured list")
         }
     }
     

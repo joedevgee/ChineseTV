@@ -11,12 +11,19 @@ import PureLayout
 import Parse
 import VBFPopFlatButton
 import FontAwesomeKit
+import Toucan
 
 let registerNotificationKey:String = "com.8pon.userSuccessfullyRegistered"
 
 let signUpViewSize:CGSize = CGSize(width: UIScreen.mainScreen().bounds.width*0.7, height: UIScreen.mainScreen().bounds.height*0.6)
 
+protocol SignUpViewControllerDelegate {
+    func didPassSignUp(controller: SignUpViewController, userID: String)
+}
+
 class SignUpViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+    
+    var delegate: SignUpViewControllerDelegate?
 
     var mainContainer:UIView = UIView.newAutoLayoutView()
     var closeButton:UIButton = UIButton.newAutoLayoutView()
@@ -207,7 +214,8 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate, U
     func saveUser() {
         // Save the user info to Parse
         guard let image = self.avatarImageView.image else { print("No image in image view");return }
-        guard let imageData = UIImageJPEGRepresentation(image, 0.38) else { print("Compressing image failed");return }
+        let resizedImage = Toucan(image: image).resizeByCropping(CGSize(width: 30, height: 30)).image
+        guard let imageData = UIImageJPEGRepresentation(resizedImage, 0.38) else { print("Compressing image failed");return }
         guard let imageFile = PFFile(name: "avatar.jpeg", data: imageData) else { print("Converting to pffile failed");return }
         guard let userName: String = self.nameField.text else { print("Getting username failed");return }
         let userProfile = PFObject(className: "UserProfile")
@@ -218,10 +226,11 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate, U
             // Handle success or failure here ...
             if succeeded {
                 guard let userID = userProfile.objectId else { return }
+                guard let imageUrl = imageFile.url else { return }
+                NSUserDefaults.standardUserDefaults().setObject(userName, forKey: "userName")
+                NSUserDefaults.standardUserDefaults().setObject(imageUrl, forKey: "userAvatarUrl")
                 NSUserDefaults.standardUserDefaults().setObject(userID, forKey: "userID")
-//                NSNotificationCenter.defaultCenter().postNotificationName(registerNotificationKey, object: nil)
-                let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("videoDetail") as! PlayListDetailViewController
-                viewController.parseRegistered()
+                if let delegate = self.delegate { delegate.didPassSignUp(self, userID: userID) }
             }
         })
         // Close the pop up view

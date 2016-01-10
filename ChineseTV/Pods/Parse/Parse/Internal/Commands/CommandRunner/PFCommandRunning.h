@@ -14,7 +14,7 @@
 #import "PFDataProvider.h"
 
 @class BFCancellationToken;
-@class BFTask PF_GENERIC(__covariant BFGenericType);
+@class BFTask<__covariant BFGenericType>;
 @class PFCommandResult;
 @class PFRESTCommand;
 @protocol PFNetworkCommand;
@@ -33,22 +33,25 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, readonly) NSString *applicationId;
 @property (nonatomic, copy, readonly) NSString *clientKey;
+@property (nonatomic, strong, readonly) NSURL *serverURL;
 
 @property (nonatomic, assign) NSTimeInterval initialRetryDelay;
 
 ///--------------------------------------
-/// @name Init
+#pragma mark - Init
 ///--------------------------------------
 
 - (instancetype)initWithDataSource:(id<PFInstallationIdentifierStoreProvider>)dataSource
                      applicationId:(NSString *)applicationId
-                         clientKey:(NSString *)clientKey;
+                         clientKey:(NSString *)clientKey
+                         serverURL:(NSURL *)serverURL;
 + (instancetype)commandRunnerWithDataSource:(id<PFInstallationIdentifierStoreProvider>)dataSource
                               applicationId:(NSString *)applicationId
-                                  clientKey:(NSString *)clientKey;
+                                  clientKey:(NSString *)clientKey
+                                  serverURL:(NSURL *)serverURL;
 
 ///--------------------------------------
-/// @name Data Commands
+#pragma mark - Data Commands
 ///--------------------------------------
 
 /**
@@ -76,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
           cancellationToken:(nullable BFCancellationToken *)cancellationToken;
 
 ///--------------------------------------
-/// @name File Commands
+#pragma mark - File Commands
 ///--------------------------------------
 
 - (BFTask *)runFileUploadCommandAsync:(PFRESTCommand *)command

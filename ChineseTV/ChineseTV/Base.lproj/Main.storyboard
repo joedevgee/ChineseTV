@@ -38,11 +38,51 @@
                     <navigationItem key="navigationItem" id="j8c-zy-ASE"/>
                     <connections>
                         <segue destination="RZh-vp-jMb" kind="show" identifier="addPlayList" id="vnf-3H-IPj"/>
+                        <segue destination="GSt-jN-u5g" kind="show" identifier="featuredList" id="wRA-LD-T0w"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qGy-E7-Dr4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-5076" y="1153"/>
+        </scene>
+        <!--Featured List View Controller-->
+        <scene sceneID="hWb-4u-1PR">
+            <objects>
+                <viewController id="GSt-jN-u5g" customClass="FeaturedListViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="uI8-Bq-lSl"/>
+                        <viewControllerLayoutGuide type="bottom" id="bT4-Qy-TNy"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="uxc-rf-blo">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <segue destination="Zvx-XM-pW6" kind="show" identifier="editFeatured" id="42V-3k-gRX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qsQ-gB-uDm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-5076" y="2038"/>
+        </scene>
+        <!--Edit Featured View Controller-->
+        <scene sceneID="HFv-bJ-kdO">
+            <objects>
+                <viewController id="Zvx-XM-pW6" customClass="EditFeaturedViewController" customModule="ChineseTV" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="YMw-qt-aO8"/>
+                        <viewControllerLayoutGuide type="bottom" id="aQM-GX-Cxq"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ial-Cz-w6y">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QSz-ur-nR3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-5076" y="2762"/>
         </scene>
         <!--Drama Collection View Controller-->
         <scene sceneID="d1f-5k-kug">
@@ -193,7 +233,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xX8-Hf-zf0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3796" y="2726"/>
+            <point key="canvasLocation" x="-4232" y="2762"/>
         </scene>
         <!--Sign Up View Controller-->
         <scene sceneID="GDy-jK-3lD">
@@ -211,7 +251,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6sd-Mh-TqB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3796" y="3570"/>
+            <point key="canvasLocation" x="-4232" y="3526"/>
         </scene>
         <!--Play List Table View Controller-->
         <scene sceneID="LLp-9m-Ohl">
@@ -251,7 +291,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="L2G-tN-3Ue" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4280" y="2038"/>
+            <point key="canvasLocation" x="-4232" y="2038"/>
         </scene>
         <!--Social Share View Controller-->
         <scene sceneID="HPx-7w-cjl">
@@ -270,7 +310,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="z7U-pJ-77n" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3000" y="2726"/>
+            <point key="canvasLocation" x="-3436" y="2762"/>
         </scene>
         <!--Add Play List View Controller-->
         <scene sceneID="qQy-gT-xPF">
@@ -459,6 +499,6 @@
         <image name="ic_theaters" width="24" height="24"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="nmQ-yP-DNN"/>
+        <segue reference="hcP-Aw-fWD"/>
     </inferredMetricsTieBreakers>
 </document>

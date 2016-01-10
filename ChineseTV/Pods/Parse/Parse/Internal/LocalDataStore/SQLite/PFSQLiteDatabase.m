@@ -119,7 +119,7 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
         [[PFMultiProcessFileLockController sharedController] beginLockedContentAccessForFileAtPath:self.databasePath];
 
         sqlite3 *db;
-        int resultCode = sqlite3_open([self.databasePath UTF8String], &db);
+        int resultCode = sqlite3_open(self.databasePath.UTF8String, &db);
         if (resultCode != SQLITE_OK) {
             return [BFTask taskWithError:[self _errorWithErrorCode:resultCode]];
         }
@@ -178,12 +178,12 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
 #pragma mark - Query Methods
 ///--------------------------------------
 
-- (BFTask PF_GENERIC(PFSQLiteDatabaseResult *)*)_executeQueryAsync:(NSString *)sql withArgumentsInArray:(NSArray *)args cachingEnabled:(BOOL)enableCaching {
+- (BFTask<PFSQLiteDatabaseResult *> *)_executeQueryAsync:(NSString *)sql withArgumentsInArray:(NSArray *)args cachingEnabled:(BOOL)enableCaching {
     int resultCode = 0;
     PFSQLiteStatement *statement = enableCaching ? [self _cachedStatementForQuery:sql] : nil;
     if (!statement) {
         sqlite3_stmt *sqliteStatement = nil;
-        resultCode = sqlite3_prepare_v2(self.database, [sql UTF8String], -1, &sqliteStatement, 0);
+        resultCode = sqlite3_prepare_v2(self.database, sql.UTF8String, -1, &sqliteStatement, 0);
         if (resultCode != SQLITE_OK) {
             sqlite3_finalize(sqliteStatement);
             return [BFTask taskWithError:[self _errorWithErrorCode:resultCode]];
@@ -198,8 +198,8 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
     }
 
     // Make parameter
-    int queryCount = sqlite3_bind_parameter_count([statement sqliteStatement]);
-    int argumentCount = (int)[args count];
+    int queryCount = sqlite3_bind_parameter_count(statement.sqliteStatement);
+    int argumentCount = (int)args.count;
     if (queryCount != argumentCount) {
         if (!enableCaching) {
             [statement close];
@@ -228,8 +228,8 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
 
 - (BFTask *)executeQueryAsync:(NSString *)query withArgumentsInArray:(nullable NSArray *)args block:(PFSQLiteDatabaseQueryBlock)block {
     return [BFTask taskFromExecutor:_databaseExecutor withBlock:^id {
-        BFTask PF_GENERIC(PFSQLiteDatabaseResult *)*task = [self _executeQueryAsync:query withArgumentsInArray:args cachingEnabled:NO];
-        return [[task continueImmediatelyWithSuccessBlock:^id(BFTask PF_GENERIC(PFSQLiteDatabaseResult *)*task) {
+        BFTask<PFSQLiteDatabaseResult *> *task = [self _executeQueryAsync:query withArgumentsInArray:args cachingEnabled:NO];
+        return [[task continueImmediatelyWithSuccessBlock:^id(BFTask<PFSQLiteDatabaseResult *> *task) {
             return block(task.result);
         }] continueImmediatelyWithBlock:^id(BFTask *resultTask) {
             [task.result close];
@@ -272,7 +272,7 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
  */
 - (void)_bindObject:(id)obj toColumn:(int)idx inStatement:(PFSQLiteStatement *)statement {
     if ((!obj) || ((NSNull *)obj == [NSNull null])) {
-        sqlite3_bind_null([statement sqliteStatement], idx);
+        sqlite3_bind_null(statement.sqliteStatement, idx);
     } else if ([obj isKindOfClass:[NSData class]]) {
         const void *bytes = [obj bytes];
         if (!bytes) {
@@ -280,17 +280,17 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
             // Don't pass a NULL pointer, or sqlite will bind a SQL null instead of a blob.
             bytes = "";
         }
-        sqlite3_bind_blob([statement sqliteStatement], idx, bytes, (int)[obj length], SQLITE_TRANSIENT);
+        sqlite3_bind_blob(statement.sqliteStatement, idx, bytes, (int)[obj length], SQLITE_TRANSIENT);
     } else if ([obj isKindOfClass:[NSDate class]]) {
-        sqlite3_bind_double([statement sqliteStatement], idx, [obj timeIntervalSince1970]);
+        sqlite3_bind_double(statement.sqliteStatement, idx, [obj timeIntervalSince1970]);
     } else if ([obj isKindOfClass:[NSNumber class]]) {
         if (CFNumberIsFloatType((__bridge CFNumberRef)obj)) {
-            sqlite3_bind_double([statement sqliteStatement], idx, [obj doubleValue]);
+            sqlite3_bind_double(statement.sqliteStatement, idx, [obj doubleValue]);
         } else {
-            sqlite3_bind_int64([statement sqliteStatement], idx, [obj longLongValue]);
+            sqlite3_bind_int64(statement.sqliteStatement, idx, [obj longLongValue]);
         }
     } else {
-        sqlite3_bind_text([statement sqliteStatement], idx, [[obj description] UTF8String], -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(statement.sqliteStatement, idx, [obj description].UTF8String, -1, SQLITE_TRANSIENT);
     }
 }
 
@@ -299,7 +299,7 @@ int const PFSQLiteDatabaseDatabaseAlreadyClosed = 4;
 ///--------------------------------------
 
 - (void)_clearCachedStatements {
-    for (PFSQLiteStatement *statement in [_cachedStatements allValues]) {
+    for (PFSQLiteStatement *statement in _cachedStatements.allValues) {
         [statement close];
     }
 
