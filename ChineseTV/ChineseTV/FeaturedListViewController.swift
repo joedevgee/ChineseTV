@@ -24,8 +24,6 @@ class FeaturedListViewController: UIViewController, UITableViewDataSource, UITab
         // Do any additional setup after loading the view.
         featuredTable.delegate = self
         featuredTable.dataSource = self
-        featuredTable.estimatedRowHeight = 80
-        featuredTable.rowHeight = UITableViewAutomaticDimension
         featuredTable.registerClass(EditFeaturedTableViewCell.self, forCellReuseIdentifier: "Cell")
         self.requestData()
     }
@@ -53,10 +51,11 @@ class FeaturedListViewController: UIViewController, UITableViewDataSource, UITab
             if objects?.count > 0 && error == nil {
                 if let lists = objects {
                     for list in lists {
-                        guard let listId = list["listId"] as? String else { break }
-                        guard let listName = list["listName"] as? String else { break }
-                        guard let image = list["Image"] as? PFFile else { break }
-                        self.featuredList.append(FeaturedList(id: listId, name: listName, image: image))
+                        guard let listId = list["listId"] as? String else { print("Getting list id failed");continue }
+                        guard let listName = list["listName"] as? String else { print("Getting list name failed");continue }
+                        guard let image = list["Image"] as? PFFile else { print("Getting image failed");continue }
+                        guard let objectId = list.objectId else { continue }
+                        self.featuredList.append(FeaturedList(id: listId, name: listName, image: image, objectId: objectId))
                     }
                     self.featuredTable.reloadData()
                 }
@@ -72,6 +71,7 @@ class FeaturedListViewController: UIViewController, UITableViewDataSource, UITab
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! EditFeaturedTableViewCell
         if let image:PFFile = self.featuredList[indexPath.row].image as PFFile {
             cell.listImageView.file = image
+            cell.listImageView.loadInBackground()
         }
         if let name:String = self.featuredList[indexPath.row].name as String {
             cell.listNameLabel.text = name
@@ -80,8 +80,22 @@ class FeaturedListViewController: UIViewController, UITableViewDataSource, UITab
         cell.updateConstraintsIfNeeded()
         return cell
     }
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if let list: FeaturedList = self.featuredList[indexPath.row] as FeaturedList {
+            performSegueWithIdentifier("editFeatured", sender: list)
+        }
+    }
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return UIScreen.mainScreen().bounds.width * 0.6
+    }
     
-
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "editFeatured" {
+            guard let list:FeaturedList = sender as? FeaturedList else { print("Sending list failed");return }
+            let destVC = segue.destinationViewController as! EditFeaturedViewController
+            destVC.updateListInfo(list.name, image: list.image, parseId: list.objectId)
+        }
+    }
 }
 
 
@@ -89,9 +103,11 @@ class FeaturedList {
     var id: String
     var name: String
     var image: PFFile
-    init(id: String, name: String, image: PFFile) {
+    var objectId: String
+    init(id: String, name: String, image: PFFile, objectId: String) {
         self.id = id
         self.name = name
         self.image = image
+        self.objectId = objectId
     }
 }

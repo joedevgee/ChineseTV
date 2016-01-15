@@ -45,12 +45,7 @@ class EditFeaturedTableViewCell: UITableViewCell {
     override func updateConstraintsIfNeeded() {
         if !self.didSetupConstraints {
             
-            NSLayoutConstraint.autoSetPriority(UILayoutPriorityRequired) {
-                self.listImageView.autoSetContentCompressionResistancePriorityForAxis(.Vertical)
-                self.listNameLabel.autoSetContentCompressionResistancePriorityForAxis(.Vertical)
-            }
-            
-            listImageView.autoMatchDimension(.Height, toDimension: .Width, ofView: contentView, withMultiplier: 0.4)
+            listImageView.autoSetDimension(.Height, toSize: UIScreen.mainScreen().bounds.width*0.4)
             listImageView.autoPinEdgeToSuperviewEdge(.Leading)
             listImageView.autoPinEdgeToSuperviewEdge(.Top)
             listImageView.autoPinEdgeToSuperviewEdge(.Trailing)
@@ -59,7 +54,6 @@ class EditFeaturedTableViewCell: UITableViewCell {
             listNameLabel.autoPinEdgeToSuperviewEdge(.Leading)
             listNameLabel.autoPinEdgeToSuperviewEdge(.Trailing)
             listNameLabel.autoPinEdgeToSuperviewEdge(.Bottom)
-            listNameLabel.autoMatchDimension(.Height, toDimension: .Height, ofView: contentView, withMultiplier: 0.3)
             
             self.didSetupConstraints = true
         }

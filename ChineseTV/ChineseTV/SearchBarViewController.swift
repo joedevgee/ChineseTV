@@ -21,6 +21,7 @@ let searchNotificationKey:String = "com.8pon.foundSearchReulstAndContinuetoPlayl
 class SearchBarViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
     
     var searchResults = [Playlist]()
+    var parseIdDict = [String: String]()
     
     var mainContainer:UIView = UIView.newAutoLayoutView()
     var searchTextField:UITextField = UITextField.newAutoLayoutView()
@@ -78,10 +79,12 @@ class SearchBarViewController: UIViewController, UITextFieldDelegate, UITableVie
                 // Successfully found items in parse database
                 if let lists = objects {
                     for list in lists {
+                        guard let parseId:String = list.objectId! as String else { break }
                         guard let listId = list["listID"] as? String else { print("getting list id failed"); break }
                         guard let listName = list["listName"] as? String else { print("getting list name failed"); break }
                         guard let listImage = list["thumbnailUrl"] as? String else { print("getting thumbnail failed"); break }
                         self.searchResults.append(Playlist(id: listId, name: listName, thumbnailUrl: listImage))
+                        self.parseIdDict[listId] = parseId
                     }
                     self.resultTable.hidden = false
                     self.closeButton.hidden = false
@@ -215,10 +218,15 @@ class SearchBarViewController: UIViewController, UITextFieldDelegate, UITableVie
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         var dataDict = Dictionary<String, String>()
+        var parseListId = ""
         guard let selectedListId:String = self.searchResults[indexPath.row].id as String else { print("no id ") }
         guard let selectedListName:String = self.searchResults[indexPath.row].name as String else { print("no name") }
+        if let placeholder:String = self.parseIdDict[selectedListId]! as String {
+            parseListId = placeholder
+        }
         dataDict["listId"] = selectedListId
         dataDict["listName"] = selectedListName
+        dataDict["parseId"] = parseListId
         NSNotificationCenter.defaultCenter().postNotificationName(searchNotificationKey, object: nil, userInfo: dataDict)
         exitView()
     }

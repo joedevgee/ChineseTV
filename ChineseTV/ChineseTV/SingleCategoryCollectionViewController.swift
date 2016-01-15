@@ -43,9 +43,6 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let menuImage = UIImage(named: "ic_menu")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        let menuButton = UIBarButtonItem(image: menuImage, style: .Plain, target: self, action: "toggle")
-        navigationItem.leftBarButtonItem = menuButton
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Search, target: self, action: "showSearchBar")
         
         self.view.backgroundColor = collectionBackColor
@@ -63,6 +60,7 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
         navigationItem.title = nil
         // Add observe listen to user choosing side menu saved list
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedNotification:", name: passListNotificationKey, object: nil)
+        self.showLeftNavButton()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -79,6 +77,23 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: passListNotificationKey, object: nil)
         // Remove observer that listens to search bar view
         NSNotificationCenter.defaultCenter().removeObserver(self, name: searchNotificationKey, object: nil)
+    }
+    
+    private func showLeftNavButton() {
+        if let tempList:[String] = NSUserDefaults.standardUserDefaults().arrayForKey(savedListArray) as? [String] {
+            if tempList.isEmpty {
+                navigationItem.leftBarButtonItem = nil
+                self.sideMenuViewController.panGestureEnabled = false
+            } else {
+                let menuImage = UIImage(named: "ic_menu")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+                let menuButton = UIBarButtonItem(image: menuImage, style: .Plain, target: self, action: "toggle")
+                navigationItem.leftBarButtonItem = menuButton
+                self.sideMenuViewController.panGestureEnabled = true
+            }
+        } else {
+            self.sideMenuViewController.panGestureEnabled = false
+            navigationItem.leftBarButtonItem = nil
+        }
     }
     
     func showSearchBar() {
@@ -101,8 +116,10 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
             var segueInfo = Array<String>()
             guard let listId:String = data["listId"]! as String else { print("found no id") }
             guard let listName:String = data["listName"]! as String else { print("found no name") }
+            guard let parseListId:String = data["parseId"]! as String else { print("no parse id") }
             segueInfo.append(listId)
             segueInfo.append(listName)
+            segueInfo.append(parseListId)
             self.performSegueWithIdentifier(self.segueName, sender: segueInfo)
         }
     }
@@ -130,8 +147,8 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
         cell.setNeedsUpdateConstraints()
         cell.updateConstraintsIfNeeded()
         
-        if let listId = object!["listID"] as? String, savedListArray = NSUserDefaults.standardUserDefaults().arrayForKey("savedPlaylist") as? [String] {
-            if savedListArray.contains(listId) { cell.saveList.tintColor = themeColor } else { cell.saveList.tintColor = collectionBackColor }
+        if let parseId:String = object!.objectId, nudSavedList = NSUserDefaults.standardUserDefaults().arrayForKey(savedListArray) as? [String] {
+            if nudSavedList.contains(parseId) { cell.saveList.tintColor = themeColor } else { cell.saveList.tintColor = collectionBackColor }
         }
         
         return cell
@@ -152,7 +169,7 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
     }
     
     override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSize(width: screenWidth/2, height: screenHeight/2.8)
+        return CGSize(width: screenWidth/2, height: screenHeight/3.9)
     }
     
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
@@ -166,18 +183,19 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
             tabBarController!.tabBar.hidden = true
             let destVC = segue.destinationViewController as! PlayListTableViewController
             if let indexPath:NSIndexPath = sender as? NSIndexPath {
-                if let listId:String = objectAtIndexPath(indexPath)!["listID"] as? String {
-                    destVC.requestPlayList(listId, pageToken: nil)
-                    destVC.currentListId = listId
-                    if let listName:String = objectAtIndexPath(sender as? NSIndexPath)!["listName"] as? String {
-                        destVC.currentListName = listName
-                    }
-                }
+                guard let listId:String = objectAtIndexPath(indexPath)!["listID"] as? String else { return }
+                guard let listName:String = objectAtIndexPath(indexPath)!["listName"] as? String else { return }
+                guard let parseId:String = objectAtIndexPath(indexPath)!.objectId else { return }
+                destVC.requestPlayList(listId, pageToken: nil)
+                destVC.currentListId = listId
+                destVC.currentListName = listName
+                destVC.parseObjectId = parseId
             } else if let data:Dictionary<String, String> = sender as? Dictionary<String, String> {
                 Async.main {
                     destVC.requestPlayList(data["listId"]!, pageToken: nil)
                     destVC.currentListId = data["listId"]!
                     destVC.currentListName = data["listName"]!
+                    destVC.parseObjectId = data["parseId"]!
                     }.main {
                         destVC.performSegueWithIdentifier("showVideo", sender: data)
                 }
@@ -185,6 +203,7 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
                 destVC.requestPlayList(segueInfo[0], pageToken: nil)
                 destVC.currentListId = segueInfo[0]
                 destVC.currentListName = segueInfo[1]
+                destVC.parseObjectId = segueInfo[2]
             }
         }
     }

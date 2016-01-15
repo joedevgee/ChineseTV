@@ -24,6 +24,7 @@ import GoogleMobileAds
 class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FBSDKLoginButtonDelegate, UITextViewDelegate, GADBannerViewDelegate, SignUpViewControllerDelegate {
     
     var currentListId:String?
+    var parseListId:String?
     
     var nextVideoPageToken:String?
     var videoTokenCheck = [String: Bool]()
@@ -449,13 +450,13 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         savingComment["imageUrl"] = image
         savingComment["videoId"] = videoID
         let newComment = Comment(name: name, avatarUrl: image, commentText: text)
+        self.commentList.insert(newComment, atIndex: 0)
+        self.commentListTableView.reloadData()
         savingComment.saveInBackgroundWithBlock {
             (success:Bool, error:NSError?) -> Void in
             if success {
                 let successBar = TTGSnackbar.init(message: "您的回复已成功发送", duration: .Middle)
                 successBar.show()
-                self.commentList.insert(newComment, atIndex: 0)
-                self.commentListTableView.reloadData()
             }
         }
     }
@@ -469,6 +470,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
             self.sendCommentButton.hidden = true
             self.loginInfoLabel.hidden = true
             self.fbLoginButton.hidden = true
+            self.registerButton.hidden = true
         }
     }
     func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
@@ -543,8 +545,8 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                 self.getVideoCommentsData(self.youtubePlayer.videoIdentifier!)
                 // Check if the current video is in a saved playlist
                 guard let userList = NSUserDefaults.standardUserDefaults().arrayForKey(savedListArray) as? [String] else { return }
-                if self.currentListId != nil {
-                    switch userList.contains(self.currentListId!) {
+                if self.parseListId != nil {
+                    switch userList.contains(self.parseListId!) {
                     case true:
                         self.updateSavedList()
                     case false:
@@ -556,21 +558,22 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     
     private func updateSavedList() {
         for video in self.videoList {
-            if video.id == self.youtubePlayer.videoIdentifier && self.currentListId != nil {
+            if video.id == self.youtubePlayer.videoIdentifier && self.parseListId != nil {
+                print("updating saved playlist")
                 // update video name
                 guard let nudSavedVideoNameDict:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoNameDict) as? [String: String] else { break }
                 var savingNewVideoNameDict = nudSavedVideoNameDict
-                savingNewVideoNameDict[self.currentListId!] = video.name
+                savingNewVideoNameDict[self.parseListId!] = video.name
                 NSUserDefaults.standardUserDefaults().setObject(savingNewVideoNameDict, forKey: savedVideoNameDict)
                 // update video image
                 guard let nudSavedVideoImageDict:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoImageDict) as? [String: String] else { break }
                 var savingNewVideoImageDict = nudSavedVideoImageDict
-                savingNewVideoImageDict[self.currentListId!] = video.thumbnailUrl
+                savingNewVideoImageDict[self.parseListId!] = video.thumbnailUrl
                 NSUserDefaults.standardUserDefaults().setObject(savingNewVideoImageDict, forKey: savedVideoImageDict)
                 // update video id
                 guard let nudSavedVideoIdDict:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoIdDict) as? [String: String] else { break }
                 var savingNewVideoIdDict = nudSavedVideoIdDict
-                savingNewVideoIdDict[self.currentListId!] = video.id
+                savingNewVideoIdDict[self.parseListId!] = video.id
                 NSUserDefaults.standardUserDefaults().setObject(savingNewVideoIdDict, forKey: savedVideoIdDict)
             }
         }

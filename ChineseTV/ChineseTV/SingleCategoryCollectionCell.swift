@@ -25,6 +25,7 @@ class SingleCategoryCollectionCell: PFCollectionViewCell {
         
         mainContainer.backgroundColor = UIColor.whiteColor()
         mainContainer.layer.cornerRadius = 5
+        mainContainer.clipsToBounds = true
         
         videoThumbnailView.contentMode = .ScaleAspectFill
         videoThumbnailView.clipsToBounds = true
@@ -53,17 +54,18 @@ class SingleCategoryCollectionCell: PFCollectionViewCell {
             mainContainer.autoPinEdgesToSuperviewEdgesWithInsets(UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
             
             saveList.autoPinEdgeToSuperviewEdge(.Right, withInset: 5, relation: .GreaterThanOrEqual)
-            saveList.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5, relation: .GreaterThanOrEqual)
+            saveList.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 5)
+            saveList.autoSetDimensionsToSize(CGSizeMake(30, 30))
             
             videoTitle.autoMatchDimension(.Height, toDimension: .Height, ofView: mainContainer, withMultiplier: 0.2, relation: NSLayoutRelation.GreaterThanOrEqual)
             videoTitle.autoPinEdgeToSuperviewEdge(.Leading)
             videoTitle.autoPinEdgeToSuperviewEdge(.Trailing)
             videoTitle.autoPinEdge(.Bottom, toEdge: .Top, ofView: saveList)
-            videoTitle.autoPinEdge(.Top, toEdge: .Bottom, ofView: videoThumbnailView, withOffset: -35)
             
             videoThumbnailView.autoPinEdgeToSuperviewEdge(.Leading)
             videoThumbnailView.autoPinEdgeToSuperviewEdge(.Trailing)
-            videoThumbnailView.autoMatchDimension(.Height, toDimension: .Height, ofView: mainContainer, withMultiplier: 1.2, relation: NSLayoutRelation.LessThanOrEqual)
+            videoThumbnailView.autoPinEdgeToSuperviewEdge(.Top, withInset: -20)
+            videoThumbnailView.autoPinEdge(.Bottom, toEdge: .Bottom, ofView: videoTitle)
             
             didSetupConstraints = true
         }

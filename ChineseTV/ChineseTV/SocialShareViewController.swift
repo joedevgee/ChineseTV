@@ -25,18 +25,10 @@ class SocialShareViewController: UIViewController {
     var defaultImageView:UIImageView = UIImageView.newAutoLayoutView()
     var bottomView:UIView = UIView.newAutoLayoutView()
     
-    var firstButton:UIView = UIView.newAutoLayoutView()
-    var secondButton:UIView = UIView.newAutoLayoutView()
-    var thirdButton:UIView = UIView.newAutoLayoutView()
-    var forthButton:UIView = UIView.newAutoLayoutView()
-
-    
     var fbShareButton:UIButton = UIButton.newAutoLayoutView()
     var fbLabel:UILabel = UILabel.newAutoLayoutView()
     var wechatShareButton:UIButton = UIButton.newAutoLayoutView()
     var wechatLabel:UILabel = UILabel.newAutoLayoutView()
-    var qqShareButton:UIButton = UIButton.newAutoLayoutView()
-    var qqLabel:UILabel = UILabel.newAutoLayoutView()
     var weixinShareButton:UIButton = UIButton.newAutoLayoutView()
     var weixinLabel:UILabel = UILabel.newAutoLayoutView()
     
@@ -161,8 +153,6 @@ class SocialShareViewController: UIViewController {
         bottomView.addSubview(wechatLabel)
         bottomView.addSubview(weixinShareButton)
         bottomView.addSubview(weixinLabel)
-        bottomView.addSubview(qqShareButton)
-        bottomView.addSubview(qqLabel)
         
         fbShareButton.autoPinEdge(.Right, toEdge: .Left, ofView: wechatShareButton, withOffset: -20)
         fbShareButton.autoPinEdgeToSuperviewEdge(.Top)

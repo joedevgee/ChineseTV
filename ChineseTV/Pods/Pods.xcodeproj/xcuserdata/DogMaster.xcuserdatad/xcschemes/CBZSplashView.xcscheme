@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '0423F9941D47FE366DB4B113'
+               BlueprintIdentifier = '04B7E0D28FDEC1C7D3FF1A2C'
                BlueprintName = 'CBZSplashView'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'CBZSplashView.framework'>

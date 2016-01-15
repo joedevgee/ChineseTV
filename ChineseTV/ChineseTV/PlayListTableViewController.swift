@@ -20,6 +20,7 @@ class PlayListTableViewController: UITableViewController {
     
     var currentListId:String?
     var currentListName:String?
+    var parseObjectId:String?
     var nextPageToken:String?
     var tokenCheck = [String: Bool]()
     var videoList: [Video] = []
@@ -48,8 +49,8 @@ class PlayListTableViewController: UITableViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         guard let savedList:[String] = NSUserDefaults.standardUserDefaults().arrayForKey(savedListArray) as? [String] else { navAddButton();return }
-        if self.currentListId != nil {
-            switch savedList.contains(self.currentListId!) {
+        if self.parseObjectId != nil {
+            switch savedList.contains(self.parseObjectId!) {
             case true:
                 navCancelButton()
             case false:
@@ -103,52 +104,88 @@ class PlayListTableViewController: UITableViewController {
     
     // MARK: Let user add or delete current playlist to their personal list
     func addPlaylist() {
-        guard let nudSavedList:[String] = NSUserDefaults.standardUserDefaults().arrayForKey(savedListArray) as? [String] else { return }
-        if self.currentListId != nil && self.currentListName != nil {
+        guard let nudSavedList:[String] = NSUserDefaults.standardUserDefaults().arrayForKey(savedListArray) as? [String] else { self.firstSaving();return }
+        if self.parseObjectId != nil && self.currentListName != nil {
             switch nudSavedList.contains(self.currentListId!) {
             case true:
                 print("User has already saved this list")
+                self.navCancelButton()
             case false:
                 // Save the current list to user's saved list
                 var savingNewListArray = nudSavedList
-                savingNewListArray.append(self.currentListId!)
+                savingNewListArray.append(self.parseObjectId!)
                 NSUserDefaults.standardUserDefaults().setObject(savingNewListArray, forKey: savedListArray)
                 // save video name
                 guard let nudSavedListVideoName:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoNameDict) as? [String: String] else { break }
                 var savingNewVideoNameDict = nudSavedListVideoName
-                savingNewVideoNameDict[self.currentListId!] = self.videoList.first?.name
+                savingNewVideoNameDict[self.parseObjectId!] = self.videoList.first?.name
                 NSUserDefaults.standardUserDefaults().setObject(savingNewVideoNameDict, forKey: savedVideoNameDict)
                 // save video thumbnail url
                 guard let nudSavedListVideoImage:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoImageDict) as? [String: String] else { break }
                 var savingNewVideoImageDict = nudSavedListVideoImage
-                savingNewVideoImageDict[self.currentListId!] = self.videoList.first?.thumbnailUrl
+                savingNewVideoImageDict[self.parseObjectId!] = self.videoList.first?.thumbnailUrl
                 NSUserDefaults.standardUserDefaults().setObject(savingNewVideoImageDict, forKey: savedVideoImageDict)
                 // save video id
-                guard let nudSavedVideoId:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoNameDict) as? [String: String] else { break }
+                guard let nudSavedVideoId:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoIdDict) as? [String: String] else { break }
                 var savingNewVideoId = nudSavedVideoId
-                savingNewVideoId[self.currentListId!] = self.videoList.first?.id
+                savingNewVideoId[self.parseObjectId!] = self.videoList.first?.id
                 NSUserDefaults.standardUserDefaults().setObject(savingNewVideoId, forKey: savedVideoIdDict)
                 // save list name
                 guard let nudSavedListName:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedListNameDict) as? [String: String] else { break }
                 var savingNewListName = nudSavedListName
-                savingNewListName[self.currentListId!] = self.currentListName!
+                savingNewListName[self.parseObjectId!] = self.currentListName!
                 NSUserDefaults.standardUserDefaults().setObject(savingNewListName, forKey: savedListNameDict)
                 // change nav bar
                 self.navCancelButton()
                 let successBar = TTGSnackbar.init(message: "您已成功收藏该节目", duration: TTGSnackbarDuration.Middle)
                 successBar.show()
             }
+        } else {
+            print("current list id or current list name is empty")
         }
+    }
+    // User has never saved any list before
+    // Firsttime saving activity occur
+    private func firstSaving() {
+        guard let listID:String = self.parseObjectId else { return }
+        guard let listName:String = self.currentListName else { return }
+        guard let videoName:String = self.videoList.first?.name else { return }
+        guard let videoImage:String = self.videoList.first?.thumbnailUrl else { return }
+        guard let videoId:String = self.videoList.first?.id else { return }
+        // Save list id to saved list array
+        var savingNewListArray = [String]()
+        savingNewListArray.append(listID)
+        NSUserDefaults.standardUserDefaults().setObject(savingNewListArray, forKey: savedListArray)
+        // use dictionary to save list name matching list id
+        var savingListNameDict = [String: String]()
+        savingListNameDict[listID] = listName
+        NSUserDefaults.standardUserDefaults().setObject(savingListNameDict, forKey: savedListNameDict)
+        // save the video name
+        var savingVideoNameDict = [String: String]()
+        savingVideoNameDict[listID] = videoName
+        NSUserDefaults.standardUserDefaults().setObject(savingVideoNameDict, forKey: savedVideoNameDict)
+        // save the video thumbnail url
+        var savingVideoImageDict = [String: String]()
+        savingVideoImageDict[listID] = videoImage
+        NSUserDefaults.standardUserDefaults().setObject(savingVideoImageDict, forKey: savedVideoImageDict)
+        // save the video id
+        var savingVideoIdDict = [String: String]()
+        savingVideoIdDict[listID] = videoId
+        NSUserDefaults.standardUserDefaults().setObject(savingVideoIdDict, forKey: savedVideoIdDict)
+        // change nav bar
+        self.navCancelButton()
+        let successBar = TTGSnackbar.init(message: "您已成功收藏该节目", duration: TTGSnackbarDuration.Middle)
+        successBar.show()
     }
     
     // let user delete current list
     func deleteList() {
         guard let nudSavedList:[String] = NSUserDefaults.standardUserDefaults().arrayForKey(savedListArray) as? [String] else { return }
         var savingNewList = nudSavedList
-        if self.currentListId != nil {
-            switch nudSavedList.contains(self.currentListId!) {
+        if self.parseObjectId != nil {
+            switch nudSavedList.contains(self.parseObjectId!) {
             case true:
-                guard let deletingIndex = savingNewList.indexOf(self.currentListId!) else { break }
+                guard let deletingIndex = savingNewList.indexOf(self.parseObjectId!) else { break }
                 guard let nudSavedListName:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedListNameDict) as? [String: String] else { break }
                 var savingNewListNameDict = nudSavedListName
                 guard let nudSavedVideoName:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoNameDict) as? [String: String] else { break }
@@ -161,13 +198,13 @@ class PlayListTableViewController: UITableViewController {
                     { (snackBar) -> Void in
                         savingNewList.removeAtIndex(deletingIndex)
                         NSUserDefaults.standardUserDefaults().setObject(savingNewList, forKey: savedListArray)
-                        savingNewListNameDict.removeValueForKey(self.currentListId!)
+                        savingNewListNameDict.removeValueForKey(self.parseObjectId!)
                         NSUserDefaults.standardUserDefaults().setObject(savingNewListNameDict, forKey: savedListNameDict)
-                        savingNewVideoNameDict.removeValueForKey(self.currentListId!)
+                        savingNewVideoNameDict.removeValueForKey(self.parseObjectId!)
                         NSUserDefaults.standardUserDefaults().setObject(savingNewVideoNameDict, forKey: savedVideoNameDict)
-                        savingNewVideoImageDict.removeValueForKey(self.currentListId!)
+                        savingNewVideoImageDict.removeValueForKey(self.parseObjectId!)
                         NSUserDefaults.standardUserDefaults().setObject(savingNewVideoImageDict, forKey: savedVideoImageDict)
-                        savingNewVideoIdDict.removeValueForKey(self.currentListId!)
+                        savingNewVideoIdDict.removeValueForKey(self.parseObjectId!)
                         NSUserDefaults.standardUserDefaults().setObject(savingNewVideoIdDict, forKey: savedVideoIdDict)
                         self.navAddButton()
                 }
@@ -300,6 +337,9 @@ class PlayListTableViewController: UITableViewController {
                 destVC.currentListId = self.currentListId!
             } else {
                 print("list id is nil")
+            }
+            if self.parseObjectId != nil {
+                destVC.parseListId = self.parseObjectId!
             }
             if self.videoList.count > 0 {
                 destVC.videoList = self.videoList

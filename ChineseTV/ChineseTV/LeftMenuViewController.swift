@@ -15,12 +15,13 @@ let passListNotificationKey:String = "com.8pon.choseSavedPlaylistAndContinueToCu
 class LeftMenuViewController: UITableViewController {
     
     var savedPlaylist = [String]()
+    var savedPlaylistIds = [String: String]()
     var savedPlaylistNames = [String: String]()
     var savedPlaylistProgressName = [String: String]()
     var savedPlaylistProgressImageUrl = [String: String]()
     var savedPlaylistProgressId = [String: String]()
     let rowHeight:CGFloat = UIScreen.mainScreen().bounds.size.height/6
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any addtional setup after loading the view
@@ -46,6 +47,17 @@ class LeftMenuViewController: UITableViewController {
         savedPlaylistProgressName = nudListProgressName
         savedPlaylistProgressImageUrl = nudImageUrl
         savedPlaylistProgressId = nudVideoId
+        // Fetch list info (mainly youtube playlist id from parse)
+        for list in nudSavedList {
+            let query = PFQuery(className: "ChinesePlayList")
+            query.getObjectInBackgroundWithId(list) {
+                (object: PFObject?, error: NSError?) -> Void in
+                if error == nil && object != nil {
+                    guard let playlistId = object!["listID"] as? String else { return }
+                    self.savedPlaylistIds[list] = playlistId
+                }
+            }
+        }
         tableView.reloadData()
     }
     
@@ -60,10 +72,6 @@ class LeftMenuViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.savedPlaylist.count
-    }
-    
-    override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return "    收藏节目列表"
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -92,15 +100,17 @@ class LeftMenuViewController: UITableViewController {
         case true:
             print("There is no list to direct to")
         case false:
-            guard let listID:String = self.savedPlaylist[indexPath.row] as String else { break }
-            guard let listTitle:String = self.savedPlaylistNames[listID]! as String else { break }
-            guard let videoID:String = self.savedPlaylistProgressId[listID]! as String else { break }
-            guard let videoName:String = self.savedPlaylistProgressName[listID]! as String else { break }
+            guard let parseId:String = self.savedPlaylist[indexPath.row] as String else { break }
+            guard let listID:String = self.savedPlaylistIds[parseId]! as String else { break }
+            guard let listTitle:String = self.savedPlaylistNames[parseId]! as String else { break }
+            guard let videoID:String = self.savedPlaylistProgressId[parseId]! as String else { break }
+            guard let videoName:String = self.savedPlaylistProgressName[parseId]! as String else { break }
+            dataDict["parseId"] = parseId
             dataDict["listId"] = listID
             dataDict["listName"] = listTitle
             dataDict["videoId"] = videoID
             dataDict["videoName"] = videoName
-            // TODO: use notification to handle jumping through controllers
+//             TODO: use notification to handle jumping through controllers
             NSNotificationCenter.defaultCenter().postNotificationName(passListNotificationKey, object: nil, userInfo: dataDict)
         }
         self.sideMenuViewController.hideMenuViewController()
