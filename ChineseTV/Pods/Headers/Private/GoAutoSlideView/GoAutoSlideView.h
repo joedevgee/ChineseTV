@@ -1,0 +1,1 @@
+../../../GoAutoSlideView/Classes/GoAutoSlideView.h

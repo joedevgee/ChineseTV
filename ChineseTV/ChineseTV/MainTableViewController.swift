@@ -13,22 +13,22 @@ import SDWebImage
 import Alamofire
 import Async
 import FontAwesomeKit
-import CBZSplashView
 import PureLayout
+import GoAutoSlideView
 
-class MainTableViewController: PFQueryTableViewController {
+class MainTableViewController: PFQueryTableViewController, GoAutoSlideViewDataSource, GoAutoSlideViewDelegate {
     
     var toggleButton = MenuButton(frame: CGRectMake(100, 100, 30, 30))
     
     var scrollView = UIScrollView()
+    var gotFeatured = false
+    var headerScroll = GoAutoSlideView()
     var viewOneLabel = UILabel.newAutoLayoutView()
     var viewOneImageView = PFImageView.newAutoLayoutView()
     var viewTwoLabel = UILabel.newAutoLayoutView()
     var viewTwoImageView = PFImageView.newAutoLayoutView()
     var viewThreeLabel = UILabel.newAutoLayoutView()
     var viewThreeImageView = PFImageView.newAutoLayoutView()
-    
-    var splashed:Bool = false
     
     let rowHeight:CGFloat = UIScreen.mainScreen().bounds.size.height/3
     
@@ -60,40 +60,20 @@ class MainTableViewController: PFQueryTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let animateDuration:Double = 1.7
-        
-        // logo splash
         tabBarController!.tabBar.hidden = true
-        let playIcon:FAKFontAwesome = FAKFontAwesome.playIconWithSize(50)
-        playIcon.addAttribute(NSForegroundColorAttributeName, value: themeColor)
-        playIcon.drawingBackgroundColor = UIColor.clearColor()
-        let placeholderImage:UIImage = playIcon.imageWithSize(CGSize(width: 50, height: 50))
-        let splashView = CBZSplashView(icon: placeholderImage, backgroundColor: themeColor)
-        self.view.addSubview(splashView)
-        splashView.animationDuration = CGFloat(animateDuration)
-        splashView.startAnimation()
-        
-        Async.main(after: animateDuration/2) {
-            self.setupNavBar()
-            self.splashed = true
-        }
-        
+        self.setupNavBar()
         tableView.backgroundColor = dividerColor
         tableView.separatorStyle = .None
         tableView.allowsSelection = true
         self.configureScrollView()
         self.getFeaturedList()
-        NSTimer.scheduledTimerWithTimeInterval(2.5, target: self, selector: "moveToNextPage", userInfo: nil, repeats: true)
-        tableView.tableHeaderView = scrollView
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("updateHeader:"), name: "FinishedFeaturedList", object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
         navigationItem.title = nil
         super.viewWillAppear(true)
-        if self.splashed {
             tabBarController!.tabBar.hidden = false
-        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -151,72 +131,75 @@ class MainTableViewController: PFQueryTableViewController {
     
     // MARK: Add a scroll banner view on top of the tableview
     private func configureScrollView() {
-        self.scrollView.backgroundColor = themeColor
-        self.scrollView.frame = CGRectMake(0, 0, view.frame.width, view.frame.width*0.4)
-        let scrollViewWidth:CGFloat = self.scrollView.frame.width
-        let scrollViewHeight:CGFloat = self.scrollView.frame.height
-        let viewOne = UIView(frame: CGRectMake(0,0,scrollViewWidth,scrollViewHeight))
-        let viewTwo = UIView(frame: CGRectMake(scrollViewWidth,0,scrollViewWidth,scrollViewHeight))
-        let viewThree = UIView(frame: CGRectMake(scrollViewWidth*2,0,scrollViewWidth,scrollViewHeight))
-        view.addSubview(scrollView)
-        self.scrollView.addSubview(viewOne)
-        viewOne.addSubview(viewOneLabel)
-        viewOneLabel.autoCenterInSuperview()
-        viewOne.addSubview(viewOneImageView)
-        viewOneImageView.autoPinEdgesToSuperviewEdges()
-        self.scrollView.addSubview(viewTwo)
-        viewTwo.addSubview(viewTwoLabel)
-        viewTwoLabel.autoCenterInSuperview()
-        viewTwo.addSubview(viewTwoImageView)
-        viewTwoImageView.autoPinEdgesToSuperviewEdges()
-        self.scrollView.addSubview(viewThree)
-        viewThree.addSubview(viewThreeLabel)
-        viewThreeLabel.autoCenterInSuperview()
-        viewThree.addSubview(viewThreeImageView)
-        viewThreeImageView.autoPinEdgesToSuperviewEdges()
-        self.scrollView.contentSize = CGSizeMake(self.scrollView.frame.width*3, self.scrollView.frame.height)
-        scrollView.pagingEnabled = true
-        scrollView.showsHorizontalScrollIndicator = false
-        self.scrollView.delegate = self
+        headerScroll = GoAutoSlideView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.width * 0.4))
+        headerScroll.slideDuration = 5
+        headerScroll.slideDelegate = self
+        headerScroll.slideDataSource = self
+        headerScroll.currentPageIndicatorColor = themeColor
+        tableView.tableHeaderView = headerScroll
     }
-    func moveToNextPage (){
-        let pageWidth:CGFloat = CGRectGetWidth(self.scrollView.frame)
-        let maxWidth:CGFloat = pageWidth * 3
-        let contentOffset:CGFloat = self.scrollView.contentOffset.x
-        var slideToX = contentOffset + pageWidth
-        if  contentOffset + pageWidth == maxWidth{
-            slideToX = 0
+    func updateHeader(sender: NSNotification) {
+        headerScroll.reloadData()
+    }
+    // MARK: goautoscroll view data source
+    func numberOfPagesInGoAutoSlideView(goAutoSlideView: GoAutoSlideView) -> Int {
+        return 3
+    }
+    func goAutoSlideView(goAutoSlideView: GoAutoSlideView, viewAtPage page: Int) -> UIView {
+        let featuredView = PFImageView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.width * 0.4))
+        featuredView.contentMode = .ScaleAspectFill
+        if gotFeatured {
+            guard let featuredItem:FeaturedList = self.featuredList[page] else { print("Failed getting featured item") }
+            featuredView.file = featuredItem.image
+            featuredView.loadInBackground()
+        } else {
+            featuredView.backgroundColor = themeColor
         }
-        self.scrollView.scrollRectToVisible(CGRectMake(slideToX, 0, pageWidth, CGRectGetHeight(self.scrollView.frame)), animated: true)
+        return featuredView
+    }
+    func goAutoSlideView(goAutoSlideView: GoAutoSlideView, didTapViewPage page: Int) {
+        if gotFeatured {
+            
+        }
     }
     
     // Get featured list from Parse
     // Show them on the header scroll banner view
     private func getFeaturedList() {
-        let query = PFQuery(className: "FeaturedList")
-        query.limit = 3
-        query.findObjectsInBackgroundWithBlock {
-            (objects, error) in
-            if objects?.count > 0 && error == nil {
-                if let lists = objects {
-                    for list in lists {
-                        guard let listId = list["listId"] as? String else { print("Getting list id failed");continue }
-                        guard let listName = list["listName"] as? String else { print("Getting list name failed");continue }
-                        guard let image = list["Image"] as? PFFile else { print("Getting image failed");continue }
-                        guard let rank = list["rank"] as? Int else { print("Getting list rank failed");continue }
-                        guard let objectId = list.objectId else { continue }
-                        let newList = FeaturedList(id: listId, name: listName, image: image, objectId: objectId)
-                        switch rank {
-                        case 0:
-                            self.showFeaturedList(newList, nameLabel: self.viewOneLabel, listImage: self.viewOneImageView, rank: 0)
-                        case 1:
-                            self.showFeaturedList(newList, nameLabel: self.viewTwoLabel, listImage: self.viewTwoImageView, rank: 1)
-                        case 2:
-                            self.showFeaturedList(newList, nameLabel: self.viewThreeLabel, listImage: self.viewThreeImageView, rank: 2)
-                        default:
-                            print("No matching list")
+        Async.background {
+            let query = PFQuery(className: "FeaturedList")
+            query.limit = 3
+            query.findObjectsInBackgroundWithBlock {
+                (objects, error) in
+                if objects?.count > 0 && error == nil {
+                    let str = "hahah"
+                    guard let emptyData = str.dataUsingEncoding(NSUTF8StringEncoding) else { return }
+                    guard let emptyFile = PFFile(data: emptyData) else { return }
+                    let emptyFeaturedItem = FeaturedList(id: "", name: "", image: emptyFile, objectId: "")
+                    self.featuredList = [emptyFeaturedItem, emptyFeaturedItem, emptyFeaturedItem]
+                    if let lists = objects {
+                        for list in lists {
+                            guard let listId = list["listId"] as? String else { print("Getting list id failed");continue }
+                            guard let listName = list["listName"] as? String else { print("Getting list name failed");continue }
+                            guard let image = list["Image"] as? PFFile else { print("Getting image failed");continue }
+                            guard let rank = list["rank"] as? Int else { print("Getting list rank failed");continue }
+                            guard let objectId = list.objectId else { continue }
+                            let newList = FeaturedList(id: listId, name: listName, image: image, objectId: objectId)
+                            switch rank {
+                            case 0:
+                                self.featuredList[0] = newList
+                            case 1:
+                                self.featuredList[1] = newList
+                            case 2:
+                                self.featuredList[2] = newList
+                            default:
+                                print("No matching list")
+                            }
                         }
-                        self.featuredList.append(newList)
+                        // Done with getting featured list from parse in the background
+                        // Update the header scroll view
+                        self.gotFeatured = true
+                        NSNotificationCenter.defaultCenter().postNotificationName("FinishedFeaturedList", object: nil)
                     }
                 }
             }

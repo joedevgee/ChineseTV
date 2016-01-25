@@ -1,0 +1,6 @@
+framework module GoAutoSlideView {
+  umbrella header "GoAutoSlideView-umbrella.h"
+
+  export *
+  module * { export * }
+}

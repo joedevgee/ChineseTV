@@ -29,15 +29,103 @@ class SearchBarViewController: UIViewController, UITextFieldDelegate, UITableVie
     var closeButton:UIButton = UIButton.newAutoLayoutView()
     var resultTable:UITableView = UITableView.newAutoLayoutView()
     let pacMan = NVActivityIndicatorView(frame: CGRectZero, type: .Pacman, color: UIColor.whiteColor(), size: CGSize(width: 60, height: 60))
+    var errorLabel = UILabel.newAutoLayoutView()
+    
+    var didSetupConstraints = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        self.setupViews()
         let exitTap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("exitView"))
         self.view.addGestureRecognizer(exitTap)
         exitTap.delegate = self
+    }
+    
+    override func loadView() {
+        view = UIView()
+        view.backgroundColor = UIColor.clearColor()
+        mainContainer.backgroundColor = UIColor.clearColor()
+        
+        searchTextField.placeholder = " 搜您想看的节目"
+        searchTextField.backgroundColor = UIColor.whiteColor()
+        searchTextField.textColor = UIColor.blackColor()
+        searchTextField.textAlignment = .Left
+        searchTextField.layer.cornerRadius = 5
+        searchTextField.delegate = self
+        searchTextField.becomeFirstResponder()
+        
+        searchButton.setTitle("搜索", forState: .Normal)
+        searchButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        searchButton.titleLabel?.font = UIFont.boldSystemFontOfSize(18)
+        searchButton.addTarget(self, action: Selector("startSearch"), forControlEvents: .TouchUpInside)
+        
+        closeButton.setTitle("退出", forState: .Normal)
+        closeButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        closeButton.titleLabel?.font = UIFont.boldSystemFontOfSize(30)
+        closeButton.backgroundColor = UIColor.clearColor()
+        closeButton.hidden = true
+        closeButton.addTarget(self, action: "exitView", forControlEvents: .TouchUpInside)
+        
+        resultTable.delegate = self
+        resultTable.dataSource = self
+        resultTable.registerClass(VideoListTableViewCell.self, forCellReuseIdentifier: "Cell")
+        resultTable.separatorStyle = .None
+        resultTable.backgroundColor = UIColor.clearColor()
+        resultTable.hidden = true
+        
+        errorLabel.textColor = themeColor
+        errorLabel.font = UIFont.systemFontOfSize(30)
+        errorLabel.textAlignment = .Center
+        errorLabel.text = "Sorry, 该节目暂未收录"
+        errorLabel.hidden = true
+        errorLabel.numberOfLines = 1
+        
+        pacMan.hidden = true
+        
+        view.addSubview(mainContainer)
+        mainContainer.addSubview(errorLabel)
+        mainContainer.addSubview(searchTextField)
+        mainContainer.addSubview(searchButton)
+        mainContainer.addSubview(resultTable)
+        mainContainer.addSubview(pacMan)
+        mainContainer.addSubview(closeButton)
+        view.setNeedsUpdateConstraints()
+    }
+    
+    override func updateViewConstraints() {
+        if !didSetupConstraints {
+            
+            mainContainer.autoPinEdgeToSuperviewEdge(.Top)
+            mainContainer.autoPinEdgeToSuperviewEdge(.Left)
+            mainContainer.autoSetDimensionsToSize(searchViewSize)
+            
+            searchButton.autoPinEdgeToSuperviewEdge(.Right)
+            searchButton.autoAlignAxis(.Horizontal, toSameAxisOfView: searchTextField)
+            
+            searchTextField.autoPinEdgeToSuperviewEdge(.Top)
+            searchTextField.autoPinEdgeToSuperviewEdge(.Leading)
+            searchTextField.autoPinEdge(.Right, toEdge: .Left, ofView: searchButton, withOffset: -10)
+            searchTextField.autoSetDimension(.Height, toSize: 30)
+            
+            resultTable.autoPinEdge(.Top, toEdge: .Bottom, ofView: searchTextField, withOffset: 10)
+            resultTable.autoPinEdgeToSuperviewEdge(.Leading)
+            resultTable.autoPinEdgeToSuperviewEdge(.Trailing)
+            resultTable.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 50, relation: .GreaterThanOrEqual)
+            
+            closeButton.autoPinEdgeToSuperviewEdge(.Leading)
+            closeButton.autoPinEdgeToSuperviewEdge(.Trailing)
+            closeButton.autoPinEdgeToSuperviewEdge(.Bottom)
+            closeButton.autoPinEdge(.Top, toEdge: .Bottom, ofView: resultTable)
+            
+            pacMan.autoPinEdge(.Top, toEdge: .Bottom, ofView: searchTextField, withOffset: 80)
+            pacMan.autoAlignAxisToSuperviewAxis(.Vertical)
+            
+            errorLabel.autoCenterInSuperview()
+            
+            didSetupConstraints = true
+        }
+        super.updateViewConstraints()
     }
     
     // Check receiver of tap gesture
@@ -90,99 +178,15 @@ class SearchBarViewController: UIViewController, UITextFieldDelegate, UITableVie
                     self.closeButton.hidden = false
                     self.resultTable.reloadData()
                     self.pacMan.hidden = true
+                    self.errorLabel.hidden = true
                 }
             } else {
                 // If not found anything
                 // Continue the search on youtube
-                Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/search?", parameters: ["part": "snippet", "q": searchTerm,"type": "playlist","key": googleApiKey], encoding: ParameterEncoding.URLEncodedInURL)
-                    .responseJSON { response in
-                        if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> {
-                            self.processSearch(items)
-                        }
-                }
+                self.errorLabel.hidden = false
+                self.pacMan.hidden = true
             }
         }
-    }
-    
-    func processSearch(items: Array<Dictionary<NSObject, AnyObject>>) {
-        
-        for list in items {
-            guard let listId = list["id"]!["playlistId"] as? String else { print("Getting list id failed");break }
-            guard let listName = list["snippet"]!["title"] as? String else { print("Getting list name failed");break }
-            guard let thumbnailUrl = list ["snippet"]!["thumbnails"]!!["default"]!!["url"] as? String else { print("Getting thumbnail failed");break }
-            self.searchResults.append(Playlist(id: listId, name: listName, thumbnailUrl: thumbnailUrl))
-        }
-        resultTable.hidden = false
-        resultTable.reloadData()
-        pacMan.hidden = true
-        closeButton.hidden = false
-    }
-    
-    private func setupViews() {
-        self.view.backgroundColor = UIColor.clearColor()
-        mainContainer.backgroundColor = UIColor.clearColor()
-        
-        searchTextField.placeholder = " 搜您想看的节目"
-        searchTextField.backgroundColor = UIColor.whiteColor()
-        searchTextField.textColor = UIColor.blackColor()
-        searchTextField.textAlignment = .Left
-        searchTextField.layer.cornerRadius = 5
-        searchTextField.delegate = self
-        searchTextField.becomeFirstResponder()
-        
-        searchButton.setTitle("搜索", forState: .Normal)
-        searchButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        searchButton.titleLabel?.font = UIFont.boldSystemFontOfSize(18)
-        searchButton.addTarget(self, action: Selector("startSearch"), forControlEvents: .TouchUpInside)
-        
-        closeButton.setTitle("退出", forState: .Normal)
-        closeButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        closeButton.titleLabel?.font = UIFont.boldSystemFontOfSize(30)
-        closeButton.backgroundColor = UIColor.clearColor()
-        closeButton.hidden = true
-        closeButton.addTarget(self, action: "exitView", forControlEvents: .TouchUpInside)
-        
-        resultTable.delegate = self
-        resultTable.dataSource = self
-        resultTable.registerClass(VideoListTableViewCell.self, forCellReuseIdentifier: "Cell")
-        resultTable.separatorStyle = .None
-        resultTable.backgroundColor = UIColor.clearColor()
-        resultTable.hidden = true
-        
-        pacMan.hidden = true
-        
-        self.view.addSubview(mainContainer)
-        mainContainer.addSubview(searchTextField)
-        mainContainer.addSubview(searchButton)
-        mainContainer.addSubview(resultTable)
-        mainContainer.addSubview(pacMan)
-        mainContainer.addSubview(closeButton)
-        
-        mainContainer.autoPinEdgeToSuperviewEdge(.Top)
-        mainContainer.autoPinEdgeToSuperviewEdge(.Left)
-        mainContainer.autoSetDimensionsToSize(searchViewSize)
-        
-        searchButton.autoPinEdgeToSuperviewEdge(.Right)
-        searchButton.autoAlignAxis(.Horizontal, toSameAxisOfView: searchTextField)
-        
-        searchTextField.autoPinEdgeToSuperviewEdge(.Top)
-        searchTextField.autoPinEdgeToSuperviewEdge(.Leading)
-        searchTextField.autoPinEdge(.Right, toEdge: .Left, ofView: searchButton, withOffset: -10)
-        searchTextField.autoSetDimension(.Height, toSize: 30)
-        
-        resultTable.autoPinEdge(.Top, toEdge: .Bottom, ofView: searchTextField, withOffset: 10)
-        resultTable.autoPinEdgeToSuperviewEdge(.Leading)
-        resultTable.autoPinEdgeToSuperviewEdge(.Trailing)
-        resultTable.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 50, relation: .GreaterThanOrEqual)
-        
-        closeButton.autoPinEdgeToSuperviewEdge(.Leading)
-        closeButton.autoPinEdgeToSuperviewEdge(.Trailing)
-        closeButton.autoPinEdgeToSuperviewEdge(.Bottom)
-        closeButton.autoPinEdge(.Top, toEdge: .Bottom, ofView: resultTable)
-        
-        pacMan.autoPinEdge(.Top, toEdge: .Bottom, ofView: searchTextField, withOffset: 80)
-        pacMan.autoAlignAxisToSuperviewAxis(.Vertical)
-        
     }
     
     //MARK: TableView datasource and delegates
