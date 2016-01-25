@@ -58,8 +58,6 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.hidden = false
         navigationItem.title = nil
-        // Add observe listen to user choosing side menu saved list
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedNotification:", name: passListNotificationKey, object: nil)
         self.showLeftNavButton()
     }
     
@@ -113,13 +111,13 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
     
     func foundSearchResult(sender: NSNotification) {
         if let data:Dictionary<String, String> = sender.userInfo as? Dictionary<String, String> {
-            var segueInfo = Array<String>()
+            var segueInfo = Dictionary<String, String>()
             guard let listId:String = data["listId"]! as String else { print("found no id") }
             guard let listName:String = data["listName"]! as String else { print("found no name") }
             guard let parseListId:String = data["parseId"]! as String else { print("no parse id") }
-            segueInfo.append(listId)
-            segueInfo.append(listName)
-            segueInfo.append(parseListId)
+            segueInfo["listId"] = listId
+            segueInfo["listName"] = listName
+            segueInfo["parseId"] = parseListId
             self.performSegueWithIdentifier(self.segueName, sender: segueInfo)
         }
     }
@@ -197,7 +195,7 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
                     destVC.currentListName = data["listName"]!
                     destVC.parseObjectId = data["parseId"]!
                     }.main {
-                        destVC.performSegueWithIdentifier("showVideo", sender: data)
+                        if let _:String = data["videoId"], _:String = data["videoName"] { destVC.performSegueWithIdentifier("showVideo", sender: data) }
                 }
             } else if let segueInfo:Array<String> = sender as? Array<String> {
                 destVC.requestPlayList(segueInfo[0], pageToken: nil)

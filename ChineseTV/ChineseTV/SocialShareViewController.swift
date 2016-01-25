@@ -179,130 +179,6 @@ class SocialShareViewController: UIViewController {
         super.updateViewConstraints()
     }
     
-    func setupViews() {
-        
-        self.view.backgroundColor = UIColor.clearColor()
-        mainContainer.backgroundColor = UIColor.clearColor()
-        topLabel.backgroundColor = UIColor.clearColor()
-        middleView.backgroundColor = UIColor.clearColor()
-        bottomView.backgroundColor = UIColor.clearColor()
-        
-        middleView.contentMode = .ScaleAspectFit
-        
-        closeButton.addTarget(self, action: "closeView", forControlEvents: .TouchUpInside)
-        let closeIcon:FAKFontAwesome = FAKFontAwesome.closeIconWithSize(20)
-        closeIcon.addAttribute(NSForegroundColorAttributeName, value: UIColor.whiteColor())
-        closeIcon.drawingBackgroundColor = UIColor.clearColor()
-        let closeImage:UIImage = closeIcon.imageWithSize(CGSize(width: 20, height: 20))
-        closeButton.setImage(closeImage, forState: .Normal)
-        
-        topLabel.font = UIFont.boldSystemFontOfSize(25)
-        topLabel.numberOfLines = 1
-        topLabel.textColor = UIColor.whiteColor()
-        topLabel.textAlignment = .Center
-        topLabel.text = "分享给好友"
-        
-        let buttonSize:CGSize = CGSize(width: UIScreen.mainScreen().bounds.width/8, height: UIScreen.mainScreen().bounds.width/8)
-        let iconSize:CGFloat = buttonSize.width*0.6
-        let buttonLabelSize:CGFloat = 8
-        
-        let fbIcon:FAKFontAwesome = FAKFontAwesome.facebookIconWithSize(iconSize)
-        fbIcon.addAttribute(NSForegroundColorAttributeName, value: UIColor.whiteColor())
-        fbIcon.drawingBackgroundColor = UIColor(red: 59/255, green: 89/255, blue: 152/255, alpha: 1)
-        let fbImage:UIImage = fbIcon.imageWithSize(buttonSize)
-        fbShareButton.setImage(fbImage, forState: .Normal)
-        fbShareButton.addTarget(self, action: "shareToFacebook", forControlEvents: .TouchUpInside)
-        fbShareButton.layer.masksToBounds = true
-        fbShareButton.layer.cornerRadius = buttonSize.width/2
-        fbShareButton.clipsToBounds = true
-        
-        fbLabel.text = "Facebook"
-        fbLabel.textColor = UIColor.whiteColor()
-        fbLabel.textAlignment = .Center
-        fbLabel.font = UIFont.boldSystemFontOfSize(buttonLabelSize)
-        
-        let wechatIcon:FAKFontAwesome = FAKFontAwesome.wechatIconWithSize(iconSize)
-        wechatIcon.addAttribute(NSForegroundColorAttributeName, value: UIColor.whiteColor())
-        wechatIcon.drawingBackgroundColor = UIColor(red: 123/255, green: 179/255, blue: 46/255, alpha: 1)
-        let wechatImage:UIImage = wechatIcon.imageWithSize(buttonSize)
-        wechatShareButton.setImage(wechatImage, forState: .Normal)
-        wechatShareButton.addTarget(self, action: "shareToWechat", forControlEvents: .TouchUpInside)
-        wechatShareButton.layer.masksToBounds = true
-        wechatShareButton.layer.cornerRadius = buttonSize.width/2
-        wechatShareButton.clipsToBounds = true
-        
-        wechatLabel.text = "微信好友"
-        wechatLabel.textColor = UIColor.whiteColor()
-        wechatLabel.textAlignment = .Center
-        wechatLabel.font = UIFont.boldSystemFontOfSize(buttonLabelSize)
-        
-        let weixinImage:UIImage = UIImage(named: "weixin.png")!
-        weixinShareButton.autoSetDimensionsToSize(buttonSize)
-        weixinShareButton.setImage(weixinImage, forState: .Normal)
-        weixinShareButton.layer.masksToBounds = true
-        weixinShareButton.layer.cornerRadius = buttonSize.width/2
-        weixinShareButton.clipsToBounds = true
-        weixinShareButton.backgroundColor = UIColor.whiteColor()
-        weixinShareButton.addTarget(self, action: "shareToWeixin", forControlEvents: .TouchUpInside)
-        
-        weixinLabel.text = "朋友圈"
-        weixinLabel.textColor = UIColor.whiteColor()
-        weixinLabel.textAlignment = .Center
-        weixinLabel.font = UIFont.boldSystemFontOfSize(buttonLabelSize)
-        
-        self.view.addSubview(mainContainer)
-        mainContainer.addSubview(closeButton)
-        mainContainer.addSubview(topLabel)
-        mainContainer.addSubview(middleView)
-        mainContainer.addSubview(bottomView)
-        
-        mainContainer.autoPinEdgeToSuperviewEdge(.Top)
-        mainContainer.autoPinEdgeToSuperviewEdge(.Left)
-        mainContainer.autoSetDimensionsToSize(socialViewSize)
-        
-        closeButton.autoAlignAxisToSuperviewAxis(.Vertical)
-        closeButton.autoPinEdgeToSuperviewEdge(.Top)
-        
-        topLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: closeButton, withOffset: 10)
-        topLabel.autoPinEdgeToSuperviewEdge(.Left)
-        topLabel.autoPinEdgeToSuperviewEdge(.Right)
-        
-        middleView.autoPinEdge(.Top, toEdge: .Bottom, ofView: topLabel, withOffset: 2, relation: .LessThanOrEqual)
-        middleView.autoPinEdgeToSuperviewEdge(.Left)
-        middleView.autoPinEdgeToSuperviewEdge(.Right)
-        middleView.autoMatchDimension(.Height, toDimension: .Height, ofView: mainContainer, withMultiplier: 0.5)
-        
-        bottomView.autoPinEdge(.Top, toEdge: .Bottom, ofView: middleView, withOffset: 2, relation: .GreaterThanOrEqual)
-        bottomView.autoPinEdgeToSuperviewEdge(.Left)
-        bottomView.autoPinEdgeToSuperviewEdge(.Right)
-        bottomView.autoPinEdgeToSuperviewEdge(.Bottom)
-        
-        bottomView.addSubview(fbShareButton)
-        bottomView.addSubview(fbLabel)
-        bottomView.addSubview(wechatShareButton)
-        bottomView.addSubview(wechatLabel)
-        bottomView.addSubview(weixinShareButton)
-        bottomView.addSubview(weixinLabel)
-        
-        fbShareButton.autoPinEdge(.Right, toEdge: .Left, ofView: wechatShareButton, withOffset: -20)
-        fbShareButton.autoPinEdgeToSuperviewEdge(.Top)
-        
-        fbLabel.autoAlignAxis(.Vertical, toSameAxisOfView: fbShareButton)
-        fbLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: fbShareButton, withOffset: 2, relation: .GreaterThanOrEqual)
-        
-        wechatShareButton.autoAlignAxisToSuperviewAxis(.Vertical)
-        wechatShareButton.autoPinEdgeToSuperviewEdge(.Top)
-        
-        wechatLabel.autoAlignAxis(.Vertical, toSameAxisOfView: wechatShareButton)
-        wechatLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: wechatShareButton, withOffset: 2, relation: .GreaterThanOrEqual)
-        
-        weixinShareButton.autoPinEdge(.Left, toEdge: .Right, ofView: wechatShareButton, withOffset: 20)
-        weixinShareButton.autoAlignAxis(.Horizontal, toSameAxisOfView: wechatShareButton)
-        
-        weixinLabel.autoAlignAxis(.Vertical, toSameAxisOfView: weixinShareButton)
-        weixinLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: weixinShareButton, withOffset: 2, relation: .GreaterThanOrEqual)
-    }
-    
     func loadVideoInfo(video:Video) {
         print("Loading video info")
         self.middleView.sd_setImageWithURL(NSURL(string: video.shareImageUrl))
@@ -314,8 +190,6 @@ class SocialShareViewController: UIViewController {
         let msg = FBSDKShareLinkContent()
         let shareLink = "https://chinatv.firebaseapp.com/video#\(self.shareVideo!.id)"
         msg.contentURL = NSURL(string: shareLink)
-        msg.contentTitle = self.shareVideo?.name
-        msg.imageURL = NSURL(string: (self.shareVideo?.shareImageUrl)!)
         let dialog = FBSDKShareDialog()
         dialog.fromViewController = self
         dialog.shareContent = msg

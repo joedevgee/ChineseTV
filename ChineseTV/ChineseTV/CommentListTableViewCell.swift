@@ -104,7 +104,7 @@ class VideoDetailCommentAdCell: UITableViewCell {
     var commentLabel:UILabel = UILabel.newAutoLayoutView()
     var userNameLabel:UILabel = UILabel.newAutoLayoutView()
     
-    var bannerView:GADBannerView = GADBannerView.newAutoLayoutView()
+    let bannerView = GADBannerView.init(adSize: kGADAdSizeSmartBannerPortrait)
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -139,8 +139,6 @@ class VideoDetailCommentAdCell: UITableViewCell {
         commentLabel.textAlignment = .Left
         commentLabel.numberOfLines = 0
         
-        bannerView = GADBannerView.init(adSize: kGADAdSizeSmartBannerPortrait)
-        
         contentView.addSubview(avatarView)
         contentView.addSubview(userNameLabel)
         contentView.addSubview(commentLabel)
@@ -167,7 +165,6 @@ class VideoDetailCommentAdCell: UITableViewCell {
             commentLabel.autoPinEdge(.Top, toEdge: .Bottom, ofView: userNameLabel, withOffset: 5, relation: .GreaterThanOrEqual)
             commentLabel.autoPinEdge(.Left, toEdge: .Right, ofView: avatarView, withOffset: 10)
             commentLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 10)
-//            commentLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 10, relation: .GreaterThanOrEqual)
             commentLabel.autoPinEdge(.Bottom, toEdge: .Top, ofView: bannerView, withOffset: -10)
             
             

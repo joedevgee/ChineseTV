@@ -97,7 +97,8 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         // Observe for profile change
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "changeProfile", name: FBSDKProfileDidChangeNotification, object: nil)
         // Observe for user registering with Parse
-        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCurrentPlayList:", name: "DetailPlayListUpdated", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCurrentCommentsList:", name: "DetailCommentsListUpdated", object: nil)
     }
     
     // GADBanner view delegate
@@ -557,24 +558,26 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     private func updateSavedList() {
-        for video in self.videoList {
-            if video.id == self.youtubePlayer.videoIdentifier && self.parseListId != nil {
-                print("updating saved playlist")
-                // update video name
-                guard let nudSavedVideoNameDict:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoNameDict) as? [String: String] else { break }
-                var savingNewVideoNameDict = nudSavedVideoNameDict
-                savingNewVideoNameDict[self.parseListId!] = video.name
-                NSUserDefaults.standardUserDefaults().setObject(savingNewVideoNameDict, forKey: savedVideoNameDict)
-                // update video image
-                guard let nudSavedVideoImageDict:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoImageDict) as? [String: String] else { break }
-                var savingNewVideoImageDict = nudSavedVideoImageDict
-                savingNewVideoImageDict[self.parseListId!] = video.thumbnailUrl
-                NSUserDefaults.standardUserDefaults().setObject(savingNewVideoImageDict, forKey: savedVideoImageDict)
-                // update video id
-                guard let nudSavedVideoIdDict:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoIdDict) as? [String: String] else { break }
-                var savingNewVideoIdDict = nudSavedVideoIdDict
-                savingNewVideoIdDict[self.parseListId!] = video.id
-                NSUserDefaults.standardUserDefaults().setObject(savingNewVideoIdDict, forKey: savedVideoIdDict)
+        Async.background {
+            for video in self.videoList {
+                if video.id == self.youtubePlayer.videoIdentifier && self.parseListId != nil {
+                    print("updating saved playlist")
+                    // update video name
+                    guard let nudSavedVideoNameDict:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoNameDict) as? [String: String] else { break }
+                    var savingNewVideoNameDict = nudSavedVideoNameDict
+                    savingNewVideoNameDict[self.parseListId!] = video.name
+                    NSUserDefaults.standardUserDefaults().setObject(savingNewVideoNameDict, forKey: savedVideoNameDict)
+                    // update video image
+                    guard let nudSavedVideoImageDict:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoImageDict) as? [String: String] else { break }
+                    var savingNewVideoImageDict = nudSavedVideoImageDict
+                    savingNewVideoImageDict[self.parseListId!] = video.thumbnailUrl
+                    NSUserDefaults.standardUserDefaults().setObject(savingNewVideoImageDict, forKey: savedVideoImageDict)
+                    // update video id
+                    guard let nudSavedVideoIdDict:[String: String] = NSUserDefaults.standardUserDefaults().dictionaryForKey(savedVideoIdDict) as? [String: String] else { break }
+                    var savingNewVideoIdDict = nudSavedVideoIdDict
+                    savingNewVideoIdDict[self.parseListId!] = video.id
+                    NSUserDefaults.standardUserDefaults().setObject(savingNewVideoIdDict, forKey: savedVideoIdDict)
+                }
             }
         }
     }
@@ -606,87 +609,104 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     // MARK: Network request methods
     // Use this function to retrieve videos in playlist
     func requestPlayList(listId: String, pageToken:String?) {
-        var searchParameters = [String: AnyObject]()
-        searchParameters["part"] = "snippet"
-        searchParameters["maxResults"] = 50
-        searchParameters["playlistId"] = listId
-        searchParameters["key"] = googleApiKey
-        if pageToken != nil { searchParameters["pageToken"] = pageToken }
-        Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?", parameters: searchParameters, encoding: ParameterEncoding.URLEncodedInURL)
-            .responseJSON { response in
-                if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextVideoPageToken { self.nextVideoPageToken = tempString; self.videoTokenCheck[tempString] = false }
-                if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> { self.processVideoList(items) }
+        Async.background {
+            var searchParameters = [String: AnyObject]()
+            searchParameters["part"] = "snippet"
+            searchParameters["maxResults"] = 50
+            searchParameters["playlistId"] = listId
+            searchParameters["key"] = googleApiKey
+            if pageToken != nil { searchParameters["pageToken"] = pageToken }
+            Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?", parameters: searchParameters, encoding: ParameterEncoding.URLEncodedInURL)
+                .responseJSON { response in
+                    if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextVideoPageToken { self.nextVideoPageToken = tempString; self.videoTokenCheck[tempString] = false }
+                    if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> { self.processVideoList(items) }
+            }
         }
     }
     
     func processVideoList(items: Array<Dictionary<NSObject, AnyObject>>) {
-        for video in items {
-            guard let snippet = video["snippet"] as? Dictionary<NSObject, AnyObject> else { continue }
-            guard let videoTitle = snippet["title"] as? String else { continue }
-            guard let ids = snippet["resourceId"] as? Dictionary<NSObject, AnyObject> else { continue }
-            guard let videoId = ids["videoId"] as? String else { continue }
-            guard let thumbnails = snippet["thumbnails"] as? Dictionary<NSObject, AnyObject> else { continue }
-            guard let defaultThumbnail = thumbnails["default"] as? Dictionary<NSObject, AnyObject> else { continue }
-            guard let defaultUrl = defaultThumbnail["url"] as? String else { continue }
-            guard let heighThumbnail = thumbnails["high"] as? Dictionary<NSObject, AnyObject> else { continue }
-            guard let heighUrl = heighThumbnail["url"] as? String else { continue }
-            self.videoList.append(Video(id: videoId, name: videoTitle, thumbnailUrl: defaultUrl, shareImageUrl: heighUrl))
+        Async.background {
+            for video in items {
+                guard let snippet = video["snippet"] as? Dictionary<NSObject, AnyObject> else { continue }
+                guard let videoTitle = snippet["title"] as? String else { continue }
+                guard let ids = snippet["resourceId"] as? Dictionary<NSObject, AnyObject> else { continue }
+                guard let videoId = ids["videoId"] as? String else { continue }
+                guard let thumbnails = snippet["thumbnails"] as? Dictionary<NSObject, AnyObject> else { continue }
+                guard let defaultThumbnail = thumbnails["default"] as? Dictionary<NSObject, AnyObject> else { continue }
+                guard let defaultUrl = defaultThumbnail["url"] as? String else { continue }
+                guard let heighThumbnail = thumbnails["high"] as? Dictionary<NSObject, AnyObject> else { continue }
+                guard let heighUrl = heighThumbnail["url"] as? String else { continue }
+                self.videoList.append(Video(id: videoId, name: videoTitle, thumbnailUrl: defaultUrl, shareImageUrl: heighUrl))
+            }
+            NSNotificationCenter.defaultCenter().postNotificationName("DetailPlayListUpdated", object: nil)
         }
-        self.videoListTableView.reloadData()
     }
-    
+    func updateCurrentPlayList(sender: NSNotification) {
+        print("Updating video list")
+        Async.main { self.videoListTableView.reloadData() }
+    }
     // Use this functions to retrieve comment about the playing video
     // Use this function to get comment about video
     func getVideoCommentsData(videoId: String) {
-        self.commentList.removeAll(keepCapacity: true)
-        // First get the comments from self parse backend
-        let commentQuery = PFQuery(className: "Comment")
-        commentQuery.whereKey("videoId", equalTo: videoId)
-        commentQuery.findObjectsInBackgroundWithBlock {
-            (objects: [PFObject]?, error: NSError?) -> Void in
-            if error == nil {
-                if let comments = objects {
-                    for comment in comments {
-                        let newComment = Comment(name: String(comment["name"]), avatarUrl: String(comment["imageUrl"]), commentText: String(comment["text"]))
-                        self.commentList.append(newComment)
+        Async.background {
+            self.commentList.removeAll(keepCapacity: true)
+            // First get the comments from self parse backend
+            let commentQuery = PFQuery(className: "Comment")
+            commentQuery.whereKey("videoId", equalTo: videoId)
+            commentQuery.findObjectsInBackgroundWithBlock {
+                (objects: [PFObject]?, error: NSError?) -> Void in
+                if error == nil {
+                    if let comments = objects {
+                        for comment in comments {
+                            let newComment = Comment(name: String(comment["name"]), avatarUrl: String(comment["imageUrl"]), commentText: String(comment["text"]))
+                            self.commentList.append(newComment)
+                        }
                     }
+                } else {
+                    print(error)
                 }
-            } else {
-                print(error)
+                // Second: get comments from youtube original video
+                Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/commentThreads?key=\(googleApiKey)&textFormat=plainText&part=snippet&videoId=\(videoId)")
+                    .responseJSON { response in
+                        if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextCommentPageToken { self.nextCommentPageToken = tempString; self.commentTokenCheck[tempString] = false }
+                        if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> where items.count > 0 { self.getCommentsInfo(items) }
+                }
             }
-            // Second: get comments from youtube original video
-            Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/commentThreads?key=\(googleApiKey)&textFormat=plainText&part=snippet&videoId=\(videoId)")
+        }
+    }
+    func nextComment(videoId: String, pageToken: String) {
+        Async.background {
+            var searchParameters = [String: AnyObject]()
+            searchParameters["textFormat"] = "plainText"
+            searchParameters["part"] = "snippet"
+            searchParameters["videoId"] = videoId
+            searchParameters["pageToken"] = pageToken
+            searchParameters["key"] = googleApiKey
+            Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/commentThreads?", parameters: searchParameters, encoding: .URLEncodedInURL)
                 .responseJSON { response in
                     if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextCommentPageToken { self.nextCommentPageToken = tempString; self.commentTokenCheck[tempString] = false }
                     if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> where items.count > 0 { self.getCommentsInfo(items) }
             }
         }
     }
-    func nextComment(videoId: String, pageToken: String) {
-        var searchParameters = [String: AnyObject]()
-        searchParameters["textFormat"] = "plainText"
-        searchParameters["part"] = "snippet"
-        searchParameters["videoId"] = videoId
-        searchParameters["pageToken"] = pageToken
-        searchParameters["key"] = googleApiKey
-        Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/commentThreads?", parameters: searchParameters, encoding: .URLEncodedInURL)
-            .responseJSON { response in
-                if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextCommentPageToken { self.nextCommentPageToken = tempString; self.commentTokenCheck[tempString] = false }
-                if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> where items.count > 0 { self.getCommentsInfo(items) }
-        }
-    }
     // process the comments data from JSON
     func getCommentsInfo(items: Array<Dictionary<NSObject, AnyObject>>) {
-        for comment in items {
-            guard let snippet = comment["snippet"] as? Dictionary<NSObject, AnyObject> else { continue }
-            guard let topLevel = snippet["topLevelComment"] as? Dictionary<NSObject, AnyObject> else { continue }
-            guard let topSnippet = topLevel["snippet"] as? Dictionary<NSObject, AnyObject> else { continue }
-            guard let userName = topSnippet["authorDisplayName"] as? String else { continue }
-            guard let userAvatar = topSnippet["authorProfileImageUrl"] as? String else { continue }
-            guard let commentText = topSnippet["textDisplay"] as? String else { continue }
-            self.commentList.append(Comment(name: userName, avatarUrl: userAvatar, commentText: commentText))
+        Async.background {
+            for comment in items {
+                guard let snippet = comment["snippet"] as? Dictionary<NSObject, AnyObject> else { continue }
+                guard let topLevel = snippet["topLevelComment"] as? Dictionary<NSObject, AnyObject> else { continue }
+                guard let topSnippet = topLevel["snippet"] as? Dictionary<NSObject, AnyObject> else { continue }
+                guard let userName = topSnippet["authorDisplayName"] as? String else { continue }
+                guard let userAvatar = topSnippet["authorProfileImageUrl"] as? String else { continue }
+                guard let commentText = topSnippet["textDisplay"] as? String else { continue }
+                self.commentList.append(Comment(name: userName, avatarUrl: userAvatar, commentText: commentText))
+            }
+            NSNotificationCenter.defaultCenter().postNotificationName("DetailCommentsListUpdated", object: nil)
         }
-        self.commentListTableView.reloadData()
+    }
+    func updateCurrentCommentsList(sender: NSNotification) {
+        print("Updateing comment list")
+        Async.main { self.commentListTableView.reloadData() }
     }
     // End of processing comment JSON data
     // End of getting video comments
@@ -833,6 +853,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         }
         let formSheetController = MZFormSheetPresentationViewController(contentViewController: viewController)
         MZFormSheetPresentationController.appearance().shouldApplyBackgroundBlurEffect = true
+        formSheetController.presentationController?.transparentTouchEnabled = false
         formSheetController.allowDismissByPanningPresentedView = true
         formSheetController.presentationController?.contentViewSize = socialViewSize
         self.presentViewController(formSheetController, animated: true, completion: nil)

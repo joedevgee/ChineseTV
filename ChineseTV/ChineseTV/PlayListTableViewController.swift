@@ -261,8 +261,8 @@ class PlayListTableViewController: UITableViewController {
             cell.bannerView.rootViewController = self
             let request = GADRequest()
             request.testDevices = ["91b007bf71861f769b8e96af7b5922c3", kGADSimulatorID]
+            request.gender = .Female
             cell.bannerView.loadRequest(request)
-            
             cell.setNeedsUpdateConstraints()
             cell.updateConstraintsIfNeeded()
             return cell
@@ -278,7 +278,6 @@ class PlayListTableViewController: UITableViewController {
                 cell.videoTitle.text = videoTitle
                 cell.videoTitle.textColor = UIColor.blackColor()
             }
-            
             cell.setNeedsUpdateConstraints()
             cell.updateConstraintsIfNeeded()
             return cell

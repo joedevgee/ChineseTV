@@ -118,13 +118,13 @@ class MainTableViewController: PFQueryTableViewController, GoAutoSlideViewDataSo
     
     func foundSearchResult(sender: NSNotification) {
         if let data:Dictionary<String, String> = sender.userInfo as? Dictionary<String, String> {
-            var segueInfo = Array<String>()
+            var segueInfo = Dictionary<String, String>()
             guard let listId:String = data["listId"]! as String else { print("found no id") }
             guard let listName:String = data["listName"]! as String else { print("found no name") }
             guard let parseListId:String = data["parseId"]! as String else { print("no parse id") }
-            segueInfo.append(listId)
-            segueInfo.append(listName)
-            segueInfo.append(parseListId)
+            segueInfo["listId"] = listId
+            segueInfo["listName"] = listName
+            segueInfo["parseId"] = parseListId
             self.performSegueWithIdentifier("showPlayList", sender: segueInfo)
         }
     }
@@ -159,7 +159,14 @@ class MainTableViewController: PFQueryTableViewController, GoAutoSlideViewDataSo
     }
     func goAutoSlideView(goAutoSlideView: GoAutoSlideView, didTapViewPage page: Int) {
         if gotFeatured {
-            
+            var sendingList = Dictionary<String, String>()
+            guard let featuredItem:FeaturedList = self.featuredList[page] else { print("No such featured item");return }
+            sendingList["listId"] = featuredItem.id
+            sendingList["listName"] = featuredItem.name
+            sendingList["parseId"] = featuredItem.objectId
+            performSegueWithIdentifier("showPlayList", sender: sendingList)
+        } else {
+            // Do nothing
         }
     }
     
@@ -183,7 +190,7 @@ class MainTableViewController: PFQueryTableViewController, GoAutoSlideViewDataSo
                             guard let listName = list["listName"] as? String else { print("Getting list name failed");continue }
                             guard let image = list["Image"] as? PFFile else { print("Getting image failed");continue }
                             guard let rank = list["rank"] as? Int else { print("Getting list rank failed");continue }
-                            guard let objectId = list.objectId else { continue }
+                            guard let objectId = list["parseId"] as? String else { continue }
                             let newList = FeaturedList(id: listId, name: listName, image: image, objectId: objectId)
                             switch rank {
                             case 0:
@@ -203,33 +210,6 @@ class MainTableViewController: PFQueryTableViewController, GoAutoSlideViewDataSo
                     }
                 }
             }
-        }
-    }
-    private func showFeaturedList(list: FeaturedList, nameLabel: UILabel, listImage: PFImageView, rank: Int) {
-        nameLabel.text = list.name
-        nameLabel.textColor = UIColor.whiteColor()
-        nameLabel.textAlignment = .Center
-        nameLabel.font = UIFont.boldSystemFontOfSize(20)
-        nameLabel.numberOfLines = 1
-        
-        listImage.contentMode = .ScaleAspectFill
-        listImage.backgroundColor = UIColor.clearColor()
-        listImage.clipsToBounds = true
-        listImage.file = list.image
-        listImage.loadInBackground()
-        listImage.tag = rank
-        let tap = UITapGestureRecognizer(target: self, action: "toFeaturedList:")
-        listImage.userInteractionEnabled = true
-        listImage.addGestureRecognizer(tap)
-    }
-    func toFeaturedList(sender: UITapGestureRecognizer) {
-        if let viewTag = sender.view?.tag {
-            guard let sendingList:FeaturedList = self.featuredList[viewTag] as FeaturedList else { return }
-            var segueInfo = Array<String>()
-            segueInfo.append(sendingList.id)
-            segueInfo.append(sendingList.name)
-            segueInfo.append(sendingList.objectId)
-            self.performSegueWithIdentifier("showPlayList", sender: segueInfo)
         }
     }
     
@@ -313,9 +293,8 @@ class MainTableViewController: PFQueryTableViewController, GoAutoSlideViewDataSo
                     destVC.currentListName = data["listName"]!
                     destVC.parseObjectId = data["parseId"]!
                     }.main {
-                        destVC.performSegueWithIdentifier("showVideo", sender: data)
+                        if let _:String = data["videoId"], _:String = data["videoName"] { destVC.performSegueWithIdentifier("showVideo", sender: data) }
                 }
-                
             } else if let segueInfo:Array<String> = sender as? Array<String> {
                 destVC.requestPlayList(segueInfo[0], pageToken: nil)
                 destVC.currentListId = segueInfo[0]

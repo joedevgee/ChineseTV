@@ -91,7 +91,7 @@ class VideoAdListTableViewCell: UITableViewCell {
     var thumbnailImageView:UIImageView = UIImageView.newAutoLayoutView()
     var videoTitle:UILabel = UILabel.newAutoLayoutView()
     
-    var bannerView:GADBannerView = GADBannerView.newAutoLayoutView()
+    let bannerView = GADBannerView.init(adSize: kGADAdSizeSmartBannerPortrait)
     
     let imageWidth:CGFloat = UIScreen.mainScreen().bounds.width / 3.5
     let imageHeight:CGFloat = (UIScreen.mainScreen().bounds.width / 3.5) * 0.55
@@ -123,8 +123,6 @@ class VideoAdListTableViewCell: UITableViewCell {
         videoTitle.sizeToFit()
         
         contentView.backgroundColor = videoSubColor
-        
-        bannerView = GADBannerView.init(adSize: kGADAdSizeSmartBannerPortrait)
         
         contentView.addSubview(thumbnailImageView)
         contentView.addSubview(videoTitle)

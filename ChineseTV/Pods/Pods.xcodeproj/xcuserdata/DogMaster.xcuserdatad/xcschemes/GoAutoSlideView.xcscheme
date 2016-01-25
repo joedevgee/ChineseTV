@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '136F7BDBE82FD38A4E719D51'
+               BlueprintIdentifier = '2B2ADD283BCD0FCC7A28A601'
                BlueprintName = 'GoAutoSlideView'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'GoAutoSlideView.framework'>

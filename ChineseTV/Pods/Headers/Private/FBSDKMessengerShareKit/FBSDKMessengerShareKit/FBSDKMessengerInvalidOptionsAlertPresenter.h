@@ -1,1 +1,0 @@
-../../../../FBSDKMessengerShareKit/FBSDKMessengerShareKit/FBSDKMessengerShareKit/FBSDKMessengerInvalidOptionsAlertPresenter.h

@@ -46,6 +46,7 @@
 		0D7284881BF2A7E6006BB77A /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7284871BF2A7E6006BB77A /* RootViewController.swift */; };
 		0D72848A1BF2A848006BB77A /* LeftMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7284891BF2A848006BB77A /* LeftMenuViewController.swift */; };
 		0D786EBD1BFD96E100E0D5B1 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D786EBC1BFD96E100E0D5B1 /* Default-568h@2x.png */; };
+		0D804A3A1C564DE8002C8AF6 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D804A391C564DE8002C8AF6 /* AdSupport.framework */; };
 		0D8E9E2A1BF983EE00C80A66 /* VideoListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8E9E291BF983EE00C80A66 /* VideoListTableViewCell.swift */; };
 		0D8E9E2C1BF9840300C80A66 /* CommentListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8E9E2B1BF9840300C80A66 /* CommentListTableViewCell.swift */; };
 		0DA2A4731C428A7800F88896 /* EditFeaturedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA2A4721C428A7800F88896 /* EditFeaturedViewController.swift */; };
@@ -63,7 +64,6 @@
 		0DAC63DE1BFE9B3D001AC3E9 /* MZMethodSwizzler.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63D11BFE9B3D001AC3E9 /* MZMethodSwizzler.m */; };
 		0DAC63DF1BFE9B3D001AC3E9 /* MZTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63D31BFE9B3D001AC3E9 /* MZTransition.m */; };
 		0DAC63E01BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DAC63D51BFE9B3D001AC3E9 /* UIViewController+TargetViewController.m */; };
-		0DC32CF21C4762B30014357F /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DC32CF11C4762B30014357F /* iAd.framework */; };
 		0DC61B481BF183FF009DD17F /* AddPlayListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC61B471BF183FF009DD17F /* AddPlayListViewController.swift */; };
 		0DF925871C0BEE9F003E179C /* SearchBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF925861C0BEE9F003E179C /* SearchBarViewController.swift */; };
 		0DFE00471C02BA84001C448A /* LeftMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE00461C02BA84001C448A /* LeftMenuTableViewCell.swift */; };
@@ -116,6 +116,7 @@
 		0D7284871BF2A7E6006BB77A /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		0D7284891BF2A848006BB77A /* LeftMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftMenuViewController.swift; sourceTree = "<group>"; };
 		0D786EBC1BFD96E100E0D5B1 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		0D804A391C564DE8002C8AF6 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		0D8E9E291BF983EE00C80A66 /* VideoListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoListTableViewCell.swift; sourceTree = "<group>"; };
 		0D8E9E2B1BF9840300C80A66 /* CommentListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentListTableViewCell.swift; sourceTree = "<group>"; };
 		0DA2A4721C428A7800F88896 /* EditFeaturedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditFeaturedViewController.swift; sourceTree = "<group>"; };
@@ -162,7 +163,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0DC32CF21C4762B30014357F /* iAd.framework in Frameworks */,
+				0D804A3A1C564DE8002C8AF6 /* AdSupport.framework in Frameworks */,
 				0D72847B1BF26AFD006BB77A /* Social.framework in Frameworks */,
 				0D7284791BF26AF6006BB77A /* Accounts.framework in Frameworks */,
 				0D7284771BF26AEC006BB77A /* libsqlite3.tbd in Frameworks */,
@@ -398,6 +399,7 @@
 		88D131F6C64B18D7AB4E7F5A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0D804A391C564DE8002C8AF6 /* AdSupport.framework */,
 				0DC32CF11C4762B30014357F /* iAd.framework */,
 				0D72847A1BF26AFD006BB77A /* Social.framework */,
 				0D7284781BF26AF6006BB77A /* Accounts.framework */,
