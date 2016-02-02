@@ -22,14 +22,14 @@ class SingleCategoryCollectionViewController: PFQueryCollectionViewController {
     override init(collectionViewLayout layout: UICollectionViewLayout, className: String?) {
         super.init(collectionViewLayout: layout, className: className)
         parseClassName = "ChinesePlayList"
-        pullToRefreshEnabled = false
+        pullToRefreshEnabled = true
         paginationEnabled = true
         objectsPerPage = 60
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         parseClassName = "ChinesePlayList"
-        pullToRefreshEnabled = false
+        pullToRefreshEnabled = true
         paginationEnabled = true
         objectsPerPage = 60
     }

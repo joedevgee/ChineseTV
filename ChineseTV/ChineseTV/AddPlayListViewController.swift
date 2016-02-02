@@ -84,7 +84,7 @@ class AddPlayListViewController: UIViewController, UITextFieldDelegate, UIPicker
                     if let thumbnailsDict:Dictionary<NSObject, AnyObject> = snippetDict["thumbnails"] as? Dictionary<NSObject, AnyObject> {
                         if let imageUrl = thumbnailsDict["high"]?["url"] as? String {
                             self.thumbnailsArray.append(imageUrl)
-                        }
+                        } else { print("No available image") }
                     }
                 }
             }

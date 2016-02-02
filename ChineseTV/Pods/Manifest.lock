@@ -28,7 +28,6 @@ PODS:
     - Parse (~> 1.9)
   - pop (1.0.8)
   - PureLayout (3.0.1)
-  - RazzleDazzle (0.1.1)
   - SDWebImage (3.7.5):
     - SDWebImage/Core (= 3.7.5)
   - SDWebImage/Core (3.7.5)
@@ -55,7 +54,6 @@ DEPENDENCIES:
   - Parse
   - ParseUI
   - PureLayout
-  - RazzleDazzle
   - SDWebImage
   - TextFieldEffects
   - Toucan
@@ -80,7 +78,6 @@ SPEC CHECKSUMS:
   ParseUI: af2eba584799da4a9fbdac0e178662d7438b502e
   pop: bb773ae2c791ca2629de13b347e7a8b450fa6a57
   PureLayout: f35f5384c9c4e4479df041dbe33ad7577b71ddfb
-  RazzleDazzle: 022270e9ec0a4269ed40a6dcee42c8fa969cbc9a
   SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461
   TextFieldEffects: 8e43fea8836e97be80fc4db27a1596c9e98a26ba
   Toucan: 0519c341148252ae114c5a657d2a85bb9ada9e40

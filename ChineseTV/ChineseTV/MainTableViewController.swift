@@ -38,7 +38,7 @@ class MainTableViewController: PFQueryTableViewController, GoAutoSlideViewDataSo
     override init(style: UITableViewStyle, className: String?) {
         super.init(style: style, className: className)
         parseClassName = "ChinesePlayList"
-        pullToRefreshEnabled = false
+        pullToRefreshEnabled = true
         paginationEnabled = true
         objectsPerPage = 100
     }
@@ -46,7 +46,7 @@ class MainTableViewController: PFQueryTableViewController, GoAutoSlideViewDataSo
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         parseClassName = "ChinesePlayList"
-        pullToRefreshEnabled = false
+        pullToRefreshEnabled = true
         paginationEnabled = true
         objectsPerPage = 100
     }

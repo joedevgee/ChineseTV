@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     struct ShareIdentity {
-        static let WeChatAppId: String = "wxaa9dddb0cb66f8b5"
+        static let WeChatAppId: String = "wx53128a7a7db966bf"
         static let QQAppId: String = "1104904597"
     }
 

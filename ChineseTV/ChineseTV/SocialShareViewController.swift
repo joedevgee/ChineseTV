@@ -18,6 +18,7 @@ let socialViewSize:CGSize = CGSize(width: UIScreen.mainScreen().bounds.width*0.8
 class SocialShareViewController: UIViewController {
     
     var shareVideo:Video?
+    var listId:String?
     
     var mainContainer:UIView = UIView.newAutoLayoutView()
     var topLabel:UILabel = UILabel.newAutoLayoutView()
@@ -188,7 +189,8 @@ class SocialShareViewController: UIViewController {
     
     func shareToFacebook() {
         let msg = FBSDKShareLinkContent()
-        let shareLink = "https://chinatv.firebaseapp.com/video#\(self.shareVideo!.id)"
+        var shareLink = ""
+        if let currentListId = self.listId { shareLink = "https://chinatv.firebaseapp.com/video?search=\(currentListId)#\(self.shareVideo!.id)" } else { shareLink = "https://chinatv.firebaseapp.com/video#\(self.shareVideo!.id)" }
         msg.contentURL = NSURL(string: shareLink)
         let dialog = FBSDKShareDialog()
         dialog.fromViewController = self
@@ -205,7 +207,10 @@ class SocialShareViewController: UIViewController {
         if let shareImage:UIImage = self.defaultImageView.image {
             msg.image = UIImageJPEGRepresentation(shareImage, 1)
         }
-        msg.link = "https://chinatv.firebaseapp.com/video#\(self.shareVideo!.id)"
+        if let sendingListId = self.listId {
+            msg.link = "https://chinatv.firebaseapp.com/video?search=\(sendingListId)#\(self.shareVideo!.id)" } else {
+            msg.link = "https://chinatv.firebaseapp.com/video#\(self.shareVideo!.id)"
+        }
         if let share = ShareManager.getShare(domain: RSWeChat.domain) as? RSWeChat {
             share.shareToWeChatSession(msg, success: { message in print("Success")}, fail: { message, error in print("fail")})
         }
@@ -218,7 +223,11 @@ class SocialShareViewController: UIViewController {
         if let shareImage:UIImage = self.defaultImageView.image {
             msg.image = UIImageJPEGRepresentation(shareImage, 1)
         }
-        msg.link = "https://chinatv.firebaseapp.com/video#\(self.shareVideo!.id)"
+        if let sendingListId = self.listId {
+            msg.link = "https://chinatv.firebaseapp.com/video?search=\(sendingListId)#\(self.shareVideo!.id)" } else {
+            msg.link = "https://chinatv.firebaseapp.com/video#\(self.shareVideo!.id)"
+        }
+//        msg.link = "https://chinatv.firebaseapp.com/video#\(self.shareVideo!.id)"
         if let share = ShareManager.getShare(domain: RSWeChat.domain) as? RSWeChat {
             share.shareToWeChatTimeline(msg, success: { message in print("Success")}, fail: { message, error in print("fail")})
         }

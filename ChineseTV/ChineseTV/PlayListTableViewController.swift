@@ -30,6 +30,7 @@ class PlayListTableViewController: UITableViewController {
     var listProgressId = [String: String]()
     var listName = [String: String]()
     let indicatorView:UIView = UIView.newAutoLayoutView()
+    var nextPageButton = UIButton.newAutoLayoutView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +45,15 @@ class PlayListTableViewController: UITableViewController {
             tutorialBar.show()
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "listViewShowed")
         }
+        let footerView = UIView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.size.width,20))
+        footerView.backgroundColor = UIColor.whiteColor()
+        footerView.addSubview(nextPageButton)
+        tableView.tableFooterView = footerView
+        nextPageButton.autoPinEdgesToSuperviewEdges()
+        nextPageButton.setTitle("加载下一页", forState: .Normal)
+        nextPageButton.setTitleColor(themeColor, forState: .Normal)
+        nextPageButton.hidden = true
+        nextPageButton.addTarget(self, action: Selector("loadNextPage:"), forControlEvents: .TouchUpInside)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -284,13 +294,23 @@ class PlayListTableViewController: UITableViewController {
         }
         
     }
-
-    override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        if self.nextPageToken != nil && indexPath.row == self.videoList.count - 10 && self.tokenCheck[self.nextPageToken!] != true {
-            self.requestPlayList(self.currentListId!, pageToken: self.nextPageToken)
-            self.tokenCheck[self.nextPageToken!] = true
+    
+    func loadNextPage(sender: UIButton) {
+        if let pageToken = self.nextPageToken, listId = self.currentListId {
+            if self.tokenCheck[pageToken] != true {
+                self.requestPlayList(listId, pageToken: pageToken)
+                self.tokenCheck[pageToken] = true
+                self.nextPageButton.hidden = true
+            }
         }
     }
+
+//    override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+//        if self.nextPageToken != nil && indexPath.row == self.videoList.count - 10 && self.tokenCheck[self.nextPageToken!] != true {
+//            self.requestPlayList(self.currentListId!, pageToken: self.nextPageToken)
+//            self.tokenCheck[self.nextPageToken!] = true
+//        }
+//    }
     
     // MARK: Network request methods
     // Use this function to retrieve videos in playlist
@@ -303,14 +323,13 @@ class PlayListTableViewController: UITableViewController {
         if pageToken != nil { searchParameters["pageToken"] = pageToken }
         Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?", parameters: searchParameters, encoding: ParameterEncoding.URLEncodedInURL)
             .responseJSON { response in
-                if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextPageToken { self.nextPageToken = tempString; self.tokenCheck[tempString] = false }
+                if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextPageToken { self.nextPageToken = tempString; self.tokenCheck[tempString] = false; self.nextPageButton.hidden = false }
                 if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> { self.processVideoList(items) }
                 }
     }
     
     func processVideoList(items: Array<Dictionary<NSObject, AnyObject>>) {
         for video in items {
-
             guard let snippet = video["snippet"] as? Dictionary<NSObject, AnyObject> else { continue }
             guard let videoTitle = snippet["title"] as? String else { continue }
             guard let ids = snippet["resourceId"] as? Dictionary<NSObject, AnyObject> else { continue }
@@ -342,7 +361,7 @@ class PlayListTableViewController: UITableViewController {
             }
             if self.videoList.count > 0 {
                 destVC.videoList = self.videoList
-                if self.nextPageToken != nil { destVC.nextVideoPageToken = self.nextPageToken }
+                if self.nextPageToken != nil { destVC.nextVideoPageToken = self.nextPageToken; destVC.videoTokenCheck = self.tokenCheck }
             } else {
                 destVC.requestPlayList(self.currentListId!, pageToken: nil)
             }

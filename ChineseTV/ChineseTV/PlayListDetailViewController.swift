@@ -58,6 +58,8 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     var parseAvatarView:PFImageView = PFImageView.newAutoLayoutView()
     var commentTextView:UITextView = UITextView.newAutoLayoutView()
     var sendCommentButton:UIButton = UIButton.newAutoLayoutView()
+    var commentPageButton = UIButton.newAutoLayoutView()
+    var videoPageButton = UIButton.newAutoLayoutView()
     
     // To comply with Apple review rules, build own user system
     var registerButton:UIButton = UIButton.newAutoLayoutView()
@@ -101,8 +103,12 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateCurrentCommentsList:", name: "DetailCommentsListUpdated", object: nil)
     }
     
-    // GADBanner view delegate
-    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if let pageToken = self.nextVideoPageToken {
+            if videoTokenCheck[pageToken] != true { self.videoPageButton.hidden = false }
+        }
+    }
     
     // MARK: Setup the UI
     
@@ -194,6 +200,9 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
             videoListTableView.autoPinEdgeToSuperviewEdge(.Left)
             videoListTableView.autoPinEdgeToSuperviewEdge(.Right)
             videoListTableView.autoPinEdgeToSuperviewEdge(.Bottom)
+            
+            videoPageButton.autoPinEdgesToSuperviewEdges()
+            commentPageButton.autoPinEdgesToSuperviewEdges()
             
             self.didSetupConstraints = true
         }
@@ -290,6 +299,16 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.videoListTableView.separatorStyle = .None
         self.videoListTableView.backgroundColor = videoSubColor
         
+        // Add a button to load next page of videos
+        let videoFooter = UIView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.size.width,40))
+        videoFooter.backgroundColor = videoSubColor
+        videoPageButton.setTitle("加载下一页", forState: .Normal)
+        videoPageButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        videoPageButton.hidden = true
+        videoPageButton.addTarget(self, action: "videoNextPage", forControlEvents: .TouchUpInside)
+        videoFooter.addSubview(videoPageButton)
+        self.videoListTableView.tableFooterView = videoFooter
+        
         let videoListHeader:UIView = UIView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.width,120))
         videoListHeader.backgroundColor = videoTopColor
         
@@ -334,6 +353,16 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         self.commentListTableView.separatorStyle = .None
         self.commentListTableView.backgroundColor = videoTopColor
         self.commentListTableView.allowsSelection = false
+        
+        // Add a button to load next page to comments
+        let commentFooter = UIView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.size.width,40))
+        commentFooter.backgroundColor = videoTopColor
+        commentPageButton.setTitle("加载下一页", forState: .Normal)
+        commentPageButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        commentPageButton.hidden = true
+        commentPageButton.addTarget(self, action: "commentNextPage", forControlEvents: .TouchUpInside)
+        commentFooter.addSubview(commentPageButton)
+        self.commentListTableView.tableFooterView = commentFooter
         
         // add gesture to dismiss keyboard
         let tapDismiss:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
@@ -618,7 +647,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
             if pageToken != nil { searchParameters["pageToken"] = pageToken }
             Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/playlistItems?", parameters: searchParameters, encoding: ParameterEncoding.URLEncodedInURL)
                 .responseJSON { response in
-                    if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextVideoPageToken { self.nextVideoPageToken = tempString; self.videoTokenCheck[tempString] = false }
+                    if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextVideoPageToken { self.nextVideoPageToken = tempString; self.videoTokenCheck[tempString] = false; self.videoPageButton.hidden = false }
                     if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> { self.processVideoList(items) }
             }
         }
@@ -668,7 +697,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                 // Second: get comments from youtube original video
                 Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/commentThreads?key=\(googleApiKey)&textFormat=plainText&part=snippet&videoId=\(videoId)")
                     .responseJSON { response in
-                        if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextCommentPageToken { self.nextCommentPageToken = tempString; self.commentTokenCheck[tempString] = false }
+                        if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextCommentPageToken { self.nextCommentPageToken = tempString; self.commentTokenCheck[tempString] = false; self.commentPageButton.hidden = false }
                         if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> where items.count > 0 { self.getCommentsInfo(items) }
                 }
             }
@@ -684,7 +713,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
             searchParameters["key"] = googleApiKey
             Alamofire.request(.GET, "https://www.googleapis.com/youtube/v3/commentThreads?", parameters: searchParameters, encoding: .URLEncodedInURL)
                 .responseJSON { response in
-                    if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextCommentPageToken { self.nextCommentPageToken = tempString; self.commentTokenCheck[tempString] = false }
+                    if let tempString = response.result.value?["nextPageToken"] as? String where tempString != self.nextCommentPageToken { self.nextCommentPageToken = tempString; self.commentTokenCheck[tempString] = false; self.commentPageButton.hidden = false }
                     if let items:Array<Dictionary<NSObject, AnyObject>> = response.result.value?["items"] as? Array<Dictionary<NSObject, AnyObject>> where items.count > 0 { self.getCommentsInfo(items) }
             }
         }
@@ -705,7 +734,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     func updateCurrentCommentsList(sender: NSNotification) {
-        print("Updateing comment list")
+        print("Updating comment list")
         Async.main { self.commentListTableView.reloadData() }
     }
     // End of processing comment JSON data
@@ -743,7 +772,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                 if let imageUrl:String = self.videoList[indexPath.row].shareImageUrl as String {
                     let placeholderImage = UIImage(named: "Icon-Small")
                     cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl), placeholderImage: placeholderImage)
-                }
+                } else { print("No thing for video list table") }
                 if let videoTitle:String = self.videoList[indexPath.row].name as String {
                     cell.videoTitle.text = videoTitle
                 }
@@ -763,7 +792,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                 if let imageUrl:String = self.videoList[indexPath.row].shareImageUrl as String {
                     let placeholderImage = UIImage(named: "Icon-Small")
                     cell.thumbnailImageView.sd_setImageWithURL(NSURL(string: imageUrl), placeholderImage: placeholderImage)
-                }
+                } else { print("No thing for video list table") }
                 if let videoTitle:String = self.videoList[indexPath.row].name as String {
                     cell.videoTitle.text = videoTitle
                 }
@@ -777,7 +806,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                 let cell = tableView.dequeueReusableCellWithIdentifier("AdCell") as! VideoDetailCommentAdCell
                 if let imageUrl: String = self.commentList[indexPath.row].avatarUrl as String {
                     cell.avatarView.sd_setImageWithURL(NSURL(string: imageUrl))
-                }
+                } else { print("no thing for comment list table") }
                 if let nameText: String = self.commentList[indexPath.row].name as String {
                     cell.userNameLabel.text = nameText
                 }
@@ -797,7 +826,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
                 let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! VideoDetailCommentCell
                 if let imageUrl: String = self.commentList[indexPath.row].avatarUrl as String {
                     cell.avatarView.sd_setImageWithURL(NSURL(string: imageUrl))
-                }
+                } else { print("No thing for comment list table") }
                 if let nameText: String = self.commentList[indexPath.row].name as String {
                     cell.userNameLabel.text = nameText
                 }
@@ -821,16 +850,22 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
-    func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        if tableView == self.videoListTableView {
-            if self.nextVideoPageToken != nil && indexPath.row == self.videoList.count - 10 && self.videoTokenCheck[self.nextVideoPageToken!] != true {
-                self.requestPlayList(self.currentListId!, pageToken: self.nextVideoPageToken)
-                self.videoTokenCheck[self.nextVideoPageToken!] = true
+    func videoNextPage() {
+        if let pageToken = self.nextVideoPageToken, listId = self.currentListId {
+            if self.videoTokenCheck[pageToken] != true {
+                self.requestPlayList(listId, pageToken: pageToken)
+                self.videoTokenCheck[pageToken] = true
+                self.videoPageButton.hidden = true
             }
-        } else if tableView == self.commentListTableView {
-            if self.nextCommentPageToken != nil && indexPath.row == self.commentList.count - 10 && self.commentTokenCheck[self.nextCommentPageToken!] != true {
-                self.nextComment(self.youtubePlayer.videoIdentifier!, pageToken: self.nextCommentPageToken!)
-                self.commentTokenCheck[self.nextCommentPageToken!] = true
+        }
+    }
+    
+    func commentNextPage() {
+        if let pageToken = self.nextCommentPageToken, videoId = self.youtubePlayer.videoIdentifier {
+            if self.commentTokenCheck[pageToken] != true {
+                self.nextComment(videoId, pageToken: pageToken)
+                self.commentTokenCheck[pageToken] = true
+                self.commentPageButton.hidden = true
             }
         }
     }
@@ -845,6 +880,7 @@ class PlayListDetailViewController: UIViewController, UITableViewDelegate, UITab
     
     func showSocialPopup() {
         let viewController = self.storyboard!.instantiateViewControllerWithIdentifier("SharePopup") as! SocialShareViewController
+        if let listId = self.currentListId { viewController.listId = listId }
         for video in self.videoList {
             if video.id == self.youtubePlayer.videoIdentifier {
                 viewController.loadVideoInfo(video)
